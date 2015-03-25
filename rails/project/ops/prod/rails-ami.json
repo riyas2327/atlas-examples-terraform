@@ -17,14 +17,14 @@
       "name": "<username>/rails-bc"
     },
     "provisioners": [
-    {   
+    {
         "type": "file",
         "source": "/packer/app",
         "destination": "/tmp"
     },
     {
         "type": "shell",
-        "source": "./ops-setup.sh"
+        "script": "./ops-setup.sh"
     }],
     "post-processors": [
       {
