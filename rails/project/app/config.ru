@@ -3,6 +3,6 @@
 require ::File.expand_path('../config/environment', __FILE__)
 
 app = proc do |env|
-  [200, { "Content-Type" => "text/html" }, ["hello <b>world</b>"]]
+  [200, { "Content-Type" => "text/html" }, ["You've just deployed a <i>Rails App</i>!"]]
 end
 run app

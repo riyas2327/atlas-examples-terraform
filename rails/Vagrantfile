@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
 
   # Update <username> below with your Atlas username
   config.push.define "atlas" do |push|
-    push.app = "<username>/django-app"
+    push.app = "<username>/rails-app"
   end
 
 end

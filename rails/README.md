@@ -27,7 +27,7 @@ configure two t2.micro instances on AWS behind a load balancer.
 
 ### Create an Atlas account
 If you haven't already, you must create an [Atlas
-account](https://atlas.hashicorp.com/account/new?utm_source=github&utm_medium=examples&utm_campaign=django)
+account](https://atlas.hashicorp.com/account/new?utm_source=github&utm_medium=examples&utm_campaign=rails)
 in order to securely deploy to AWS. Then generate an Atlas token in your
 [account settings](https://atlas.hashicorp.com/settings/tokens) and set it as
 an environment variable in order authorize communications with Atlas. 
@@ -44,24 +44,24 @@ information to your Atlas account.
 ### Configure the application to deploy to AWS
 Now that Atlas has your application code, you must tell it how to package the
 code and create an AMI. This is done with a *build configuration*, which is the
-file `django-ami.json` in the ops/prod folder. Update the build configuration
+file `rails-ami.json` in the ops/prod folder. Update the build configuration
 sections `push` and `post-processors` with your Atlas username. The `push`
 section creates the build configuration in Atlas, and the `post-processors`
-section tells the build to output an AMI. Run `packer push -create django-ami`
-in the directory with `django-ami.json` to create the build configuration in
+section tells the build to output an AMI. Run `packer push -create rails-ami`
+in the directory with `rails-ami.json` to create the build configuration in
 Atlas. 
 
 Also note the `variables` section, which holds aws keys. To securely store them
-in Atlas, click on your django-ami build configuration in the [Operations
+in Atlas, click on your rails-ami build configuration in the [Operations
 tab](https://atlas.hashicorp.com/operations), then "Variables" in the left
 navigation.
 
 Enter your aws_secret_key and aws_access_key, which you can find in your [AWS
-console](http://aws.amazon.com/console/). Now run `packer push django-ami` and
+console](http://aws.amazon.com/console/). Now run `packer push rails-ami` and
 the variables will be accessible by the build configuration. 
 
 Finally, you must link your application pushed in step one to the build
-configuration just created. To do this, click on your django-ami build
+configuration just created. To do this, click on your rails-ami build
 configuration in the [Operations tab](https://atlas.hashicorp.com/operations),
 then "Linked Applications" in the left navigation. Enter your username and
 application name, then set the Path equal to "/app". This tells the build
@@ -69,8 +69,8 @@ configuration to package your application and place it in the /app directory.
 
 ### Deploy to AWS
 Now that you have an AMI configured with Rails, you need to deploy it on an
-AWS instance. This is done with the terraform configuration `django.tf` in the
-ops/prod folder. To deploy to AWS, you must update `django.tf` with your Atlas
+AWS instance. This is done with the terraform configuration `rails.tf` in the
+ops/prod folder. To deploy to AWS, you must update `rails.tf` with your Atlas
 username and your AWS keys. Once the template is configured, comment out all
 sections except for:
 
@@ -81,7 +81,7 @@ sections except for:
 	}
 
 	resource "atlas_artifact" "web" {
-	  name = "<username>/django-aws"
+	  name = "<username>/rails-aws"
 	  type = "aws.ami"
 	}
 
