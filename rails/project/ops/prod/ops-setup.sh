@@ -14,5 +14,6 @@ sudo chmod 600 /apt/soruces.list.d/passenger.list
 sudo apt-get -y update
 sudo apt-get -y install apache2 libapache2-mod-passenger
 sudo cp /home/ubuntu/project/ops/prod/project.conf /etc/apache2/sites-enabled/rails.conf
+sudo rm /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-avaliable/000-default.conf
 sudo a2enmod passenger
 sudo apache2ctl restart
