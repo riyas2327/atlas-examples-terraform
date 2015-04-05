@@ -14,7 +14,7 @@
         "ami_name": "rails {{timestamp}}"
     }],
     "push": {
-      "name": "elijahcaine/rails-bc"
+      "name": "<username>/rails-bc"
     },
     "provisioners": [
     {
@@ -29,7 +29,7 @@
     "post-processors": [
       {
         "type": "atlas",
-        "artifact": "elijahcaine/rails-aws",
+        "artifact": "<username>/rails-aws",
         "artifact_type": "aws.ami",
         "metadata": {
           "created_at": "{{timestamp}}"

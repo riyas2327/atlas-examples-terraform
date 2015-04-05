@@ -1,11 +1,11 @@
 provider "aws" {
-    access_key = "AKIAIDCPTYGY7HMZHOOQ"
-    secret_key = "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"
+    access_key = ""
+    secret_key = ""
     region = "us-east-1"
 }
 
 resource "atlas_artifact" "web" {
-  name = "elijahcaine/rails-aws"
+  name = "<username>/rails-aws"
   type = "aws.ami"
 }
 
