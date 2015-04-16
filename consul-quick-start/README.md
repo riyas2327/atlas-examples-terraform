@@ -28,9 +28,11 @@ Deploy a Three-node Consul Cluster
 2. Run `terraform remote config -backend-config name=<your_atlas_username>/consul` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username to configure [remote state storage](https://www.terraform.io/docs/commands/remote-config.html) for this infrastructure. Now when you run Terraform, the infrastructure state will be saved in Atlas, keeping a versioned history of your infrastructure.
 3. Get the latest consul module by running `terraform get` in the [ops/terraform](ops/terraform) directory.
 4. To deploy your three-node Consul cluster, all you need to do is run `terraform push -name <your_atlas_username>/consul` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username.
-5. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "consul" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" plan that says "NEEDS USER ACTION", then click "Confirm & Apply" to deploy your Consul cluster.
+5. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "consul" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" and wait for the "plan" to finish, then click "Confirm & Apply" to deploy your Consul cluster.
    ![Confirm & Apply](screenshots/environments_changes_confirm.png?raw=true)
-6. That's it! You've just deployed a Consul cluster. In "Changes" you can view all of your configuration and state changes, as well as deployments. If you navigate back to "Status" on the left side panel, you will see the real-time health of all your nodes and services!
+6. You should see 3 new boxes spinning up in EC2 named "consul_n", which are the 3 nodes in your Consul cluster.
+   ![AWS - Success](screenshots/aws_success.png?raw=true)
+7. That's it! You've just deployed a Consul cluster. In "Changes" you can view all of your configuration and state changes, as well as deployments. If you navigate back to "Status" on the left side panel, you will see the real-time health of all your nodes and services!
    ![Consul Infrastructure Status](screenshots/environments_status.png?raw=true)
 
 Cleanup
@@ -40,11 +42,11 @@ Cleanup
 Build Your Own Consul Cluster AMI with Packer
 ------------------------
 1. Make sure you have [Packer](https://packer.io/) [downloaded](https://www.packer.io/downloads.html) and [installed](https://www.packer.io/intro/getting-started/setup.html).
-2. Replace `YOUR_ATLAS_USERNAME` in [ops/consul.json](ops/consul.json) with your Atlas username.
-3. Navigate to the [ops](ops) directory on the command line.
-4. Run `packer push -create consul.json` in the [ops](ops) directory.
+2. Replace `YOUR_ATLAS_USERNAME` in [ops/packer/consul.json](ops/packer/consul.json) with your Atlas username.
+3. Navigate to the [ops/packer](ops/packer) directory on the command line.
+4. Run `packer push -create consul.json` in the [ops/packer](ops/packer) directory.
 5. Go to the [Builds tab](https://atlas.hashicorp.com/builds) of your Atlas account and click on the "consul" build configuration. Navigate to "Variables" on the left side panel of the build configuration, then add the key `AWS_ACCESS_KEY` using your "AWS Access Key Id" as the value and the key `AWS_SECRET_KEY` using your "AWS Secret Access Key" as the value.
-6. Navigate back to "Versions" on the left side panel of your build configuration, then click "Rebuild" on the your build configuration that errored. This one should succeed.
+6. Navigate back to "Builds" on the left side panel of your build configuration, then click "Rebuild" on the build configuration that errored. This one should succeed.
 7. Update your [ops/terraform/main.tf](ops/terraform/main.tf) template to add your Atlas artifact as a resource and reference that artifact in the [consul module](ops/terraform/main.tf#L30) instead of the "ami" variable. See below code snippet.
 
    ```
