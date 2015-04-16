@@ -25,6 +25,12 @@ variable "atlas_environment" {
 variable "region" {
     default = "us-east-1"
 }
+variable "private_key" {
+    default = "ssh_keys/consul-key.pem"
+}
+variable "public_key" {
+    default = "ssh_keys/consul-key.pub"
+}
 variable "ami" {
     default = "ami-dc1529b4"
 }

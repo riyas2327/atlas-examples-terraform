@@ -21,8 +21,8 @@ resource "aws_security_group" "allow_all" {
 }
 
 resource "aws_key_pair" "consul" {
-    key_name = "consul-key"
-    public_key = "${file(\"ssh_keys/consul-key.pub\")}"
+    key_name = "consul-key-pair"
+    public_key = "${file(var.public_key)}"
 }
 
 module "consul" {
@@ -36,5 +36,5 @@ module "consul" {
     atlas_username = "${var.atlas_username}"
     atlas_token = "${var.atlas_token}"
     atlas_environment = "${var.atlas_environment}"
-    key_file = "ssh_keys/consul-key.pem"
+    key_file = "${var.private_key}"
 }

@@ -14,6 +14,8 @@ atlas_token = "YOUR_ATLAS_TOKEN"
 # override the defaults in ops/terraform/variables.tf
 # atlas_environment = "consul"
 # region = "us-east-1"
+# private_key = "ssh_keys/consul-key.pem"
+# public_key = "ssh_keys/consul-key.pub"
 # ami = "ami-dc1529b4"
 # instance_type = "t2.micro"
 # availability_zone = "us-east-1a"

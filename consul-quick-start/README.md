@@ -14,7 +14,7 @@ General setup
   1. `export AWS_ACCESS_KEY=<your_aws_access_key>`
   2. `export AWS_SECRET_KEY=<your_aws_secret_key>`
 6. When running `terraform` you can either pass environment variables into each call as noted in [ops/terraform/variables.tf#L7](ops/terraform/variables.tf#L7), or replace `YOUR_AWS_ACCESS_KEY`, `YOUR_AWS_SECRET_KEY`, `YOUR_ATLAS_USERNAME`, and `YOUR_ATLAS_TOKEN` with your Atlas username, Atlas token, [AWS Access Key Id, and AWS Secret Access key](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) in [ops/terraform/terraform.tfvars](ops/terraform/terraform.tfvars). If you use terraform.tfvars, you don't need to pass in environment variables for each `terraform` call, just be sure not to check this into a public repository.
-7. Generate the consul key pair in [ops/terraform/ssh_keys](ops/terraform/ssh_keys). You can use your own existing key pair as long as the public key material format is [supported](https://www.terraform.io/docs/providers/aws/r/key_pair.html), or you can simply run `sh scripts/generate_key_pair.sh` from the [ops/terraform](ops/terraform) directory and it will generate the keys for you. The private key must be named [ops/terraform/ssh_keys/consul-key.pem](ops/terraform/ssh_keys/consul-key.pem) and the public key must be named [ops/terraform/ssh_keys/consul-key.pub](ops/terraform/ssh_keys/consul-key.pub), the script will take care of this for you. If you don't update the key pair or run the script, you will see the error `* Error import KeyPair: The request must contain the parameter PublicKeyMaterial` on  a `terraform apply` or `terraform push`.
+7. Generate the keys in [ops/terraform/ssh_keys](ops/terraform/ssh_keys). You can simply run `sh scripts/generate_key_pair.sh` from the [ops/terraform](ops/terraform) directory and it will generate new keys for you. If you have an existing private key you would like to use, pass in the private key file path as the first argument of the shell script and it will use your key rather than generating a new one (e.g. `sh scripts/generate_key_pair.sh ~/.ssh/my-private-key.pem`). If you don't run the script, you will likely see the error `Error import KeyPair: The request must contain the parameter PublicKeyMaterial` on a `terraform apply` or `terraform push`.
 
 _\** If you would like to build your own Consul cluster AMI with Packer to use instead of ours, see the below section [Build Your Own Consul Cluster AMI with Packer](README.md#build-your-own-consul-cluster-ami-with-packer). Note that this is not necessary for the following steps to work as we are already referencing a previously built public Consul AMI in the Terraform template._
 
@@ -45,7 +45,7 @@ Build Your Own Consul Cluster AMI with Packer
 4. Run `packer push -create consul.json` in the [ops](ops) directory.
 5. Go to the [Builds tab](https://atlas.hashicorp.com/builds) of your Atlas account and click on the "consul" build configuration. Navigate to "Variables" on the left side panel of the build configuration, then add the key `AWS_ACCESS_KEY` using your "AWS Access Key Id" as the value and the key `AWS_SECRET_KEY` using your "AWS Secret Access Key" as the value.
 6. Navigate back to "Versions" on the left side panel of your build configuration, then click "Rebuild" on the your build configuration that errored. This one should succeed.
-7. Update your [ops/terraform/main.tf](ops/terraform/main.tf) template to add your Atlas artifact as a resource, reference that artifact in the [consul module](ops/terraform/main.tf#L30) instead of the "ami" variable, and finally, add the line `depends_on = ["atlas_artifact.consul"]` to your ["aws_key_pair.consul" resource](ops/terraform/main.tf#L25) to ensure the key pair is created before being referenced. See below code snippet.
+7. Update your [ops/terraform/main.tf](ops/terraform/main.tf) template to add your Atlas artifact as a resource and reference that artifact in the [consul module](ops/terraform/main.tf#L30) instead of the "ami" variable. See below code snippet.
 
    ```
    provider "atlas" {
@@ -55,22 +55,6 @@ Build Your Own Consul Cluster AMI with Packer
    resource "atlas_artifact" "consul" {
        name = "${var.atlas_username}/consul"
        type = "aws.ami"
-
-       # Automatically generates key pair if not provided
-       provisioner "local-exec" {
-           command = "sh scripts/generate_key_pair.sh"
-       }
-   }
-
-   ...
-
-   # Add the "atlas_artifact.consul" resource as a dependency to the
-   # "aws_key_pair.consul" resource to ensure the key pair is created
-   # before being referenced
-   resource "aws_key_pair" "consul" {
-       key_name = "consul-key"
-       public_key = "${file(\"ssh_keys/consul-key.pub\")}"
-       depends_on = ["atlas_artifact.consul"]
    }
 
    ...
@@ -78,5 +62,5 @@ Build Your Own Consul Cluster AMI with Packer
    # Replace ami = "${var.ami}" (ops/terraform/main.tf#L30) with the below
    ami = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
    ```
-8. Remove the "ami" variable from [ops/terraform/variables.tf#L28](ops/terraform/variables.tf#L28) and [ops/terraform/terraform.tfvars#L17](ops/terraform/terraform.tfvars#L17) as these are no longer required.
+8. Remove the "ami" variable from [ops/terraform/variables.tf#L34](ops/terraform/variables.tf#L34) and [ops/terraform/terraform.tfvars#L19](ops/terraform/terraform.tfvars#L19) as these are no longer required.
 9. Refer to [Deploy a Three-node Consul Cluster](README.md#deploy-a-three-node-consul-cluster) to deploy using Terraform!
