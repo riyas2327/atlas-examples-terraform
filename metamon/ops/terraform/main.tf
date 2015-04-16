@@ -37,13 +37,11 @@ resource "aws_security_group" "allow_all" {
 resource "aws_key_pair" "metamon" {
     key_name = "metamon-key-pair"
     public_key = "${file(var.metamon_public_key)}"
-    depends_on = ["atlas_artifact.metamon"]
 }
 
 resource "aws_key_pair" "consul" {
     key_name = "consul-key-pair"
     public_key = "${file(var.consul_public_key)}"
-    depends_on = ["atlas_artifact.consul"]
 }
 
 module "metamon" {
