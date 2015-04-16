@@ -17,24 +17,6 @@ General setup
 7. When running `terraform` you can either pass environment variables into each call as noted in [ops/terraform/variables.tf#L7](ops/terraform/variables.tf#L7), or replace `YOUR_AWS_ACCESS_KEY`, `YOUR_AWS_SECRET_KEY`, `YOUR_ATLAS_USERNAME`, and `YOUR_ATLAS_TOKEN` with your Atlas username, Atlas token, [AWS Access Key Id, and AWS Secret Access key](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) in [ops/terraform/terraform.tfvars](ops/terraform/terraform.tfvars). If you use terraform.tfvars, you don't need to pass in environment variables for each `terraform` call, just be sure not to check this into a public repository.
 8. Generate the keys in [ops/terraform/ssh_keys](ops/terraform/ssh_keys). You can simply run `sh scripts/generate_key_pair.sh` from the [ops/terraform](ops/terraform) directory and it will generate new keys for you. If you have an existing private key you would like to use, pass in the private key file path as the first argument of the shell script and it will use your key rather than generating a new one (e.g. `sh scripts/generate_key_pair.sh ~/.ssh/my-private-key.pem`). If you don't run the script, you will likely see the error `Error import KeyPair: The request must contain the parameter PublicKeyMaterial` on a `terraform apply` or `terraform push`.
 
-TL;DR: Quick Steps
------------------------------------------------
-1. Run `packer push -create consul.json` in the [ops](ops) directory.
-2. Navigate to "Variables" on the left side panel of the "consul" build configuration (in [Builds tab](https://atlas.hashicorp.com/builds) of your Atlas account), then add the key `AWS_ACCESS_KEY` using your "AWS Access Key Id" as the value and the key `AWS_SECRET_KEY` using your "AWS Secret Access Key" as the value.
-3. Navigate back to "Versions" on the left side panel of the "consul" build configuration, then click "Rebuild" on the "consul" build configuration that errored. This one should succeed.
-4. Run `packer push -create site.json` in the [ops](ops) directory.
-5. Navigate to "Variables" on the left side panel of the "metamon" build configuration (in [Builds tab](https://atlas.hashicorp.com/builds) of your Atlas account), then add the key `AWS_ACCESS_KEY` using your "AWS Access Key Id" as the value and the key `AWS_SECRET_KEY` using your "AWS Secret Access Key" as the value.
-6. Run `vagrant push` in the [root]() directory.
-7. Navigate to "Links" on the left side panel of the "metamon" build configuration, then complete the form with your Atlas username, `metamon` as the application name, and `/app` as the destination path.
-8. Navigate back to "Versions" on the left side panel of the "metamon" build configuration, then click "Rebuild" on the "metamon" build configuration that errored. This one should succeed.
-9. Wait for both the “consul” and “metamon” builds to complete without errors.
-10. Run `terraform remote config -backend-config name=<your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username to configure [remote state storage](https://www.terraform.io/docs/commands/remote-config.html) for this infrastructure.
-11. Get the latest modules by running `terraform get` in the [ops/terraform](ops/terraform) directory.
-12. Run `terraform push -name <your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username.
-13. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "metamon" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" and wait for the "plan" to finish, then click "Confirm & Apply" to deploy your Metamon web app and Consul cluster.
-
-14. That's it! You just deployed a a Metamon web app and Consul cluster. In "Changes" you can view all of your configuration and state changes, as well as deployments. If you navigate back to "Status" on the left side panel, you will see the real-time health of all your nodes and services. If you go the the public ip address of the newly created "metamon_1" box, you should see a web page that says "Hello, Atlas!".
-
 Introduction and Configuring Metamon
 -----------------------------------------------
 Before jumping into configuration steps, it's helpful to have a mental model for how the Atlas workflow fits in.
