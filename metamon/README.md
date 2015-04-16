@@ -15,7 +15,7 @@ General setup
    `export AWS_SECRET_KEY=<your_aws_secret_key>`
 6. In the [Vagrantfile](Vagrantfile) and Packer files [ops/site.json](ops/site.json) and [ops/consul.json](ops/consul.json) you must replace `YOUR_ATLAS_USERNAME` with your Atlas username.
 7. When running `terraform` you can either pass environment variables into each call as noted in [ops/terraform/variables.tf#L7](ops/terraform/variables.tf#L7), or replace `YOUR_AWS_ACCESS_KEY`, `YOUR_AWS_SECRET_KEY`, `YOUR_ATLAS_USERNAME`, and `YOUR_ATLAS_TOKEN` with your Atlas username, Atlas token, [AWS Access Key Id, and AWS Secret Access key](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) in [ops/terraform/terraform.tfvars](ops/terraform/terraform.tfvars). If you use terraform.tfvars, you don't need to pass in environment variables for each `terraform` call, just be sure not to check this into a public repository.
-8. Generate the keys in [ops/terraform/ssh_keys](ops/terraform/ssh_keys). You can simply run `sh scripts/generate_key_pair.sh` from the [ops/terraform](ops/terraform) directory and it will generate new keys for you. If you have an existing private key you would like to use, pass in the private key file path as the first argument of the shell script and it will use your key rather than generating a new one (e.g. `sh scripts/generate_key_pair.sh ~/.ssh/my_private_key.pem`). If you don't run the script, you will likely see the error `Error import KeyPair: The request must contain the parameter PublicKeyMaterial` on a `terraform apply` or `terraform push`.
+8. Generate the keys in [ops/terraform/ssh_keys](ops/terraform/ssh_keys). You can simply run `sh scripts/generate_key_pair.sh` from the [ops/terraform](ops/terraform) directory and it will generate new keys for you. If you have an existing private key you would like to use, pass in the private key file path as the first argument of the shell script and it will use your key rather than generating a new one (e.g. `sh scripts/generate_key_pair.sh ~/.ssh/my-private-key.pem`). If you don't run the script, you will likely see the error `Error import KeyPair: The request must contain the parameter PublicKeyMaterial` on a `terraform apply` or `terraform push`.
 
 TL;DR: Quick Steps
 -----------------------------------------------
@@ -31,7 +31,7 @@ TL;DR: Quick Steps
 10. Run `terraform remote config -backend-config name=<your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username to configure [remote state storage](https://www.terraform.io/docs/commands/remote-config.html) for this infrastructure.
 11. Get the latest modules by running `terraform get` in the [ops/terraform](ops/terraform) directory.
 12. Run `terraform push -name <your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username.
-13. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "metamon" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" plan that says "NEEDS USER ACTION", then click "Confirm & Apply" to deploy your Metamon web app and Consul cluster.
+13. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "metamon" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" and wait for the "plan" to finish, then click "Confirm & Apply" to deploy your Metamon web app and Consul cluster.
 
 14. That's it! You just deployed a a Metamon web app and Consul cluster. In "Changes" you can view all of your configuration and state changes, as well as deployments. If you navigate back to "Status" on the left side panel, you will see the real-time health of all your nodes and services. If you go the the public ip address of the newly created "metamon_1" box, you should see a web page that says "Hello, Atlas!".
 
@@ -83,11 +83,11 @@ Step 4: Deploy Metamon Web App and Consul Cluster
 3. Run `terraform remote config -backend-config name=<your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username to configure [remote state storage](https://www.terraform.io/docs/commands/remote-config.html) for this infrastructure. Now when you run Terraform, the infrastructure state will be saved in Atlas, keeping a versioned history of your infrastructure.
 4. Get the latest modules by running `terraform get` in the [ops/terraform](ops/terraform) directory.
 5. Run `terraform push -name <your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory, replacing `<your_atlas_username>` with your Atlas username.
-6. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "metamon" environment. Navigate to "Changes" on the left side panel of the environment, go to the latest "Run" plan, then click "Confirm & Apply" to deploy your Metamon web app and Consul cluster.
+6. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "metamon" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" and wait for the "plan" to finish, then click "Confirm & Apply" to deploy your Metamon web app and Consul cluster.
    ![Confirm & Apply](screenshots/environments_changes_confirm.png?raw=true)
-7. You should see 2 new boxes spinning up in EC2, one named "metamon_1" which is your web app, and one named "consul_1" which is your Consul cluster.
+7. You should see 4 new boxes spinning up in EC2, one named "metamon_1", which is your web app, and three named "consul_n", which are the nodes in your Consul cluster.
    ![AWS - Success](screenshots/aws_success.png?raw=true)
-8. That's it! You just deployed a a Metamon web app and Consul cluster. In "Changes" you can view all of your configuration and state changes, as well as deployments. If you navigate back to "Status" on the left side panel, you will see the real-time health of all your nodes and services. If you go the the public ip address of the newly created "metamon_1" box, you should see a web page that says "Hello, Atlas!".
+8. That's it! You just deployed a a Metamon web app and Consul cluster. In "Changes" you can view all of your configuration and state changes, as well as deployments. If you navigate back to "Status" on the left side panel, you will see the real-time health of all your nodes and services.
    ![Infrastructure Status](screenshots/environments_status.png?raw=true)
 
 Final Step: Verify it Worked!
@@ -95,7 +95,8 @@ Final Step: Verify it Worked!
 1. Once the "metamon_1" box is running, go to its public ip and you should see a website that reads "Hello, Atlas!"
    ![Hello, Atlas!](screenshots/hello_atlas.png?raw=true)
 2. Change your app code by modifying [app/app/views.py](app/app/views.py#L6) to say "Hello, World!" instead of "Hello, Atlas!".
-3. Run `vagrant push` in your projects [root]() directory (where the Vagrantfile is). Once the packer build finishes creating the new AMI (view this in [Builds tab](https://atlas.hashicorp.com/builds) of your Atlas account), run `terraform apply` in the [ops/terraform](ops/terraform) directory and your newly updated web app will be deployed!
+3. Run `vagrant push` in your projects [root]() directory (where the Vagrantfile is). Once the packer build finishes creating the new AMI (view this in [Builds tab](https://atlas.hashicorp.com/builds) of your Atlas account), run `terraform push -name <your_atlas_username>/metamon` in the [ops/terraform](ops/terraform) directory.
+4. Go to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the "metamon" environment. Navigate to "Changes" on the left side panel of the environment, click on the latest "Run" and wait for the "plan" to finish, then click "Confirm & Apply" to deploy your updated Metamon web app! Go to the new "metamon_1" box's public ip and it should now say "Hello, World!".
 
 _\** One thing to note... Because your Django web app and PostgreSQL are running on the same box, anytime you rebuild that AMI and deploy, it's going to destroy the instance and create a new one - effectively destroying all of your data._
 
