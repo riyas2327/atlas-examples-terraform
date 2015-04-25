@@ -2,9 +2,9 @@
 properly can be passed in at the command line as shown below,
 or you can use the terraform.tfvars file and Terraform will
 populate the variables from there and all you will have to
-run is the Terraform command e.g.'terraform apply'
+run is the Terraform command e.g.'terraform push'
 
-terraform apply \
+terraform push \
     -var "aws_access_key=${AWS_ACCESS_KEY}" \
     -var "aws_secret_key=${AWS_SECRET_KEY}" \
     -var "atlas_username=${ATLAS_USERNAME}" \
