@@ -14,16 +14,16 @@ atlas_token = "YOUR_ATLAS_TOKEN"
 # override the defaults in ops/terraform/variables.tf
 # atlas_environment = "metamon"
 # region = "us-east-1"
+# availability_zone = "us-east-1a"
+# source_cidr_block = "172.31.0.0"
 
 # metamon_private_key = "ssh_keys/metamon-key.pem"
 # metamon_public_key = "ssh_keys/metamon-key.pub"
 # metamon_instance_type = "t2.micro"
-# metamon_availability_zone = "us-east-1a"
 # metamon_count = 1
 
 # consul_private_key = "ssh_keys/consul-key.pem"
 # consul_public_key = "ssh_keys/consul-key.pub"
 # consul_instance_type = "t2.micro"
-# consul_availability_zone = "us-east-1a"
 # consul_count = 3
 

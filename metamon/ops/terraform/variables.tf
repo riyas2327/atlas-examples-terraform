@@ -25,6 +25,12 @@ variable "atlas_environment" {
 variable "region" {
     default = "us-east-1"
 }
+variable "availability_zone" {
+    default = "us-east-1a"
+}
+variable "source_cidr_block" {
+    default = "172.31.0.0"
+}
 
 # Metamon Optional Configuration Variables
 variable "metamon_private_key" {
@@ -35,9 +41,6 @@ variable "metamon_public_key" {
 }
 variable "metamon_instance_type" {
     default = "t2.micro"
-}
-variable "metamon_availability_zone" {
-    default = "us-east-1a"
 }
 variable "metamon_count" {
     default = 1
@@ -52,9 +55,6 @@ variable "consul_public_key" {
 }
 variable "consul_instance_type" {
     default = "t2.micro"
-}
-variable "consul_availability_zone" {
-    default = "us-east-1a"
 }
 variable "consul_count" {
     default = 3

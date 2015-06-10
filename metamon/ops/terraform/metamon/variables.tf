@@ -1,5 +1,7 @@
 variable "ami" {}
-variable "security_group" {}
+variable "subnet_id" {}
+variable "sg_web" {}
+variable "sg_consul" {}
 variable "key_name" {}
 variable "instance_type" {}
 variable "availability_zone" {}

@@ -1,6 +1,7 @@
 resource "aws_instance" "consul" {
     ami = "${var.ami}"
-    security_groups = ["${var.security_group}"]
+    subnet_id = "${var.subnet_id}"
+    security_groups = ["${var.sg_web}", "${var.sg_consul}"]
     key_name = "${var.key_name}"
     instance_type = "${var.instance_type}"
     availability_zone = "${var.availability_zone}"
