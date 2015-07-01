@@ -2,7 +2,7 @@
     "variables": {
         "aws_access_key": "{{env `aws_access_key`}}",
         "aws_secret_key": "{{env `aws_access_key`}}",
-        "atlas_username": "kfishner"
+        "atlas_username": "ATLAS_USERNAME"
     },
     "builders": [{
         "type": "amazon-ebs",
@@ -15,7 +15,7 @@
         "ami_name": "haproxy {{timestamp}}"
     }],
     "push": {
-      "name": "kfishner/haproxy",
+      "name": "{{user `atlas_username`}}/haproxy",
       "vcs": false
     },
     "provisioners": [

@@ -8,6 +8,7 @@ General setup
 2. Create an [Atlas account](https://atlas.hashicorp.com/account/new?utm_source=github&utm_medium=examples&utm_campaign=haproxy-nodejs)
 3. Generate an [Atlas token](https://atlas.hashicorp.com/settings/tokens) and save as environment variable. 
 `export ATLAS_TOKEN=<your_token>`
+4. Download and install the latest versions of [Vagrant](https://www.vagrantup.com/downloads.html), [Packer](http://packer.io/downloads), and [Terraform](http://terraform.io/downloads). 
 
 Introduction and Configuring HAProxy + Node.js
 -----------------------------------------------

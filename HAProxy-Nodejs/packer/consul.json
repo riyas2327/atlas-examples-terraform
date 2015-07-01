@@ -2,7 +2,7 @@
     "variables": {
         "aws_access_key": "{{env `aws_access_key`}}",
         "aws_secret_key": "{{env `aws_secret_key`}}",
-        "atlas_username": "kfishner"
+        "atlas_username": "ATLAS_USERNAME"
     },
     "builders": [{
         "type": "amazon-ebs",
@@ -15,7 +15,7 @@
         "ami_name": "consul {{timestamp}}"
     }],
     "push": {
-      "name": "kfishner/consul",
+      "name": "{{user `atlas_username`}}/consul",
       "vcs": false
     },
     "provisioners": [
