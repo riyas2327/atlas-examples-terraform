@@ -1,7 +1,8 @@
 {
     "variables": {
-        "aws_access_key": "YOUR_ACCESS_KEY",
-        "aws_secret_key": "YOUR_SECREY_KEY"
+        "aws_access_key": "{{env `aws_access_key`}}",
+        "aws_secret_key": "{{env `aws_access_key`}}",
+        "atlas_username": "kfishner"
     },
     "builders": [{
         "type": "amazon-ebs",
@@ -14,22 +15,10 @@
         "ami_name": "nodejs {{timestamp}}"
     }],
     "push": {
-      "name": "<username>/nodejs",
+      "name": "kfishner/nodejs",
       "vcs": false
     },
     "provisioners": [
-    {   
-        "type": "shell",
-        "inline": [
-            "sudo mkdir /ops",
-            "sudo chmod a+w /ops"
-        ]
-    },
-    {   
-        "type": "file",
-        "source": ".",
-        "destination": "/ops"
-    },
     {   
         "type": "shell",
         "inline": [
@@ -49,12 +38,27 @@
     {
         "type": "shell",
         "script": "scripts/nodejs.sh"
+    },
+    {
+        "type": "file",
+        "source": "files/nodejs.json",
+        "destination": "/etc/consul.d/nodejs.json"
+    },
+    {
+        "type": "file",
+        "source": "upstart/nodejs.conf",
+        "destination": "/etc/init/nodejs.conf"
+    },
+    {
+        "type": "file",
+        "source": "upstart/consul_client.conf",
+        "destination": "/etc/init/consul.conf"
     }
     ],
     "post-processors": [
       {
         "type": "atlas",
-        "artifact": "<username>/nodejs",
+        "artifact": "{{user `atlas_username`}}/nodejs",
         "artifact_type": "aws.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
