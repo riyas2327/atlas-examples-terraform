@@ -26,5 +26,4 @@ please open a GitHub issue. **For Atlas-specific support, please email
 
 Documentation
 ------------
-- You can read the [getting started guide here](https://atlas.hashicorp.com/help/getting-started/getting-started-overview)
-- Additional documentation on `vagrant push`, `packer push`, `terraform apply`, and the corresponding templates can be [read here](https://atlas.hashicorp.com/help#documentation).
+Additional documentation on Atlas, Vagrant, Packer, Terraform, and Consul can be [read here](https://atlas.hashicorp.com/help#documentation).
