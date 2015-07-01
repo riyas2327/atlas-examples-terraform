@@ -1,7 +1,8 @@
 {
     "variables": {
-        "aws_access_key": "YOUR_ACCESS_KEY",
-        "aws_secret_key": "YOUR_SECREY_KEY"
+        "aws_access_key": "{{env `aws_access_key`}}",
+        "aws_secret_key": "{{env `aws_secret_key`}}",
+        "atlas_username": "ATLAS_USERNAME"
     },
     "builders": [{
         "type": "amazon-ebs",
@@ -11,38 +12,32 @@
         "source_ami": "ami-9a562df2",
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "haproxy {{timestamp}}"
+        "ami_name": "consul {{timestamp}}"
     }],
     "push": {
-      "name": "<username>/haproxy",
+      "name": "{{user `atlas_username`}}/consul",
       "vcs": false
     },
     "provisioners": [
-    {   
-        "type": "shell",
-        "inline": [
-            "sudo mkdir /ops",
-            "sudo chmod a+w /ops"
-        ]
-    },
-    {   
-        "type": "file",
-        "source": ".",
-        "destination": "/ops"
-    },
     {
         "type": "shell",
         "script": "scripts/base.sh"
     },
     {
-        "type": "shell",
-        "script": "scripts/haproxy.sh"
+        "type": "file",
+        "source": "files/consul.json",
+        "destination": "/etc/consul.d/consul_server.json"
+    },
+    {
+        "type": "file",
+        "source": "upstart/consul_bootstrap.conf",
+        "destination": "/etc/init/consul.conf"
     }
     ],
     "post-processors": [
       {
         "type": "atlas",
-        "artifact": "<username>/haproxy",
+        "artifact": "{{user `atlas_username`}}/consul",
         "artifact_type": "aws.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
