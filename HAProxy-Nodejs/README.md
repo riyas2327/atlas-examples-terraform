@@ -37,21 +37,21 @@ This setup allows us to destroy and create backend servers at scale with confide
 Step 1: Create a Consul Cluster
 -------------------------
 For Consul Template to work for HAProxy, we first need to create a Consul cluster.
-1. Build an AMI with Consul installed. To do this, run `packer push -create consul.json` in the Packer directory. This will send the build configuration to Atlas so it can build your Consul AMI remotely. 
+1. Build an AMI with Consul installed. To do this, update the `variables` stanza in the `consul.json` file with your Atlas username, and then run `packer push -create consul.json` in the Packer directory. This will send the build configuration to Atlas so it can build your Consul AMI remotely. 
 2. View the status of your build in the Builds tab of your [Atlas account](https://atlas.hashicorp.com/builds).
 3. The first build will fail since your AWS credentials are not set in Atlas. To do this, go to the "Variables" tab
 of the Consul build and set the proper vaules for the keys `aws_access_key` and `aws_secret_key`
 
 Step 2: Build a HAProxy AMI
 ---------------------
-1. Build an AMI with HAProxy installed. To do this, run `packer push -create haproxy.json` in the Packer directory. This will send the build configuration to Atlas so it can build your HAProxy AMI remotely. 
+1. Build an AMI with HAProxy installed. To do this, update the `variables` stanza in the `haproxy.json` file with your Atlas username, and then run `packer push -create haproxy.json` in the Packer directory. This will send the build configuration to Atlas so it can build your HAProxy AMI remotely. 
 2. View the status of your build in the Builds tab of your [Atlas account](https://atlas.hashicorp.com/builds).
 3. The first build will fail since your AWS credentials are not set in Atlas. To do this, go to the "Variables" tab
 of the HAProxy build and set the proper vaules for the keys `aws_access_key` and `aws_secret_key`
 
 Step 3: Build a Node.js AMI
 -------------------
-1. Build an AMI with NodeJS installed. To do this, run `packer push -create nodejs.json` in the Packer directory. This will send the build configuration to Atlas so it can build your NodeJS AMI remotely.
+1. Build an AMI with NodeJS installed. To do this, update the `variables` stanza in the `nodejs.json` file with your Atlas username, and then  run `packer push -create nodejs.json` in the Packer directory. This will send the build configuration to Atlas so it can build your NodeJS AMI remotely.
 2. View the status of your build in the Builds tab of your [Atlas account](https://atlas.hashicorp.com/builds).
 3. This creates an AMI with Node.js installed, and now you need to send the actual Node.js application code to Atlas and link it to the build configuration. To do this, simply update the Vagrantfile with your Atlas username, and then run `vagrant push` in the app directory. This will send your Node.js application, which is just the `server.js` file for now. Then link the Node.js application with the Node.js build configuration by clicking on your build configuration, then 'Links' in the left navigation. Complete the form with your username, 'nodejs' as the application name, and '/app' as the destination path.
 4. Now that your application and build configuration are linked, simply rebuild the Node.js configuration and you will have a fully-baked AMI with Node.js installed and your application code in place.
