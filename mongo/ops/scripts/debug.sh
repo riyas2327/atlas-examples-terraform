@@ -1,1 +1,0 @@
-sudo mv /packer/files/authorized_keys ~/.ssh/authorized_keys
