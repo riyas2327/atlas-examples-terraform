@@ -77,25 +77,25 @@ resource "aws_security_group" "haproxy" {
 resource "aws_instance" "consul" {
   instance_type = "t2.micro"
   ami = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
-  user_data = "${template_file.consul_upstart.rendered}" 
+  user_data = "${template_file.consul_upstart.rendered}"
   key_name = "${var.key_name}"
   count = "${var.consul_server_count}"
 
   vpc_security_group_ids = ["${aws_security_group.haproxy.id}"]
   subnet_id = "${module.vpc.subnet_id}"
-  
+
   lifecycle = {
-    create_before_destroy = true  
+    create_before_destroy = true
   }
 }
 
 resource "aws_instance" "nodejs" {
   instance_type = "t2.micro"
   ami = "${atlas_artifact.nodejs.metadata_full.region-us-east-1}"
-  user_data = "${template_file.consul_upstart.rendered}" 
+  user_data = "${template_file.consul_upstart.rendered}"
   key_name = "${var.key_name}"
   count = 2
-    
+
   vpc_security_group_ids = ["${aws_security_group.haproxy.id}"]
   subnet_id = "${module.vpc.subnet_id}"
 
@@ -107,7 +107,7 @@ resource "aws_instance" "nodejs" {
 resource "aws_instance" "haproxy" {
   instance_type = "t2.micro"
   ami = "${atlas_artifact.haproxy.metadata_full.region-us-east-1}"
-  user_data = "${template_file.consul_upstart.rendered}" 
+  user_data = "${template_file.consul_upstart.rendered}"
   key_name = "${var.key_name}"
   count = 1
 
@@ -117,4 +117,8 @@ resource "aws_instance" "haproxy" {
   lifecycle = {
     create_before_destroy = true
   }
+}
+
+output "haproxy_address" {
+    value = "${aws_instance.haproxy.public_ip}"
 }
