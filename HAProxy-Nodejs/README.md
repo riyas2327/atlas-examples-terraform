@@ -60,6 +60,7 @@ Step 3: Build a Node.js AMI
 Step 4: Deploy HAProxy, Node.js, and Consul
 --------------------------
 Now that all the AMIs are built, it's time to provision instances with Terraform.
+
 1. First, Atlas must be setup as a [remote state store](http://terraform.io/docs/state/remote.html) for Terraform. To do this, run:
 
   `terraform remote config -backend-config="name=ATLAS_USERNAME/haproxy"`
