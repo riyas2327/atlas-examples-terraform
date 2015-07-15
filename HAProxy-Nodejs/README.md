@@ -62,15 +62,12 @@ Step 4: Deploy HAProxy, Node.js, and Consul
 Now that all the AMIs are built, it's time to provision instances with Terraform.
 1. First, Atlas must be setup as a [remote state store](http://terraform.io/docs/state/remote.html) for Terraform. To do this, run:
 
-`terraform remote config -backend-config="name=ATLAS_USERNAME/haproxy"`
+  `terraform remote config -backend-config="name=ATLAS_USERNAME/haproxy"`
+1. Next, run `terraform get` to pull in the vpc module
+1. Then, push the Terraform configuration to Atlas so Terraform can be run remotely. You need to pass in the required variables for the configuration (replace your Atlas username where necessary):
 
-2. Next, run `terraform get` to pull in the vpc module
-
-3. Then, push the Terraform configuration to Atlas so Terraform can be run remotely. You need to pass in the required variables for the configuration (replace your Atlas username where necessary):
-
-`terraform push -name="ATLAS_USERNAME/haproxy" -var "access_key=$AWSAccessKeyId" -var "secret_key=$AWSSecretKey" -var "atlas_username=ATLAS_USERNAME" -var "atlas_environment=haproxy" -var "atlas_user_token=$ATLAS_TOKEN" -var "key_name=AWS_SSH_KEY_NAME"`
-
-4. Pushing the Terraform configuration will trigger a Terraform plan in Atlas. To view the plan, navigate to the [Environments tab in Atlas](https://atlas.hashicorp.com/environments) and click the environment name, then "Changes" in the left navigation. Click on the proposed change and review the Terraform plan output. If the changes look accurate, click "Confirm & Apply" to deploy infrastructure!
+  `terraform push -name="ATLAS_USERNAME/haproxy" -var "access_key=$AWSAccessKeyId" -var "secret_key=$AWSSecretKey" -var "atlas_username=ATLAS_USERNAME" -var "atlas_environment=haproxy" -var "atlas_user_token=$ATLAS_TOKEN" -var "key_name=AWS_SSH_KEY_NAME"`
+1. Pushing the Terraform configuration will trigger a Terraform plan in Atlas. To view the plan, navigate to the [Environments tab in Atlas](https://atlas.hashicorp.com/environments) and click the environment name, then "Changes" in the left navigation. Click on the proposed change and review the Terraform plan output. If the changes look accurate, click "Confirm & Apply" to deploy infrastructure!
 
 Final Step: Test HAProxy
 ------------------------
