@@ -51,10 +51,11 @@ Step 2: Build a HAProxy AMI
 
 Step 3: Build a Node.js AMI
 -------------------
-1. Build an AMI with NodeJS installed. To do this, update the `variables` stanza in the `nodejs.json` file with your Atlas username, and then  run `packer push -create nodejs.json` in the Packer directory. This will send the build configuration to Atlas so it can build your NodeJS AMI remotely.
+1. Build an AMI with NodeJS installed. To do this, update the `variables` stanza in the `nodejs.json` file with your Atlas username, and then  run `packer push -create nodejs.json` in the Packer directory. This will send the build configuration to Atlas so it can build your NodeJS AMI remotely. *Note: Your first build will fail until we link the application code to your build and add AWS keys.*
 1. View the status of your build in the Builds tab of your [Atlas account](https://atlas.hashicorp.com/builds).
-1. Again, as with the the previous two builds, the first build will fail since your AWS credentials are not set in Atlas. Set the variables for the keys `aws_access_key` and `aws_secret_key` and click *Rebuild* on the build and it should complete successfully.
-1. This creates an AMI with Node.js installed, and now you need to send the actual Node.js application code to Atlas and link it to the build configuration. To do this, simply update the Vagrantfile with your Atlas username, and then run `vagrant push` in the app directory. This will send your Node.js application, which is just the `server.js` file for now. Then link the Node.js application with the Node.js build configuration by clicking on your build configuration, then 'Links' in the left navigation. Complete the form with your username, 'nodejs' as the application name, and '/app' as the destination path.
+1. Next we need to send the actual Node.js application code to Atlas and link it to the build configuration. To send the application code to Atlas, update the `Vagrantfile` in the `app` directory with your Atlas username and then run `vagrant push` in the `app` directory. This will send the Node.js application, which is just the `server.js` file for now.
+1. Now we can link the Node.js application with the Node.js build configuration by clicking on your build configuration, then *Links* in the left navigation. Complete the form with your username, `nodejs` as the application name, and `/app` as the destination path.
+1. Set the `aws_access_key` and `aws_secret_key` variables for the `nodejs` build as done before.
 1. Now that your application and build configuration are linked, simply rebuild the Node.js configuration and you will have a fully-baked AMI with Node.js installed and your application code in place.
 
 Step 4: Deploy HAProxy, Node.js, and Consul
@@ -64,15 +65,23 @@ Now that all the AMIs are built, it's time to provision instances with Terraform
 1. First, Atlas must be setup as a [remote state store](http://terraform.io/docs/state/remote.html) for Terraform. To do this, run:
 
   `terraform remote config -backend-config="name=ATLAS_USERNAME/haproxy"`
-1. Next, run `terraform get` to pull in the vpc module
+1. Next, run `terraform get` to pull in the vpc module.
 1. Then, push the Terraform configuration to Atlas so Terraform can be run remotely. You need to pass in the required variables for the configuration (replace your Atlas username where necessary):
 
   `terraform push -name="ATLAS_USERNAME/haproxy" -var "access_key=$AWSAccessKeyId" -var "secret_key=$AWSSecretKey" -var "atlas_username=ATLAS_USERNAME" -var "atlas_environment=haproxy" -var "atlas_user_token=$ATLAS_TOKEN" -var "key_name=AWS_SSH_KEY_NAME"`
-1. Pushing the Terraform configuration will trigger a Terraform plan in Atlas. To view the plan, navigate to the [Environments tab in Atlas](https://atlas.hashicorp.com/environments) and click the environment name, then "Changes" in the left navigation. Click on the proposed change and review the Terraform plan output. If the changes look accurate, click "Confirm & Apply" to deploy infrastructure!
+1. Pushing the Terraform configuration will trigger a Terraform plan in Atlas. To view the plan, navigate to the [Environments tab in Atlas](https://atlas.hashicorp.com/environments) and click the environment name, then *Changes* in the left navigation. Click on the proposed change and review the Terraform plan output. If the changes look accurate, click *Confirm & Apply* to deploy infrastructure!
 
 Final Step: Test HAProxy
 ------------------------
-1. Navigate to your HAProxy stats page by going to it's Public IP on port 1936 and path /haproxy?stats. For example 52.1.212.85:1936/haproxy?stats
-2. In a new tab, hit your HAProxy Public IP on port 8080 a few times. You'll see in the stats page that your requests are being balanced evenly between the Node.js instances.
-3. That's it! You just deployed HAProxy and Node.js
-4. Navigate to the [Environments tab](https://atlas.hashicorp.com/runtime) in your Atlas account and click on the newly created infrastructure. You'll now see the real-time health of all your nodes and services!
+
+1. In the Terraform output within Atlas, you will see the IP address of your HAProxy instance. It wil look like this:
+  ```
+  Outputs:
+
+    haproxy_address = 52.1.212.85
+  ```
+1. In one browser tab, navigate to your HAProxy stats page by going to it's Public IP on port 1936 and path /haproxy?stats. For example http://52.1.212.85:1936/haproxy?stats.
+1. In a separate browser tab, hit your HAProxy Public IP on port 8080 a few times (ie. http://52.1.212.85:8080/ ). You'll see in the stats page that your requests are being balanced evenly between the Node.js instances.
+1. Navigate to the [Environments tab](https://atlas.hashicorp.com/environments) in your Atlas account and click on the newly created infrastructure. You'll now see the real-time health of all your nodes and services!
+
+That's it! You just deployed HAProxy and Node.js
