@@ -10,12 +10,12 @@ provider "aws" {
 
 resource "atlas_artifact" "metamon" {
     name = "${var.atlas_username}/metamon"
-    type = "aws.ami"
+    type = "amazon.ami"
 }
 
 resource "atlas_artifact" "consul" {
     name = "${var.atlas_username}/consul"
-    type = "aws.ami"
+    type = "amazon.ami"
 }
 
 resource "aws_vpc" "main" {

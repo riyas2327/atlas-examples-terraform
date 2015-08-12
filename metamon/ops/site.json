@@ -78,7 +78,7 @@
       {
         "type": "atlas",
         "artifact": "YOUR_ATLAS_USERNAME/metamon",
-        "artifact_type": "aws.ami",
+        "artifact_type": "amazon.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
         }

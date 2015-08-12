@@ -57,7 +57,7 @@
       {
         "type": "atlas",
         "artifact": "{{user `atlas_username`}}/haproxy",
-        "artifact_type": "aws.ami",
+        "artifact_type": "amazon.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
         }
