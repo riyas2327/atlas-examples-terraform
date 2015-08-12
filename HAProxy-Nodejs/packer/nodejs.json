@@ -19,14 +19,14 @@
       "vcs": false
     },
     "provisioners": [
-    {   
+    {
         "type": "shell",
         "inline": [
             "sudo mkdir /application",
             "sudo chmod a+w /application"
         ]
     },
-    {   
+    {
         "type": "file",
         "source": "/packer/app",
         "destination": "/application"
@@ -59,7 +59,7 @@
       {
         "type": "atlas",
         "artifact": "{{user `atlas_username`}}/nodejs",
-        "artifact_type": "aws.ami",
+        "artifact_type": "amazon.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
         }

@@ -38,7 +38,7 @@
       {
         "type": "atlas",
         "artifact": "{{user `atlas_username`}}/consul",
-        "artifact_type": "aws.ami",
+        "artifact_type": "amazon.ami",
         "metadata": {
           "created_at": "{{timestamp}}"
         }

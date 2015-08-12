@@ -9,17 +9,17 @@ provider "aws" {
 //
 resource "atlas_artifact" "nodejs" {
   name = "${var.atlas_username}/nodejs"
-  type = "aws.ami"
+  type = "amazon.ami"
 }
 
 resource "atlas_artifact" "haproxy" {
   name = "${var.atlas_username}/haproxy"
-  type = "aws.ami"
+  type = "amazon.ami"
 }
 
 resource "atlas_artifact" "consul" {
   name = "${var.atlas_username}/consul"
-  type = "aws.ami"
+  type = "amazon.ami"
 }
 
 //
