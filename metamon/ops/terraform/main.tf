@@ -1,110 +1,120 @@
-provider "atlas" {
-    token = "${var.atlas_token}"
-}
+variable "atlas_username" {}
+variable "atlas_token" {}
+variable "atlas_environment" {}
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
+variable "region" {}
+variable "availability_zone" {}
+variable "source_cidr_block" {}
+variable "metamon_private_key" {}
+variable "metamon_public_key" {}
+variable "metamon_instance_type" {}
+variable "metamon_count" {}
+variable "consul_private_key" {}
+variable "consul_public_key" {}
+variable "consul_instance_type" {}
+variable "consul_server_count" {}
 
 provider "aws" {
-    access_key = "${var.aws_access_key}"
-    secret_key = "${var.aws_secret_key}"
-    region = "${var.region}"
+  access_key = "${var.aws_access_key}"
+  secret_key = "${var.aws_secret_key}"
+  region     = "${var.region}"
+}
+
+atlas {
+  name = "${var.atlas_username}/${var.atlas_environment}"
 }
 
 resource "atlas_artifact" "metamon" {
-    name = "${var.atlas_username}/metamon"
-    type = "amazon.ami"
+  name = "${var.atlas_username}/metamon"
+  type = "amazon.ami"
 }
 
 resource "atlas_artifact" "consul" {
-    name = "${var.atlas_username}/consul"
-    type = "amazon.ami"
-}
-
-resource "aws_vpc" "main" {
-    cidr_block = "${var.source_cidr_block}/16"
-    enable_dns_hostnames = true
-}
-
-resource "aws_subnet" "main" {
-    vpc_id = "${aws_vpc.main.id}"
-    cidr_block = "${var.source_cidr_block}/20"
-    availability_zone = "${var.availability_zone}"
-    map_public_ip_on_launch = true
-}
-
-resource "aws_internet_gateway" "gw" {
-    vpc_id = "${aws_vpc.main.id}"
-}
-
-resource "aws_route_table" "r" {
-    vpc_id = "${aws_vpc.main.id}"
-    route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = "${aws_internet_gateway.gw.id}"
-    }
-}
-
-resource "aws_main_route_table_association" "a" {
-    vpc_id = "${aws_vpc.main.id}"
-    route_table_id = "${aws_route_table.r.id}"
+  name = "${var.atlas_username}/consul"
+  type = "amazon.ami"
 }
 
 resource "aws_key_pair" "metamon" {
-    key_name = "metamon-key-pair"
-    public_key = "${file(var.metamon_public_key)}"
+  key_name   = "metamon-key-pair"
+  public_key = "${file(var.metamon_public_key)}"
 }
 
 resource "aws_key_pair" "consul" {
-    key_name = "consul-key-pair"
-    public_key = "${file(var.consul_public_key)}"
+  key_name   = "consul-key-pair"
+  public_key = "${file(var.consul_public_key)}"
+}
+
+module "network" {
+  source = "./network"
+
+  name              = "${var.atlas_environment}"
+  source_cidr_block = "${var.source_cidr_block}"
+  availability_zone = "${var.availability_zone}"
 }
 
 module "sg_web" {
   source = "github.com/terraform-community-modules/tf_aws_sg//sg_web"
-  security_group_name = "allow_web"
-  aws_access_key = "${var.aws_access_key}"
-  aws_secret_key = "${var.aws_secret_key}"
-  aws_region = "${var.region}"
-  vpc_id = "${aws_vpc.main.id}"
-  source_cidr_block = "0.0.0.0/0"
+
+  vpc_id              = "${module.network.vpc_id}"
+  aws_access_key      = "${var.aws_access_key}"
+  aws_secret_key      = "${var.aws_secret_key}"
+  aws_region          = "${var.region}"
+  security_group_name = "${var.atlas_environment}.allow_web"
+  source_cidr_block   = "0.0.0.0/0"
 }
 
 module "sg_consul" {
   source = "github.com/terraform-community-modules/tf_aws_sg//sg_consul"
-  security_group_name = "allow_consul"
-  aws_access_key = "${var.aws_access_key}"
-  aws_secret_key = "${var.aws_secret_key}"
-  aws_region = "${var.region}"
-  vpc_id = "${aws_vpc.main.id}"
-  source_cidr_block = "0.0.0.0/0"
+
+  vpc_id              = "${module.network.vpc_id}"
+  aws_access_key      = "${var.aws_access_key}"
+  aws_secret_key      = "${var.aws_secret_key}"
+  aws_region          = "${var.region}"
+  security_group_name = "${var.atlas_environment}.allow_consul"
+  source_cidr_block   = "0.0.0.0/0"
 }
 
-module "metamon" {
-    source = "./metamon"
-    ami = "${atlas_artifact.metamon.metadata_full.region-us-east-1}"
-    subnet_id = "${aws_subnet.main.id}"
-    sg_web = "${module.sg_web.security_group_id_web}"
-    sg_consul = "${module.sg_consul.security_group_id}"
-    key_name = "${aws_key_pair.metamon.key_name}"
-    instance_type = "${var.metamon_instance_type}"
-    availability_zone = "${var.availability_zone}"
-    count = "${var.metamon_count}"
-    atlas_username = "${var.atlas_username}"
-    atlas_token = "${var.atlas_token}"
-    atlas_environment = "${var.atlas_environment}"
-    key_file = "${var.metamon_private_key}"
+resource "template_file" "consul_upstart" {
+  filename = "scripts/consul_upstart.sh"
+
+  vars {
+    atlas_username      = "${var.atlas_username}"
+    atlas_token         = "${var.atlas_token}"
+    atlas_environment   = "${var.atlas_environment}"
+    consul_server_count = "${var.consul_server_count}"
+  }
 }
 
-module "consul" {
-    source = "./consul"
-    ami = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
-    subnet_id = "${aws_subnet.main.id}"
-    sg_web = "${module.sg_web.security_group_id_web}"
-    sg_consul = "${module.sg_consul.security_group_id}"
-    key_name = "${aws_key_pair.consul.key_name}"
-    instance_type = "${var.consul_instance_type}"
-    availability_zone = "${var.availability_zone}"
-    count = "${var.consul_count}"
-    atlas_username = "${var.atlas_username}"
-    atlas_token = "${var.atlas_token}"
-    atlas_environment = "${var.atlas_environment}"
-    key_file = "${var.consul_private_key}"
+resource "aws_instance" "metamon" {
+  ami                    = "${atlas_artifact.metamon.metadata_full.region-us-east-1}"
+  user_data              = "${template_file.consul_upstart.rendered}"
+  key_name               = "${aws_key_pair.metamon.key_name}"
+  instance_type          = "${var.metamon_instance_type}"
+  availability_zone      = "${var.availability_zone}"
+  count                  = "${var.metamon_count}"
+  subnet_id              = "${module.network.subnet_id}"
+  vpc_security_group_ids = [
+    "${module.sg_web.security_group_id_web}",
+    "${module.sg_consul.security_group_id}"
+  ]
+
+  tags { Name = "metamon.${count.index+1}" }
+}
+
+
+resource "aws_instance" "consul" {
+  ami                    = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
+  user_data              = "${template_file.consul_upstart.rendered}"
+  key_name               = "${aws_key_pair.consul.key_name}"
+  instance_type          = "${var.consul_instance_type}"
+  availability_zone      = "${var.availability_zone}"
+  count                  = "${var.consul_server_count}"
+  subnet_id              = "${module.network.subnet_id}"
+  vpc_security_group_ids = [
+    "${module.sg_web.security_group_id_web}",
+    "${module.sg_consul.security_group_id}"
+  ]
+
+  tags { Name = "consul.${count.index+1}" }
 }
