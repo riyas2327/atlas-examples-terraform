@@ -33,7 +33,7 @@ Below are steps to ensure your networking in AWS is setup to allow Packer to SSH
    You see see your attached Internet Gateway
 
    ![Internet Gateway Attached](screenshots/ig_attached.png)
-1. ![Create Route Table](https://console.aws.amazon.com/vpc/home?region=us-east-1#routetables:)
+1. [Create Route Table](https://console.aws.amazon.com/vpc/home?region=us-east-1#routetables:)
 
    ![Create Route Table](screenshots/create_route_table.png)
 1. [Add Route to Route Table](https://console.aws.amazon.com/vpc/home?region=us-east-1#routetables:) with a destination of `0.0.0.0/0`
@@ -48,7 +48,7 @@ Below are steps to ensure your networking in AWS is setup to allow Packer to SSH
    ![Subnet](screenshots/subnet.png)
 1. [Associate Subnet with Route Table](https://console.aws.amazon.com/vpc/home?region=us-east-1#subnets:)
 
-   ![Associate Subnet with Route Table](screenshots/update_route_table.png)
+   ![Associate Subnet with Route Table](screenshots/associate_route_table.png)
 
 ### Packer Template Setup
 
