@@ -10,7 +10,7 @@ The Amazon links in these steps will refer to a VPC in the us-east-1 region. The
 
 ### Networking
 
-Below are steps to ensure your networking in AWS is setup to allow Packer to SSH into instances created in your VPC. If you already have one or all of these components, there is no need to re-create, just verify each piece exists. Alternatively, you can just run the [Terraform network module](../metamon/ops/terraform/network) as used in the [Metamon repo](../metamon) and it will set up all of your networking components in AWS for you.
+Below are steps to ensure your networking in AWS is setup to allow Packer to SSH into instances created in your VPC. If you already have one or all of these components, there is no need to re-create, just verify each piece exists. If one or more of these components do not exist, use the [Terraform network module](../metamon/ops/terraform/network) to setup a complete VPC for you.
 
 1. [Create a VPC](https://console.aws.amazon.com/vpc/home?region=us-east-1#vpcs:) with the CIDR block of your choice, we'll use `10.0.0.0/24`
 
