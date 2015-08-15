@@ -48,6 +48,7 @@ resource "aws_key_pair" "consul" {
 module "network" {
   source = "./network"
 
+  name              = "${var.atlas_environment}"
   source_cidr_block = "${var.source_cidr_block}"
   availability_zone = "${var.availability_zone}"
 }
@@ -59,7 +60,7 @@ module "sg_web" {
   aws_access_key      = "${var.aws_access_key}"
   aws_secret_key      = "${var.aws_secret_key}"
   aws_region          = "${var.region}"
-  security_group_name = "allow_web"
+  security_group_name = "${var.atlas_environment}.allow_web"
   source_cidr_block   = "0.0.0.0/0"
 }
 
@@ -70,7 +71,7 @@ module "sg_consul" {
   aws_access_key      = "${var.aws_access_key}"
   aws_secret_key      = "${var.aws_secret_key}"
   aws_region          = "${var.region}"
-  security_group_name = "allow_consul"
+  security_group_name = "${var.atlas_environment}.allow_consul"
   source_cidr_block   = "0.0.0.0/0"
 }
 
@@ -98,8 +99,7 @@ resource "aws_instance" "metamon" {
     "${module.sg_consul.security_group_id}"
   ]
 
-  tags { Name = "metamon_${count.index+1}" }
-  lifecycle = { create_before_destroy = true }
+  tags { Name = "metamon.${count.index+1}" }
 }
 
 
@@ -111,8 +111,10 @@ resource "aws_instance" "consul" {
   availability_zone      = "${var.availability_zone}"
   count                  = "${var.consul_server_count}"
   subnet_id              = "${module.network.subnet_id}"
-  vpc_security_group_ids = ["${module.sg_consul.security_group_id}"]
+  vpc_security_group_ids = [
+    "${module.sg_web.security_group_id_web}",
+    "${module.sg_consul.security_group_id}"
+  ]
 
-  tags { Name = "consul_${count.index+1}" }
-  lifecycle = { create_before_destroy = true }
+  tags { Name = "consul.${count.index+1}" }
 }

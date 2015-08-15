@@ -7,7 +7,7 @@
     "subnet_id": "subnet-8f1e5ba4",
     "ssh_username": "ubuntu",
     "source_ami": "ami-9a562df2",
-    "atlas_username": "jb_hashicorp",
+    "atlas_username": "{{env `ATLAS_USERNAME`}}",
     "atlas_build_name": "metamon"
   },
   "builders": [

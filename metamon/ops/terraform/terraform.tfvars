@@ -3,16 +3,13 @@ command line like below or set them as environment variables.
 
 terraform remote config -backend-config name=$ATLAS_USERNAME/metamon
 terraform get
-terraform push -name $ATLAS_USERNAME/metamon_1 \
+terraform push -name $ATLAS_USERNAME/metamon \
     -var "atlas_username=$ATLAS_USERNAME" \
     -var "atlas_token=$ATLAS_TOKEN" \
     -var "aws_access_key=$AWS_ACCESS_KEY_ID" \
     -var "aws_secret_key=$AWS_SECRET_ACCESS_KEY"
 
 See https://www.terraform.io/intro/getting-started/variables.html */
-
-# Required Variables
-atlas_username = "jb_hashicorp"
 
 atlas_environment = "metamon"
 region = "us-east-1"
