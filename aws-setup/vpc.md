@@ -2,11 +2,11 @@
 
 Packer works in AWS by spinning up an instance in your AWS account, configuring that instance, then creating an AMI from it which can be stored as an artifact in Atlas.
 
-In order to do this, Packer only needs your AWS credentials, everything else is done in the Packer template. However, there can be an issue SSH'ing in to the instance that was created depending on how your AWS setup is configured. You be seeing a Packer build error similar to `amazon-ebs: Timeout waiting for SSH.`.
+In order to do this, Packer only needs your AWS credentials, everything else is done in the Packer template. However, there can be an issue SSH'ing in to the instance that was created depending on how your AWS setup is configured. You may see a Packer build error similar to `amazon-ebs: Timeout waiting for SSH.`.
 
 If you have an [AWS EC2-Classic account](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-vpc.html#differences-ec2-classic-vpc) (created after 12/04/2013), or will be launching these instances into a VPC, there are a few steps below you'll want to follow.
 
-The Amazon links in these steps will refer to a VPC in the us-east-1 region.
+The Amazon links in these steps will refer to a VPC in the us-east-1 region. There are 2 main parts, the [Networking](#networking) and the [Packer template](#packer-template-setup).
 
 ### Networking
 
@@ -15,14 +15,23 @@ Below are steps to ensure your networking in AWS is setup to allow Packer to SSH
 1. [Create a VPC](https://console.aws.amazon.com/vpc/home?region=us-east-1#vpcs:) with the CIDR block of your choice, we'll use `10.0.0.0/24`
 
    ![Create VPC](screenshots/create_vpc.png)
+
+   You should see your new VPC
+
    ![VPC](screenshots/vpc.png)
 1. [Create an Internet Gateway](https://console.aws.amazon.com/vpc/home?region=us-east-1#igws:)
 
    ![Create Internet Gateway](screenshots/create_ig.png)
+
+   You should see your new Internet Gateway
+
    ![Internet Gateway Unattached](screenshots/ig_unattached.png)
 1. [Attach Internet Gateway to VPC](https://console.aws.amazon.com/vpc/home?region=us-east-1#igws:)
 
    ![Attach Internet Gateway to VPC](screenshots/attach_ig_to_vpc.png)
+
+   You see see your attached Internet Gateway
+
    ![Internet Gateway Attached](screenshots/ig_attached.png)
 1. [Add Route to Route Table](https://console.aws.amazon.com/vpc/home?region=us-east-1#routetables:) with a destination of `0.0.0.0/0` to allow all traffic
 
@@ -30,6 +39,8 @@ Below are steps to ensure your networking in AWS is setup to allow Packer to SSH
 1. [Add Subnet](https://console.aws.amazon.com/vpc/home?region=us-east-1#subnets:) with a CIDR block of your choice, we'll use `10.0.0.0/24`
 
    ![Create Subnet](screenshots/create_subnet.png)
+
+   You should see your new Subnet
    ![Subnet](screenshots/subnet.png)
 1. [Associate Subnet with Route Table](https://console.aws.amazon.com/vpc/home?region=us-east-1#subnets:)
 
