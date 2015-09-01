@@ -4,7 +4,7 @@
         "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
         "region":         "{{env `AWS_DEFAULT_REGION`}}",
         "source_ami":     "{{env `SOURCE_AMI`}}",
-        "atlas_username": "clstokes",
+        "atlas_username": "{{env `ATLAS_USERNAME`}}",
         "atlas_name":     "spark-slave"
     },
     "builders": [{
