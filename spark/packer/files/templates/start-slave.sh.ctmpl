@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /opt/spark/default
+{{range service "spark-master"}}
+sbin/start-slave.sh spark://{{.Node}}:{{.Port}}{{end}}

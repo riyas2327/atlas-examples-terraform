@@ -1,0 +1,4 @@
+**/.terraform/
+
+packer/output-vmware-iso
+packer/packer_cache

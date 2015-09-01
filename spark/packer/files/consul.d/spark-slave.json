@@ -1,0 +1,11 @@
+{
+    "service": {
+        "name": "spark-slave",
+        "checks": [
+            {
+                "script": "ps aux | grep -v grep | grep org.apache.spark.deploy.worker.Worker",
+                "interval": "10s"
+            }
+        ]
+    }
+}
