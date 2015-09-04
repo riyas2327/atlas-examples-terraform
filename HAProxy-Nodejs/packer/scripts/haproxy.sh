@@ -1,3 +1,6 @@
+# exit on exception
+set -e
+
 # install HAproxy
 sudo apt-get install -y haproxy
 sudo chmod a+w /etc/rsyslog.conf
