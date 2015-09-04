@@ -1,0 +1,13 @@
+.terraform
+*tfstate*
+crash.log
+dist
+*.zip
+logs
+*.pub
+*.pem
+*.key
+*.crt
+*.csr
+terraform/access/cert/certs/*
+terraform/access/keypair/keys/*

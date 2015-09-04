@@ -1,0 +1,17 @@
+{
+  "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+  "aws_secret_key": "{{env `AWS_SECRET_KEY`}}",
+  "atlas_username": "{{env `ATLAS_USERNAME`}}",
+  "base_ami":       "{{env `ATLAS_BASE_ARTIFACT_AMAZON_AMI_ID`}}",
+  "region":         "us-east-1",
+  "vpc_id":         "vpc-1fea007b",
+  "subnet_id":      "subnet-8f1e5ba4",
+  "instance_type":  "t2.micro",
+  "bastion_host":   "52.6.199.76",
+  "bastion_user":   "ubuntu",
+  "bastion_key":    "terraform/access/keypair/keys/example-test-main.pem",
+  "ssh_username":   "ubuntu",
+  "winrm_username": "Administrator",
+  "user_data_file": "packer/scripts/windows/ec2_user_data.conf",
+  "consul_datacenter": "example-test"
+}
