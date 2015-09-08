@@ -59,7 +59,6 @@ Move-Item -Path "C:\opt\consul\dist" "C:\opt\consul\ui" -Force
 
 # Clean up
 write-output "Cleanup"
-Remove-Item -Force -Path "C:\opt\nssm"
 Remove-Item -Force -Path $consulFilePath
 Remove-Item -Force -Path $uiFilePath
 Remove-Item -Force -Path $nssmFilePath

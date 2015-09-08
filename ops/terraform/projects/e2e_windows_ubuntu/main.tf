@@ -6,6 +6,7 @@ variable "atlas_token" {}
 variable "name" {}
 
 variable "iam_admins" {}
+variable "email_from" {}
 
 variable "vpc_cidr" {}
 variable "public_subnets" {}
@@ -227,13 +228,16 @@ module "compute" {
   azs                = "${var.azs}"
   vpc_cidr           = "${var.vpc_cidr}"
   domain             = "${var.domain}"
-  key_name           = "${module.access.main_key_name}"
-  key_path           = "${module.access.main_key_path}"
+  email_from         = "${var.email_from}"
   vpc_id             = "${module.network.vpc_id}"
   public_subnet_ids  = "${module.network.public_subnet_ids}"
   private_subnet_ids = "${module.network.private_subnet_ids}"
   ssl_cert_crt       = "${module.access.main_cert_crt_path}"
   ssl_cert_key       = "${module.access.main_cert_key_path}"
+  key_name           = "${module.access.main_key_name}"
+  key_path           = "${module.access.main_key_path}"
+  smtp_id            = "${module.access.smtp_id}"
+  smtp_password      = "${module.access.smtp_password}"
 
   consul_client_user_data = "${module.scripts.windows_consul_client_user_data}"
   atlas_username          = "${var.atlas_username}"

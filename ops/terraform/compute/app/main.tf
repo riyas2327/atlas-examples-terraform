@@ -1,14 +1,17 @@
 variable "name" { default = "app" }
-variable "key_name" {}
-variable "key_path" {}
 variable "azs" {}
 variable "vpc_id" {}
 variable "vpc_cidr" {}
 variable "public_subnet_ids" {}
 variable "private_subnet_ids" {}
+variable "domain" {}
 variable "ssl_cert_crt" {}
 variable "ssl_cert_key" {}
-variable "domain" {}
+variable "key_name" {}
+variable "key_path" {}
+variable "email_from" {}
+variable "smtp_id" {}
+variable "smtp_password" {}
 
 variable "consul_client_user_data" {}
 variable "atlas_username" {}
@@ -324,6 +327,12 @@ BASE_DOMAIN='${var.domain}'
 DATABASE_URL='postgres://${var.pg_username}:${var.pg_password}@${var.pg_endpoint}/${var.pg_name}'
 GRAPHITE_HOST='${element(split(":", var.statsite_address), 0)}'
 GRAPHITE_PORT='${element(split(":", var.statsite_address), 1)}'
+MAILER_AUTH='login'
+MAILER_DEFAULT_URL='https://${var.domain}'
+MAILER_HOST='email-smtp.us-east-1.amazonaws.com'
+MAILER_SENDER='${var.email_from}'
+MAILER_USERNAME='${var.smtp_id}'
+MAILER_PASSWORD='${var.smtp_password}'
 PRETTY_URL='https://${var.domain}'
 ENV='${var.name}'
 PGBACKUPS_URL=''

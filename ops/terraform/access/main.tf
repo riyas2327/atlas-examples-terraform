@@ -27,6 +27,8 @@ output "admin_users" { value = "${module.iam.admin_users}" }
 output "admin_access_key_ids" { value = "${module.iam.admin_access_key_ids}" }
 output "admin_secret_access_keys" { value = "${module.iam.admin_secret_access_keys}" }
 output "admin_statuses" { value = "${module.iam.admin_statuses}" }
+output "smtp_id" { value = "${module.iam.smtp_id}" }
+output "smtp_password" { value = "${module.iam.smtp_password}" }
 
 output "main_key_name" { value = "${module.keypair_main.key_name}" }
 output "main_key_path" { value = "${module.keypair_main.key_path}" }

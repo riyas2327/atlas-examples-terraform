@@ -11,6 +11,9 @@ variable "ssl_cert_key" {}
 variable "bastion_host" {}
 variable "bastion_user" {}
 variable "domain" {}
+variable "email_from" {}
+variable "smtp_id" {}
+variable "smtp_password" {}
 
 variable "consul_client_user_data" {}
 variable "atlas_username" {}
