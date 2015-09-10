@@ -83,32 +83,45 @@ Run the commands below from the `consul-cluster` directory.
 ### Packer
 
 ```
+. environment-variables.sh
 packer push shared/packer/consul_client.json
 ```
 
 ```
+. environment-variables.sh
 packer push shared/packer/consul_server.json
 ```
 
 ### Terraform
 
+#### Configure for Atlas
+
 ```
-terraform remote config -backend="Atlas" -backend-config="name=hashicorp-se/consul-example"
+. environment-variables.sh
+terraform remote config -backend="Atlas" -backend-config="name=$ATLAS_ORGANIZATION/$ATLAS_ENVIRONMENT"
 ```
+
+#### Get Terraform Modules
 
 ```
 terraform get -update aws-intermediate-consul-cluster/terraform/
 ```
+
+#### Push To Atlas
 
 ```
 . environment-variables.sh
 terraform push -vcs=false -name="$ATLAS_ORGANIZATION/$ATLAS_ENVIRONMENT" aws-intermediate-consul-cluster/terraform/
 ```
 
+#### Apply with Terraform Locally
+
 ```
 . environment-variables.sh
 terraform apply aws-intermediate-consul-cluster/terraform/
 ```
+
+#### Destroy with Terraform Locally
 
 ```
 . environment-variables.sh
