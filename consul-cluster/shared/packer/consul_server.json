@@ -1,0 +1,63 @@
+{
+  "variables": {
+    "aws_access_key":     "{{ env `AWS_ACCESS_KEY_ID` }}",
+    "aws_secret_key":     "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+    "region":             "{{ env `AWS_REGION` }}",
+    "region_west":        "{{ env `AWS_REGION_WEST` }}",
+    "source_ami":         "{{ env `SOURCE_AMI` }}",
+    "atlas_organization": "{{ env `ATLAS_ORGANIZATION` }}",
+    "atlas_name":         "consul"
+  },
+  "builders": [
+    {
+      "type":          "amazon-ebs",
+      "access_key":    "{{user `aws_access_key`}}",
+      "secret_key":    "{{user `aws_secret_key`}}",
+      "region":        "{{user `region`}}",
+      "source_ami":    "{{user `source_ami`}}",
+      "instance_type": "t2.micro",
+      "ssh_username":  "ubuntu",
+      "ami_name":      "{{user `atlas_name`}} {{timestamp}}",
+      "ami_regions":   ["{{user `region_west`}}"]
+    }
+  ],
+  "provisioners": [
+    {
+      "type":   "shell",
+      "script": "shared/consul/installers/consul_install.sh"
+    },
+    {
+      "type":        "file",
+      "source":      "shared/consul/consul.d/consul_server.json",
+      "destination": "/etc/consul.d/consul.json.tmp"
+    },
+    {
+      "type":        "file",
+      "source":      "shared/consul/init/consul.conf",
+      "destination": "/etc/init/consul.conf"
+    }
+  ],
+  "push": {
+    "name":     "{{user `atlas_organization`}}/{{user `atlas_name`}}",
+    "vcs":      false,
+    "base_dir": "../../",
+    "include": [
+      "shared/consul/installers/consul_install.sh",
+      "shared/consul/consul.d/consul_server.json",
+      "shared/consul/init/consul.conf"
+    ]
+  },
+  "post-processors": [
+    [
+      {
+        "type":          "atlas",
+        "only":          ["amazon-ebs"],
+        "artifact":      "{{user `atlas_organization`}}/{{user `atlas_name`}}",
+        "artifact_type": "amazon.image",
+        "metadata": {
+          "created_at": "{{timestamp}}"
+        }
+      }
+    ]
+  ]
+}
