@@ -9,5 +9,6 @@ logs
 *.key
 *.crt
 *.csr
+*.srl
 terraform/access/cert/certs/*
 terraform/access/keypair/keys/*
