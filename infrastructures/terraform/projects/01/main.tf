@@ -65,18 +65,19 @@ variable "redis_initial_cached_nodes" {}
 variable "redis_apply_immediately" {}
 variable "redis_maintenance_window" {}
 
-variable "rabbitmq_instance_type" {}
-variable "rabbitmq_blue_nodes" {}
-variable "rabbitmq_green_nodes" {}
-variable "rabbitmq_username" {}
-variable "rabbitmq_password" {}
-variable "rabbitmq_vhost" {}
-
 variable "consul_ips" {}
 variable "consul_instance_type" {}
 
 variable "vault_count" {}
 variable "vault_instance_type" {}
+
+variable "rabbitmq_count" {}
+variable "rabbitmq_instance_type" {}
+# variable "rabbitmq_blue_nodes" {}
+# variable "rabbitmq_green_nodes" {}
+variable "rabbitmq_username" {}
+variable "rabbitmq_password" {}
+variable "rabbitmq_vhost" {}
 
 variable "web_instance_type" {}
 variable "web_blue_nodes" {}
@@ -215,22 +216,24 @@ module "aws_data" {
   # Number of AMIs must match the count. To update, change all artifacts
   # to _pinned at the previous version, then, `terraform taint` one
   # resource at a time and update to _latest.
-  consul_amis          = "${module.aws_artifacts.consul_latest},${module.aws_artifacts.consul_latest},${module.aws_artifacts.consul_latest}"
   consul_ips           = "${var.consul_ips}"
   consul_instance_type = "${var.consul_instance_type}"
+  consul_amis          = "${module.aws_artifacts.consul_latest},${module.aws_artifacts.consul_latest},${module.aws_artifacts.consul_latest}"
 
   # Number of AMIs must match the count. To update, change all artifacts
   # to _pinned at the previous version, then, `terraform taint` one
   # resource at a time and update to _latest.
-  vault_amis          = "${module.aws_artifacts.vault_latest},${module.aws_artifacts.vault_latest}"
   vault_count         = "${var.vault_count}"
   vault_instance_type = "${var.vault_instance_type}"
+  vault_amis          = "${module.aws_artifacts.vault_latest},${module.aws_artifacts.vault_latest}"
 
+  rabbitmq_count         = "${var.rabbitmq_count}"
   rabbitmq_instance_type = "${var.rabbitmq_instance_type}"
-  rabbitmq_blue_ami      = "${module.aws_artifacts.rabbitmq_latest}"
-  rabbitmq_blue_nodes    = "${var.rabbitmq_blue_nodes}"
-  rabbitmq_green_ami     = "${module.aws_artifacts.rabbitmq_pinned}"
-  rabbitmq_green_nodes   = "${var.rabbitmq_green_nodes}"
+  rabbitmq_amis          = "${module.aws_artifacts.rabbitmq_latest}"
+  # rabbitmq_blue_ami      = "${module.aws_artifacts.rabbitmq_latest}"
+  # rabbitmq_blue_nodes    = "${var.rabbitmq_blue_nodes}"
+  # rabbitmq_green_ami     = "${module.aws_artifacts.rabbitmq_pinned}"
+  # rabbitmq_green_nodes   = "${var.rabbitmq_green_nodes}"
   rabbitmq_username      = "${var.rabbitmq_username}"
   rabbitmq_password      = "${var.rabbitmq_password}"
   rabbitmq_vhost         = "${var.rabbitmq_vhost}"

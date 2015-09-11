@@ -48,19 +48,21 @@ variable "ssl_cert_key" {}
 variable "bastion_host" {}
 variable "bastion_user" {}
 
+variable "consul_instance_type" {}
 variable "consul_amis" {}
 variable "consul_ips" {}
-variable "consul_instance_type" {}
 
-variable "vault_amis" {}
 variable "vault_count" {}
 variable "vault_instance_type" {}
+variable "vault_amis" {}
 
+variable "rabbitmq_count" {}
 variable "rabbitmq_instance_type" {}
-variable "rabbitmq_blue_ami" {}
-variable "rabbitmq_blue_nodes" {}
-variable "rabbitmq_green_ami" {}
-variable "rabbitmq_green_nodes" {}
+variable "rabbitmq_amis" {}
+# variable "rabbitmq_blue_ami" {}
+# variable "rabbitmq_blue_nodes" {}
+# variable "rabbitmq_green_ami" {}
+# variable "rabbitmq_green_nodes" {}
 variable "rabbitmq_username" {}
 variable "rabbitmq_password" {}
 variable "rabbitmq_vhost" {}
@@ -113,14 +115,15 @@ module "consul" {
   name          = "${var.name}-consul"
   vpc_id        = "${var.vpc_id}"
   vpc_cidr      = "${var.vpc_cidr}"
-  amis          = "${var.consul_amis}"
   static_ips    = "${var.consul_ips}"
-  instance_type = "${var.consul_instance_type}"
   subnet_ids    = "${var.private_subnet_ids}"
-  key_name      = "${var.key_name}"
-  key_path      = "${var.key_path}"
-  bastion_host  = "${var.bastion_host}"
-  bastion_user  = "${var.bastion_user}"
+  instance_type = "${var.consul_instance_type}"
+  amis          = "${var.consul_amis}"
+
+  key_name     = "${var.key_name}"
+  key_path     = "${var.key_path}"
+  bastion_host = "${var.bastion_host}"
+  bastion_user = "${var.bastion_user}"
 
   user_data         = "${var.consul_server_user_data}"
   atlas_username    = "${var.atlas_username}"
@@ -137,16 +140,17 @@ module "vault" {
   azs                = "${var.azs}"
   private_subnet_ids = "${var.private_subnet_ids}"
   public_subnet_ids  = "${var.public_subnet_ids}"
-  amis               = "${var.vault_amis}"
   count              = "${var.vault_count}"
   instance_type      = "${var.vault_instance_type}"
-  ssl_cert_name      = "${var.ssl_cert_name}"
-  ssl_cert_crt       = "${var.ssl_cert_crt}"
-  ssl_cert_key       = "${var.ssl_cert_key}"
-  key_name           = "${var.key_name}"
-  key_path           = "${var.key_path}"
-  bastion_host       = "${var.bastion_host}"
-  bastion_user       = "${var.bastion_user}"
+  amis               = "${var.vault_amis}"
+
+  ssl_cert_name = "${var.ssl_cert_name}"
+  ssl_cert_crt  = "${var.ssl_cert_crt}"
+  ssl_cert_key  = "${var.ssl_cert_key}"
+  key_name      = "${var.key_name}"
+  key_path      = "${var.key_path}"
+  bastion_host  = "${var.bastion_host}"
+  bastion_user  = "${var.bastion_user}"
 
   user_data         = "${var.vault_user_data}"
   atlas_username    = "${var.atlas_username}"
@@ -164,17 +168,21 @@ module "rabbitmq" {
   azs                = "${var.azs}"
   private_subnet_ids = "${var.private_subnet_ids}"
   public_subnet_ids  = "${var.public_subnet_ids}"
+  count              = "${var.rabbitmq_count}"
   instance_type      = "${var.rabbitmq_instance_type}"
-  ssl_cert_crt       = "${var.ssl_cert_crt}"
-  ssl_cert_key       = "${var.ssl_cert_key}"
-  blue_ami           = "${var.rabbitmq_blue_ami}"
-  blue_nodes         = "${var.rabbitmq_blue_nodes}"
-  green_ami          = "${var.rabbitmq_green_ami}"
-  green_nodes        = "${var.rabbitmq_green_nodes}"
-  key_name           = "${var.key_name}"
-  # key_path          = "${var.key_path}"
-  # bastion_host      = "${var.bastion_host}"
-  # bastion_user      = "${var.bastion_user}"
+  count              = "${var.rabbitmq_count}"
+  amis               = "${var.rabbitmq_amis}"
+  # blue_ami           = "${var.rabbitmq_blue_ami}"
+  # blue_nodes         = "${var.rabbitmq_blue_nodes}"
+  # green_ami          = "${var.rabbitmq_green_ami}"
+  # green_nodes        = "${var.rabbitmq_green_nodes}"
+
+  ssl_cert_crt = "${var.ssl_cert_crt}"
+  ssl_cert_key = "${var.ssl_cert_key}"
+  key_name     = "${var.key_name}"
+  key_path     = "${var.key_path}"
+  bastion_host = "${var.bastion_host}"
+  bastion_user = "${var.bastion_user}"
 
   user_data         = "${var.rabbitmq_user_data}"
   atlas_username    = "${var.atlas_username}"

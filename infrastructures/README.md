@@ -166,4 +166,4 @@ If you want to destroy the environment, run
 
     $ terraform destroy -var "atlas_token=$ATLAS_TOKEN"
 
-Note: `terraform destroy` deletes real resources, it is important that you take extra precaution when using this command. Verify that you are in the correct environment, verify that you are using the correct keys, and set any extra configuration necessary to prevent someone from accidentally destroying prod infrastructure.
+**Note:** `terraform destroy` deletes real resources, it is important that you take extra precaution when using this command. Verify that you are in the correct environment, verify that you are using the correct keys, and set any extra configuration necessary to prevent someone from accidentally destroying prod infrastructure.

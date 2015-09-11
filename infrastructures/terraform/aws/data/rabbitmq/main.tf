@@ -4,17 +4,20 @@ variable "vpc_id" {}
 variable "vpc_cidr" {}
 variable "private_subnet_ids" {}
 variable "public_subnet_ids" {}
+variable "count" {}
 variable "instance_type" {}
-variable "blue_ami" {}
-variable "blue_nodes" {}
-variable "green_ami" {}
-variable "green_nodes" {}
+variable "amis" {}
+# variable "blue_ami" {}
+# variable "blue_nodes" {}
+# variable "green_ami" {}
+# variable "green_nodes" {}
+
 variable "ssl_cert_crt" {}
 variable "ssl_cert_key" {}
 variable "key_name" {}
-# variable "key_path" {}
-# variable "bastion_host" {}
-# variable "bastion_user" {}
+variable "key_path" {}
+variable "bastion_host" {}
+variable "bastion_user" {}
 
 variable "user_data" {}
 variable "atlas_username" {}
@@ -24,6 +27,7 @@ variable "username" {}
 variable "password" {}
 variable "vhost" {}
 
+/*
 resource "aws_security_group" "elb" {
   name        = "${var.name}.elb"
   vpc_id      = "${var.vpc_id}"
@@ -85,24 +89,24 @@ resource "aws_elb" "rabbitmq" {
 
   listener {
     lb_port           = 80
-    lb_protocol       = "http"
+    lb_protocol       = "tcp"
     instance_port     = 5672
-    instance_protocol = "http"
+    instance_protocol = "tcp"
   }
 
   listener {
     lb_port            = 443
-    lb_protocol        = "https"
+    lb_protocol        = "tcp"
     instance_port      = 5672
-    instance_protocol  = "http"
+    instance_protocol  = "tcp"
     ssl_certificate_id = "${aws_iam_server_certificate.rabbitmq.arn}"
   }
 
   listener {
     lb_port           = 5672
-    lb_protocol       = "http"
+    lb_protocol       = "tcp"
     instance_port     = 5672
-    instance_protocol = "http"
+    instance_protocol = "tcp"
   }
 
   health_check {
@@ -110,7 +114,7 @@ resource "aws_elb" "rabbitmq" {
     unhealthy_threshold = 3
     timeout             = 10
     interval            = 15
-    target              = "HTTP:5672/"
+    target              = "HTTPS:5672/"
   }
 }
 
@@ -225,8 +229,8 @@ resource "aws_autoscaling_group" "green" {
     propagate_at_launch = true
   }
 }
+*/
 
-/*
 resource "aws_security_group" "rabbitmq" {
   name        = "${var.name}"
   vpc_id      = "${var.vpc_id}"
@@ -251,7 +255,7 @@ resource "aws_security_group" "rabbitmq" {
 
 resource "template_file" "user_data" {
   filename = "${var.user_data}"
-  count    = "${length(split(",", var.amis))}"
+  count    = "${var.count}"
 
   vars {
     atlas_username    = "${var.atlas_username}"
@@ -267,7 +271,7 @@ resource "template_file" "user_data" {
 
 resource "aws_instance" "rabbitmq" {
   ami           = "${element(split(",", var.amis), count.index)}"
-  count         = "${length(split(",", var.amis))}"
+  count         = "${var.count}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
   subnet_id     = "${element(split(",", var.private_subnet_ids), count.index)}"
@@ -276,26 +280,7 @@ resource "aws_instance" "rabbitmq" {
   vpc_security_group_ids = ["${aws_security_group.rabbitmq.id}"]
 
   tags { Name = "${var.name}" }
-
-  provisioner "remote-exec" {
-    connection {
-      user         = "ubuntu"
-      host         = "${self.private_ip}"
-      key_file     = "${var.key_path}"
-      bastion_host = "${var.bastion_host}"
-      bastion_user = "${var.bastion_user}"
-    }
-
-    inline = [
-      "sleep 20",
-      "sudo rabbitmqctl add_user '${var.username}' '${var.password}'",
-      "sudo rabbitmqctl add_vhost ${var.vhost}",
-      "sudo rabbitmqctl set_permissions -p '${var.vhost}' '${var.username}' '.*' '.*' '.*'",
-      "sudo rabbitmqctl set_user_tags '${var.username}' administrator",
-    ]
-  }
 }
-*/
 
 output "remote_commands" {
   value = <<COMMANDS

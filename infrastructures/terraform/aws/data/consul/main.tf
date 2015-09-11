@@ -1,10 +1,11 @@
 variable "name" { default = "consul" }
 variable "vpc_id" {}
 variable "vpc_cidr" {}
-variable "amis" {}
 variable "static_ips" {}
-variable "instance_type" {}
 variable "subnet_ids" {}
+variable "instance_type" {}
+variable "amis" {}
+
 variable "key_name" {}
 variable "key_path" {}
 variable "bastion_host" {}

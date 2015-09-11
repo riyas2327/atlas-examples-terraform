@@ -4,9 +4,10 @@ variable "vpc_cidr" {}
 variable "azs" {}
 variable "private_subnet_ids" {}
 variable "public_subnet_ids" {}
-variable "amis" {}
 variable "count" {}
 variable "instance_type" {}
+variable "amis" {}
+
 variable "ssl_cert_name" {}
 variable "ssl_cert_crt" {}
 variable "ssl_cert_key" {}

@@ -15,7 +15,7 @@ This project will deploy an end to end infrastructure including the below resour
   - ElastiCache (defaults to Redis)
   - Consul cluster
   - Vault HA with Consul backend
-  - RabbitMQ server using blue/green deploy strategy
+  - RabbitMQ server
 - Compute
   - Windows IIS web server with ASP.NET web app using blue/green deploy strategy
 
@@ -23,19 +23,19 @@ This project will deploy an end to end infrastructure including the below resour
 
 Be sure to follow all instructions closely. Many of these steps require pre/post work to be completed or it won't work.
 
-- [Create an Atlas Account](#create-atlas-account) and save your username as an environment variable
-- [Generate an Atlas Token](#generate-atlas-token) and save your token as an environment variable
-- [Generate AWS Keys](#generate-aws-keys) and save the access key and secret as an environment variables
-- [Generate Certs](#generate-certs)
-    $ sh gen_cert.sh myexample.com example example
-- [Generate Keys](#generate-keys)
-    $ sh gen_key.sh myexample.com example example
+- [Create an Atlas Account](../../../README.md#create-atlas-account) and save your username as an environment variable
+- [Generate an Atlas Token](../../../README.md#generate-atlas-token) and save your token as an environment variable
+- [Generate AWS Keys](../../../README.md#generate-aws-keys) and save the access key and secret as an environment variables
+- [Generate Certs](../../../README.md#generate-certs)
+  - `sh gen_cert.sh awsexample.com example example`
+- [Generate Keys](../../../README.md#generate-keys)
+  - `sh gen_key.sh awsexample.com example example`
 
 ## Create Base Artifacts with Packer
 
-First read the [Building Images with Packer](#building-images-with-packer) docs.
+First read the [Building Images with Packer](../../../README.md#building-images-with-packer) docs.
 
-Then, follow the [Packer base template docs](#base-packer-templates) to run the below commands.
+Then, follow the [Packer base template docs](../../../README.md#base-packer-templates) to run the below commands.
 
     $ packer push packer/aws/ubuntu/base.json
     $ packer push packer/aws/windows/base.json
@@ -44,20 +44,20 @@ Then, follow the [Packer base template docs](#base-packer-templates) to run the 
 
 After your base artifacts have been created, push the rest of your Packer templates that depend on them.
 
-Follow the [Packer child template docs](#child-packer-templates) to run the below commands.
+Follow the [Packer child template docs](../../../README.md#child-packer-templates) to run the below commands.
 
     $ packer push packer/aws/ubuntu/consul.json
     $ packer push packer/aws/ubuntu/vault.json
     $ packer push packer/aws/ubuntu/rabbitmq.json
 
-Then, follow the [Upload Application docs](#upload-applications) to run the below commands.
+Then, follow the [Upload Application docs](../../../README.md#upload-applications) to run the below commands.
 
     $ packer push packer/aws/windows/web.json
     $ atlas-upload YOUR_ATLAS_USERNAME/asp.net-app apps/ASP.NET
 
 ## Provision Infrastructure with Terraform
 
-Follow the [Deploy with Terraform docs](#deploy-with-terraform) to run the below commands.
+Follow the [Deploy with Terraform docs](../../../README.md#deploy-with-terraform) to run the below commands.
 
 From the base `ops` directory, navigate to `terraform/projects/01/.`
 
