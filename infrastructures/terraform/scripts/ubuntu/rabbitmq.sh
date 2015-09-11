@@ -17,10 +17,10 @@ service consul restart
 echo "Consul config updated"
 
 sleep 20
-sudo rabbitmqctl add_user '${var.username}' '${var.password}'
-sudo rabbitmqctl add_vhost ${var.vhost}
-sudo rabbitmqctl set_permissions -p '${var.vhost}' '${var.username}' '.*' '.*' '.*'
-sudo rabbitmqctl set_user_tags '${var.username}' administrator
+sudo rabbitmqctl add_user '${username}' '${password}'
+sudo rabbitmqctl add_vhost ${vhost}
+sudo rabbitmqctl set_permissions -p '${vhost}' '${username}' '.*' '.*' '.*'
+sudo rabbitmqctl set_user_tags '${username}' administrator
 
 service rabbitmq-server restart
 

@@ -74,15 +74,9 @@
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "inline": [
         "sh /ops/{{user `scripts_dir`}}/certs.sh {{user `cert_name`}} {{user `certs_dir`}}",
-        "sh /ops/{{user `scripts_dir`}}/consul.sh {{user `consul_download`}} {{user `consul_web_ui`}}"
-      ]
-    },
-    {
-      "type": "shell",
-      "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-      "scripts": [
-        "{{user `scripts_dir`}}/upstart/consul_client.sh",
-        "{{user `scripts_dir`}}/cleanup.sh"
+        "sh /ops/{{user `scripts_dir`}}/consul.sh {{user `consul_download`}} {{user `consul_web_ui`}}",
+        "sh /ops/{{user `scripts_dir`}}/upstart/consul_client.sh {{user `scripts_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
       ]
     }
   ],

@@ -19,13 +19,23 @@ This project will deploy an end to end infrastructure including the below resour
 - Compute
   - Windows IIS web server with ASP.NET web app using blue/green deploy strategy
 
-This is just a basic setup, everything is configurable.
+## General Setup
+
+Be sure to follow all instructions closely. Many of these steps require pre/post work to be completed or it won't work.
+
+- [Create an Atlas Account](#create-atlas-account) and save your username as an environment variable
+- [Generate an Atlas Token](#generate-atlas-token) and save your token as an environment variable
+- [Generate AWS Keys](#generate-aws-keys) and save the access key and secret as an environment variables
+- [Generate Certs](#generate-certs)
+    $ sh gen_cert.sh myexample.com example example
+- [Generate Keys](#generate-keys)
+    $ sh gen_key.sh myexample.com example example
 
 ## Create Base Artifacts with Packer
 
-Read the [Packer base template docs]() before you begin.
+First read the [Building Images with Packer](#building-images-with-packer) docs.
 
-Navigate to the base `ops` directory, this is where you will perform your `packer push` commands for the base templates specified in your project.
+Then, follow the [Packer base template docs](#base-packer-templates) to run the below commands.
 
     $ packer push packer/aws/ubuntu/base.json
     $ packer push packer/aws/windows/base.json
@@ -34,26 +44,26 @@ Navigate to the base `ops` directory, this is where you will perform your `packe
 
 After your base artifacts have been created, push the rest of your Packer templates that depend on them.
 
-Read the [Packer child template]() docs before you begin.
+Follow the [Packer child template docs](#child-packer-templates) to run the below commands.
 
     $ packer push packer/aws/ubuntu/consul.json
     $ packer push packer/aws/ubuntu/vault.json
     $ packer push packer/aws/ubuntu/rabbitmq.json
 
-Read the [Application docs]() to push your Application and finish the child Packer builds.
+Then, follow the [Upload Application docs](#upload-applications) to run the below commands.
 
     $ packer push packer/aws/windows/web.json
     $ atlas-upload YOUR_ATLAS_USERNAME/asp.net-app apps/ASP.NET
 
 ## Provision Infrastructure with Terraform
 
-Read the [Terraform docs]() before you begin.
+Follow the [Deploy with Terraform docs](#deploy-with-terraform) to run the below commands.
 
 From the base `ops` directory, navigate to `terraform/projects/01/.`
 
     $ cd terraform/projects/01
 
-If this is the first time you have run Terraform in this project, you will need to setup the remote config and download the modules
+If this is the first time you have run Terraform in this project, you will need to setup the remote config and download the modules.
 
     $ terraform remote config -backend-config name=$ATLAS_USERNAME/example-01
     $ terraform get
@@ -61,3 +71,7 @@ If this is the first time you have run Terraform in this project, you will need 
 If everything looks good, run
 
     $ terraform push -name $ATLAS_USERNAME/example-01 -var "atlas_token=$ATLAS_TOKEN"
+
+This takes about 20 minutes to run as RDS takes quite awhile to provision. Don't forget to `terraform destroy` you're environment when your done so you don't rack up AWS bills (unless you plan on keeping it around).
+
+That's it!

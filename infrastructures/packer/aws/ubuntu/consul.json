@@ -55,9 +55,9 @@
     {
       "type": "shell",
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-      "scripts": [
-        "{{user `scripts_dir`}}/upstart/consul_server.sh",
-        "{{user `scripts_dir`}}/cleanup.sh"
+      "inline": [
+        "sh /ops/{{user `scripts_dir`}}/upstart/consul_server.sh {{user `scripts_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
       ]
     }
   ],

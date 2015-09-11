@@ -2,7 +2,7 @@
 
 echo Creating Consul client configuration...
 
-cp /ops/packer/ubuntu/scripts/upstart/consul.conf /etc/init/.
+cp /ops/$1/upstart/consul.conf /etc/init/.
 
 cat <<EOF >/etc/consul.d/config.json
 {

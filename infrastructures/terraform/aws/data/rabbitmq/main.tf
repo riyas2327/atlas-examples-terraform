@@ -45,6 +45,13 @@ resource "aws_security_group" "elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    protocol    = "tcp"
+    from_port   = 5672
+    to_port     = 5672
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     protocol    = -1
     from_port   = 0
@@ -88,8 +95,14 @@ resource "aws_elb" "rabbitmq" {
     lb_protocol        = "https"
     instance_port      = 5672
     instance_protocol  = "http"
-    # There is a bug with setting ssl_certificate_id right now.
-    # ssl_certificate_id = "${aws_iam_server_certificate.rabbitmq.arn}"
+    ssl_certificate_id = "${aws_iam_server_certificate.rabbitmq.arn}"
+  }
+
+  listener {
+    lb_port           = 5672
+    lb_protocol       = "http"
+    instance_port     = 5672
+    instance_protocol = "http"
   }
 
   health_check {

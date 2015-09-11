@@ -19,7 +19,7 @@ echo Adding cert env var to be referenced by -ca-cert in Vault commands...
 sh -c echo -e "\n" >> $BASHRCPATH
 echo "export VAULT_CA_CERT=$VAULT_DIR/$CERT_NAME.crt" | tee -a $BASHRCPATH
 
-cp /ops/$3/upstart/vault.conf /etc/init/.
+cp $SCRIPTS_DIR/upstart/vault.conf /etc/init/.
 
 # http://vaultproject.io/docs/config/
 cat <<EOF >/etc/vault.d/vault_config.hcl

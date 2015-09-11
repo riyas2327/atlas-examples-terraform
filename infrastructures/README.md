@@ -2,25 +2,25 @@
 
 Below are the infrastructures we currently have examples for. Go to each project to see what will be provisioned.
 
-- [End to End Windows Ubuntu Infrastructure in AWS](e2e_aws_windows_ubuntu/README.md)
+- [Complete AWS Infrastructure](terraform/projects/01/README.md)
 
 ## Getting Started
 
-This repository contains example [projects](terraform/projects/README.md) showing how to deploy infrastructures across many different operating sytems and cloud providers. Check out the list of [projects](terraform/projects/README.md) we currently have examples for. The example [projects](terraform/projects/README.md) will range from small, simple, infrastructures, to very complex, end to end infrastructures.
+This repository contains example [projects](terraform/projects/README.md) showing how to deploy infrastructures across many different operating sytems and cloud providers. Check out the list of [projects](#projects) we currently have examples for. The example [projects](#projects) will range from small, simple, infrastructures, to very complex, end to end infrastructures.
 
 There are many different Packer & Terraform templates that each project utilizes. You can think of this as a library of Packer templates and Terraform modules that allow you to provision unique infrastructures by referencing the different templates and modules. We've tried to set this repository up in a way that we don't have to duplicate code, allowing templates and modules to be used across many projects.
 
 Each project is a best practices guide for how to use HashiCorp tooling to provision that specific type of infrastructure. Use each as a reference when building your own infrastructure. The best way to get started is to pick a project that resembles an infrastructure you are looking to build, get it up and running, then configure and modify it to meet your specific needs.
 
-No one example will be exactly what you need, but it should provide you with enough examples to get you headed in the right direction. This is all open source, so please create issues and send PR's as you see fit, the HashiCorp community will greatly benefit as we build this out.
+No one example will be exactly what you need, but it should provide you with enough examples to get you headed in the right direction. This is all open source, so please contribute as you see fit.
 
-Each project will reference different sections in here to get your environment properly setup to build the infrastructure at hand.
+A couple things to keep in mind...
 
-Any variables that are in all caps that start with `YOUR_` should be replaced before running the command. Each section will assume you are starting in the base [`ops`]() directory.
-
-Each project will assume you're using Atlas. If you plan on doing everything locally, there are portions of projects that may not work due to the extra features Atlas provides that we are take advantage of.
-
-Each projects instructional documentation is running off of the assumption that certain information will be saved as environment variables. If you do not wish to use environment variables, there are different ways to pass this information, but you may have to take extra undocumented steps to get commands to work properly.
+- Each projects README will reference different sections in here to get your environment properly setup to build the infrastructure at hand.
+- Any variables that are in all caps that start with `YOUR_` should be replaced before running the command.
+- Each section will assume you are starting in the base [`ops`]() directory.
+- Each project will assume you're using Atlas. If you plan on doing everything locally, there are portions of projects that may not work due to the extra features Atlas provides that we are take advantage of.
+- Each projects instructional documentation is running off of the assumption that certain information will be saved as environment variables. If you do not wish to use environment variables, there are different ways to pass this information, but you may have to take extra undocumented steps to get commands to work properly.
 
 ## Create Atlas Account
 
@@ -28,11 +28,11 @@ Signup for an [Atlas account](https://atlas.hashicorp.com/account/new). The user
 
 ## Generate Atlas Token
 
-After [creating an Atlas account](#create-atlas-account), [generate a token](). Save this token as an environment variable named `ATLAS_TOKEN`.
+After [creating an Atlas account](#create-atlas-account), [generate a token](https://atlas.hashicorp.com/settings/tokens). Save this token as an environment variable named `ATLAS_TOKEN`.
 
 ## Generate AWS Keys
 
-You will need to [generate AWS keys]() to provision infrastructure in Amazon. Generate these keys and save your Access Key ID as an environment variable named `AWS_ACCESS_KEY_ID` and save your Secret Access Key as an environment variable named `AWS_SECRET_ACCESS_KEY`.
+[Generate AWS keys](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) to provision infrastructure in Amazon. Generate these keys and save your Access Key ID as an environment variable named `AWS_ACCESS_KEY_ID` and your Secret Access Key as an environment variable named `AWS_SECRET_ACCESS_KEY`.
 
 ## Generate Certs
 
@@ -82,7 +82,7 @@ Wait for the build(s) to finish and an `Artifact` to successfully be created bef
 
 Navigate to the base [`ops`]() directory, this is where you will perform your `packer push` commands. Run the `packer push` command for each template specified in your project.
 
-    $ packer push packer/YOUR_PACKER_TEMPLATE.json
+    $ packer push YOUR_PACKER_TEMPLATE_PATH.json
 
 ### Base Packer Templates
 
@@ -92,7 +92,7 @@ The base artifacts created from these templates will be used as the source for c
 
 Navigate to the base [`ops`]() directory, this is where you will perform your `packer push` commands for the base templates specified in your project. Run the `packer push` command for each base template specified in your project.
 
-    $ packer push packer/YOUR_BASE_PACKER_TEMPLATE.json
+    $ packer push YOUR_BASE_PACKER_TEMPLATE_PATH.json
 
 ### Child Packer Templates
 
@@ -100,13 +100,13 @@ Navigate to the base [`ops`]() directory, this is where you will perform your `p
 
 After your base templates have completed successfully and created `Artifacts`, navigate to the base [`ops`]() directory, this is where you will perform your `packer push` commands. Run the `packer push` command for each child template specified in your project.
 
-    $ packer push packer/YOUR_CHILD_PACKER_TEMPLATE.json
+    $ packer push YOUR_CHILD_PACKER_TEMPLATE_PATH.json
 
 These will fail initially, as mentioned in the [Building Images with Packer](#building-images-with-packer) section. After setting the variables for each build configuration, set the base artifacts as well. You can accomplish this by going to `Settings` in the left navigation of each build configuration and selecting the appropriate Artifact under "Inject artifact ID during build".
 
 ## Upload Applications
 
-To upload "Applications" to Atlas, get the [atlas-upload-cli tool](https://github.com/hashicorp/atlas-upload-cli). You can use one of the included [sample-apps](sample-apps), which are simple "Hello, World!" web apps, or upload an existing one.
+To upload "Applications" to Atlas, get the [atlas-upload-cli tool](https://github.com/hashicorp/atlas-upload-cli). You can use one of the included [sample apps](apps), which are simple "Hello, World!" web apps, or upload an existing one.
 
 From the [`ops`]() base directory, run
 

@@ -74,13 +74,9 @@
       "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
       "inline": [
         "sh /ops/{{user `scripts_dir`}}/vault.sh {{user `vault_download`}}",
-        "sh /ops/{{user `scripts_dir`}}/upstart/vault.sh {{user `cert_name`}} {{user `certs_dir`}} {{user `scripts_dir`}}"
+        "sh /ops/{{user `scripts_dir`}}/upstart/vault.sh {{user `cert_name`}} {{user `certs_dir`}} {{user `scripts_dir`}}",
+        "sh /ops/{{user `scripts_dir`}}/cleanup.sh"
       ]
-    },
-    {
-      "type": "shell",
-      "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-      "script": "{{user `scripts_dir`}}/cleanup.sh"
     }
   ],
   "post-processors": [
