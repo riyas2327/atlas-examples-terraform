@@ -139,7 +139,7 @@ The following variables are configurable and can be passed in via the command li
   - `AWS_SECRET_ACCESS_KEY` - _(required)_ the AWS secret key to use
   - `AWS_DEFAULT_REGION` - _(optional)_ the AWS region to use, defaults to `us-east-1`
 
-See https://www.terraform.io/intro/getting-started/variables.html for more information on how to pass variables.
+See the [Terraform variables section](https://www.terraform.io/intro/getting-started/variables.html) for more information on how to pass variables.
 
 Run the Terraform commands specified in your project
 
