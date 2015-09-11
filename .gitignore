@@ -3,7 +3,6 @@
 
 # terraform
 terraform.tfstate*
-*.tfvars
 
 # vim temp files
 .*.swp
