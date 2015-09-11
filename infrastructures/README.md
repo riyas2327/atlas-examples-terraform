@@ -6,7 +6,7 @@ Below are the infrastructures we currently have examples for. Go to each project
 
 ## Getting Started
 
-This repository contains example [projects](terraform/projects/README.md) showing how to deploy infrastructures across many different operating sytems and cloud providers. Check out the list of [projects](#projects) we currently have examples for. The example [projects](#projects) will range from small, simple, infrastructures, to very complex, end to end infrastructures.
+This repository contains example [projects](#projects) showing how to deploy infrastructures across many different operating sytems and cloud providers. Check out the list of [projects](#projects) we currently have examples for. The example [projects](#projects) will range from small, simple, infrastructures, to very complex, end to end infrastructures.
 
 There are many different Packer & Terraform templates that each project utilizes. You can think of this as a library of Packer templates and Terraform modules that allow you to provision unique infrastructures by referencing the different templates and modules. We've tried to set this repository up in a way that we don't have to duplicate code, allowing templates and modules to be used across many projects.
 
@@ -18,7 +18,7 @@ A couple things to keep in mind...
 
 - Each projects README will reference different sections in here to get your environment properly setup to build the infrastructure at hand.
 - Any variables that are in all caps that start with `YOUR_` should be replaced before running the command.
-- Each section will assume you are starting in the base [`ops`]() directory.
+- Each section will assume you are starting in the base [`infrastructures`]() directory.
 - Each project will assume you're using Atlas. If you plan on doing everything locally, there are portions of projects that may not work due to the extra features Atlas provides that we are take advantage of.
 - Each projects instructional documentation is running off of the assumption that certain information will be saved as environment variables. If you do not wish to use environment variables, there are different ways to pass this information, but you may have to take extra undocumented steps to get commands to work properly.
 
@@ -36,7 +36,7 @@ After [creating an Atlas account](#create-atlas-account), [generate a token](htt
 
 ## Generate Certs
 
-From the base [`ops`]() directory, navigate to `scripts/.`
+From the base [`infrastructures`]() directory, navigate to `scripts/.`
 
     $ cd scripts
 
@@ -48,7 +48,7 @@ This will create a self-signed certificate that can be used across projects. A `
 
 ## Generate Keys
 
-From the base [`ops`]() directory, navigate to `scripts/.`
+From the base [`infrastructures`]() directory, navigate to `scripts/.`
 
     $ cd scripts
 
@@ -78,27 +78,27 @@ Wait for the build(s) to finish and an `Artifact` to successfully be created bef
 
 ### Packer Templates
 
-** Be sure to first read the [Building Images with Packer](#building-images-with-packer) section.
+** Be sure to first read the [Building Images with Packer](#building-images-with-packer) section. **
 
-Navigate to the base [`ops`]() directory, this is where you will perform your `packer push` commands. Run the `packer push` command for each template specified in your project.
+Navigate to the base [`infrastructures`]() directory, this is where you will perform your `packer push` commands. Run the `packer push` command for each template specified in your project.
 
     $ packer push YOUR_PACKER_TEMPLATE_PATH.json
 
 ### Base Packer Templates
 
-** Be sure to first read the [Building Images with Packer](#building-images-with-packer) section.
+** Be sure to first read the [Building Images with Packer](#building-images-with-packer) section. **
 
 The base artifacts created from these templates will be used as the source for child templates to avoid having to complete long running processes such as updating dependencies everytime you do a `packer push`.
 
-Navigate to the base [`ops`]() directory, this is where you will perform your `packer push` commands for the base templates specified in your project. Run the `packer push` command for each base template specified in your project.
+Navigate to the base [`infrastructures`]() directory, this is where you will perform your `packer push` commands for the base templates specified in your project. Run the `packer push` command for each base template specified in your project.
 
     $ packer push YOUR_BASE_PACKER_TEMPLATE_PATH.json
 
 ### Child Packer Templates
 
-**Be sure to first read the [Building Images with Packer](#building-images-with-packer) section.**
+** Be sure to first read the [Building Images with Packer](#building-images-with-packer) section. **
 
-After your base templates have completed successfully and created `Artifacts`, navigate to the base [`ops`]() directory, this is where you will perform your `packer push` commands. Run the `packer push` command for each child template specified in your project.
+After your base templates have completed successfully and created `Artifacts`, navigate to the base [`infrastructures`]() directory, this is where you will perform your `packer push` commands. Run the `packer push` command for each child template specified in your project.
 
     $ packer push YOUR_CHILD_PACKER_TEMPLATE_PATH.json
 
@@ -108,7 +108,7 @@ These will fail initially, as mentioned in the [Building Images with Packer](#bu
 
 To upload "Applications" to Atlas, get the [atlas-upload-cli tool](https://github.com/hashicorp/atlas-upload-cli). You can use one of the included [sample apps](apps), which are simple "Hello, World!" web apps, or upload an existing one.
 
-From the [`ops`]() base directory, run
+From the [`infrastructures`]() base directory, run
 
     $ atlas-upload $ATLAS_USERNAME/YOUR_APP_NAME YOUR_APP_DIRECTORY
 

@@ -59,7 +59,7 @@ Then, follow the [Upload Application docs](../../../README.md#upload-application
 
 Follow the [Deploy with Terraform docs](../../../README.md#deploy-with-terraform) to run the below commands.
 
-From the base `ops` directory, navigate to `terraform/projects/01/.`
+From the base `infrastructures` directory, navigate to `terraform/projects/01/.`
 
     $ cd terraform/projects/01
 

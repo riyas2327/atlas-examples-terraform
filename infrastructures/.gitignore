@@ -10,5 +10,5 @@ logs
 *.crt
 *.csr
 *.srl
-terraform/access/cert/certs/*
-terraform/access/keypair/keys/*
+terraform/certs/*
+terraform/keys/*
