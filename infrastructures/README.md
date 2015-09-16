@@ -56,7 +56,7 @@ Then run
 
     $ sh gen_key.sh YOUR_KEY_NAME
 
-If you have an existing private key you would like to use rather than generating a new one, pass the location of your existing private key as a second parameter into the shell script.
+If you have an existing private key you would like to use rather than generating a new one, pass the location of your existing private key as a second parameter into the shell script
 
     $ sh gen_key.sh YOUR_KEY_NAME ~/.ssh/my-existing-private-key.pem
 
