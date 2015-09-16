@@ -2,28 +2,37 @@
 # AWS
 #--------------------------------------------------------------
 
+# If you update the region, some of the amis that this example
+# uses may be unavailable as they are specific to us-east-1
 region = "us-east-1"
 
 #--------------------------------------------------------------
 # General
 #--------------------------------------------------------------
 
-atlas_username    = "YOUR_ATLAS_USERNAME"
+# If you change the atlas_environment name, be sure this name
+# change is reflected when doing `terraform remote config` and
+# `terraform push` commands - changing this WILL affect your
+# terraform.tfstate file, so use caution
 atlas_environment = "example-01"
-name              = "example"
-cert_name         = "example"
-key_name          = "example"
+atlas_username    = "YOUR_ATLAS_USERNAME"
+name              = "YOUR_PROJECT_NAME"
+cert_name         = "YOUR_CERT_NAME"
+key_name          = "YOUR_KEY_NAME"
 
 #--------------------------------------------------------------
 # Access
 #--------------------------------------------------------------
 
+# Update to reflect your organizations admins
 iam_admins = "user1,user2"
 
 #--------------------------------------------------------------
 # AWS Artifacts
 #--------------------------------------------------------------
 
+# If any of these artifact names are changed in the Packer templates,
+# they must also be changed here
 aws_consul_latest_name      = "aws-ubuntu-consul"
 aws_consul_pinned_name      = "aws-ubuntu-consul"
 aws_consul_pinned_version   = "latest"
@@ -46,8 +55,8 @@ private_subnets   = "10.139.1.0/24,10.139.2.0/24,10.139.3.0/24"
 ephemeral_subnets = "10.139.11.0/24,10.139.12.0/24,10.139.13.0/24"
 public_subnets    = "10.139.101.0/24,10.139.102.0/24,10.139.103.0/24"
 
-# Subnets can currently only be created in the following availability
-# zones: us-east-1a, us-east-1b, us-east-1d, us-east-1e.
+# Some subnets may only be able to be created in specific availability
+# zones depending on your AWS account
 azs = "us-east-1b,us-east-1d,us-east-1e"
 
 # Bastion
@@ -71,6 +80,8 @@ domain = "awsexample.com"
 #--------------------------------------------------------------
 
 # Postgres
+# db_name, db_username, and db_password should be
+# changed to reflect your preferences
 db_name           = "example"
 db_username       = "exampleuser"
 db_password       = "examplepass"
@@ -111,6 +122,8 @@ rabbitmq_count         = "1"
 rabbitmq_instance_type = "t2.micro"
 # rabbitmq_blue_nodes = "1"
 # rabbitmq_green_nodes = "0"
+
+# These should all be changed to reflect your preferences
 rabbitmq_username = "exampleuser"
 rabbitmq_password = "3PdgvsyukoG8y39G2rMD"
 rabbitmq_vhost = "example"

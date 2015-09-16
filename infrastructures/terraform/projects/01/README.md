@@ -42,6 +42,8 @@ Be sure to replace `YOUR_CERT_NAME` for the `cert_name` variable in [base.json](
     $ packer push packer/aws/ubuntu/base.json
     $ packer push packer/aws/windows/base.json
 
+If you decide to update any of the artifact names, be sure those name changes are reflected in [terraform.tfvars](terraform.tfvars#L36-L47).
+
 ## Create Child Artifacts with Packer
 
 After your base artifacts have been created, push the rest of your Packer templates that depend on them.
@@ -59,6 +61,8 @@ Then, follow the [Upload Application docs](../../../README.md#upload-application
     $ packer push packer/aws/windows/web.json
     $ atlas-upload YOUR_ATLAS_USERNAME/asp.net-app apps/asp.net
 
+If you decide to update any of the artifact names, be sure those name changes are reflected in [terraform.tfvars](terraform.tfvars#L36-L47).
+
 ## Provision Infrastructure with Terraform
 
 Follow the [Deploy with Terraform docs](../../../README.md#deploy-with-terraform) to run the below commands.
@@ -68,6 +72,8 @@ From the base `infrastructures` directory, navigate to `terraform/projects/01/.`
     $ cd terraform/projects/01
 
 If this is the first time you have run Terraform in this project, you will need to setup the remote config and download the modules.
+
+If you updated the `atlas_environment` variable in [`terraform.tfvars`](terraform.tfvars#L17) from `example-01`, be sure that change is reflected in the below `terraform remote config` and `terraform push` commands.
 
     $ terraform remote config -backend-config name=$ATLAS_USERNAME/example-01
     $ terraform get

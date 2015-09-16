@@ -132,7 +132,7 @@ Once you have linked the app in the Build Configuration, queue the build again b
 
 **Before provisioning, make sure you understand that Terraform will create real resources for the specified provider that cost money. If you're deploying a large infrastructure, remember to destroy it when you're done or it could get expensive.**
 
-Update `YOUR_ATLAS_USERNAME` in your projects `terraform.tfvars` file and check that everything is configured to your liking.
+Update all of the `YOUR_` variables in your projects `terraform.tfvars` file and check that everything is configured to your liking.
 
 The Terraform root module that you should be running all Terraform commands from is the directory of your project that contains the `terraform.tfvars` file.
 
