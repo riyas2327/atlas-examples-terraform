@@ -71,8 +71,7 @@
     {
       "type": "powershell",
       "scripts": [
-        "{{user `scripts_dir`}}/set_ec2_config.ps1",
-        "{{user `scripts_dir`}}/set_bundle_config.ps1"
+        "{{user `scripts_dir`}}/set_ec2_config.ps1"
       ]
     },
     {
