@@ -37,8 +37,10 @@ First read the [Building Images with Packer](../../../README.md#building-images-
 
 Then, follow the [Packer base template docs](../../../README.md#base-packer-templates) to run the below commands.
 
-    $ packer push packer/aws/ubuntu/base.json
-    $ packer push packer/aws/windows/base.json
+Be sure to replace `YOUR_CERT_NAME` for the `cert_name` variable in [base.json](../../../packer/aws/ubuntu/base.json) with the certificate name you used when [generating a cert](../../../README.md#generate-certs). This was the third parameter passed into `sh gen_cert.sh`.
+
+    $ packer push [packer/aws/ubuntu/base.json](../../../packer/aws/ubuntu/base.json)
+    $ packer push [packer/aws/windows/base.json](../../../packer/aws/windows/base.json)
 
 ## Create Child Artifacts with Packer
 
@@ -46,14 +48,16 @@ After your base artifacts have been created, push the rest of your Packer templa
 
 Follow the [Packer child template docs](../../../README.md#child-packer-templates) to run the below commands.
 
-    $ packer push packer/aws/ubuntu/consul.json
-    $ packer push packer/aws/ubuntu/vault.json
-    $ packer push packer/aws/ubuntu/rabbitmq.json
+Be sure to replace `YOUR_CERT_NAME` for the `cert_name` variable in [vault.json](../../../packer/aws/ubuntu/vault.json) with the certificate name you used when [generating a cert](../../../README.md#generate-certs). This was the third parameter passed into `sh gen_cert.sh`.
+
+    $ packer push [packer/aws/ubuntu/consul.json](../../../packer/aws/ubuntu/consul.json)
+    $ packer push [packer/aws/ubuntu/vault.json](../../../packer/aws/ubuntu/vault.json)
+    $ packer push [packer/aws/ubuntu/rabbitmq.json](../../../packer/aws/ubuntu/rabbitmq.json)
 
 Then, follow the [Upload Application docs](../../../README.md#upload-applications) to run the below commands.
 
-    $ packer push packer/aws/windows/web.json
-    $ atlas-upload YOUR_ATLAS_USERNAME/asp.net-app apps/ASP.NET
+    $ packer push [packer/aws/windows/web.json](../../../packer/aws/windows/web.json)
+    $ atlas-upload YOUR_ATLAS_USERNAME/asp.net-app [apps/asp.net](../../../apps/asp.net)
 
 ## Provision Infrastructure with Terraform
 
