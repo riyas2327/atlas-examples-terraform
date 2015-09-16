@@ -56,6 +56,10 @@ Then run
 
     $ sh gen_key.sh YOUR_KEY_NAME
 
+If you have an existing private key you would like to use rather than generating a new one, pass the location of your existing private key as a second parameter into the shell script
+
+    $ sh gen_key.sh YOUR_KEY_NAME ~/.ssh/my-existing-private-key.pem
+
 This will create a .pem and .pub keypair in [`terraform/keys/.`](terraform/keys) to be used across projects.
 
 ## Building Images with Packer
@@ -72,7 +76,7 @@ If this is the first time pushing Packer templates to Atlas, the builds **will f
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
 
-If you want to use a VPC/Subnet other than your providers default, be sure to fill in `vpc_id` and `subnet_id` for each of the Packer templates.
+** If you want to use a VPC/Subnet other than your providers default, be sure to fill in `vpc_id` and `subnet_id` for each of the Packer templates. If you're using AWS and deleted the default VPC, or one does not exist (Amazon EC2 "Classic" accounts), follow [these steps](https://github.com/hashicorp/atlas-examples/blob/master/aws-setup/vpc.md) to manually create one, or [create one with Terraform](terraform/aws/network/main.tf). **
 
 Wait for the build(s) to finish and an `Artifact` to successfully be created before moving to the next step.
 

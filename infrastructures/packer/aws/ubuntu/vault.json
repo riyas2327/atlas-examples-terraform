@@ -10,7 +10,7 @@
     "ssh_username":      "ubuntu",
     "scripts_dir":       "packer/scripts/ubuntu",
     "certs_dir":         "terraform/certs",
-    "cert_name":         "example",
+    "cert_name":         "YOUR_CERT_NAME",
     "vault_download":    "https://dl.bintray.com/mitchellh/vault/vault_0.2.0_linux_amd64.zip"
   },
   "push": {
