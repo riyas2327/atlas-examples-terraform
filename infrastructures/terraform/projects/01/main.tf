@@ -1,7 +1,7 @@
 variable "region" {}
 
-variable "atlas_username" {}
 variable "atlas_environment" {}
+variable "atlas_username" {}
 variable "atlas_token" {}
 variable "name" {}
 variable "cert_name" {}
