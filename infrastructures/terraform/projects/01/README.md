@@ -29,7 +29,7 @@ Be sure to follow all instructions closely. Many of these steps require pre/post
 - [Generate Certs](../../../README.md#generate-certs)
   - `sh gen_cert.sh awsexample.com example example`
 - [Generate Keys](../../../README.md#generate-keys)
-  - `sh gen_key.sh awsexample.com example example`
+  - `sh gen_key.sh example` or `sh gen_key.sh example ~/.ssh/my-existing-private-key.pem` if you have an existing private key you want to use
 
 ## Create Base Artifacts with Packer
 
