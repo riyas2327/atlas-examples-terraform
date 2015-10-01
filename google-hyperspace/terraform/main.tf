@@ -79,7 +79,7 @@ resource "google_compute_firewall" "fwrule" {
         protocol = "tcp"
         ports = ["80"]
     }
-    source_tags = ["hyperspace"]
+    target_tags = ["hyperspace"]
 }
 
 resource "google_compute_forwarding_rule" "fwd_rule" {
