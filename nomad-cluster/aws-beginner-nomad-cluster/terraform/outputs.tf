@@ -9,3 +9,7 @@ output "nomad_1" {
 output "nomad_2" {
   value = "${aws_instance.nomad_2.private_ip} - ${aws_instance.nomad_2.public_ip}"
 }
+
+output "nomad clients" {
+  value = "${join(", ", aws_instance.nomad_client.*.public_ip)}"
+}

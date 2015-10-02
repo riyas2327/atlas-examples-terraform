@@ -1,15 +1,3 @@
-/*resource "template_file" "consul_update" {
-  filename = "${module.shared.path}/consul/userdata/consul_update.sh.tpl"
-
-  vars {
-    region                  = "${var.region}"
-    atlas_token             = "${var.atlas_token}"
-    atlas_organization      = "${var.atlas_organization}"
-    atlas_environment       = "${var.atlas_environment}"
-    consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
-  }
-}*/
-
 //
 // Nomad Servers
 //
@@ -47,15 +35,18 @@ resource "aws_instance" "nomad_0" {
     inline = <<CMD
 cat > /etc/nomad.d/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
-bind_addr = "${self.private_ip}"
+log_level = "DEBUG"
+datacenter = "${var.region}"
 
 server {
   enabled = true
-  bootstrap_expect = 3
+  bootstrap_expect = ${var.nomad_bootstrap_expect}
+}
 
-  log_level = "DEBUG"
-  enable_debug = true
-  disable_update_check = true
+addresses {
+  http = "127.0.0.1"
+  rpc = "${self.private_ip}"
+  serf = "${self.private_ip}"
 }
 
 EOF
@@ -119,15 +110,18 @@ resource "aws_instance" "nomad_1" {
     inline = <<CMD
 cat > /etc/nomad.d/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
-bind_addr = "${self.private_ip}"
+log_level = "DEBUG"
+datacenter = "${var.region}"
 
 server {
   enabled = true
-  bootstrap_expect = 3
+  bootstrap_expect = ${var.nomad_bootstrap_expect}
+}
 
-  log_level = "DEBUG"
-  enable_debug = true
-  disable_update_check = true
+addresses {
+  http = "127.0.0.1"
+  rpc = "${self.private_ip}"
+  serf = "${self.private_ip}"
 }
 
 EOF
@@ -162,10 +156,8 @@ CMD
       agent    = "false"
     }
 
-    inline = "nomad server-join -address=http://${self.private_ip}:4646 ${aws_instance.nomad_0.private_ip}"
+    inline = "nomad server-join ${aws_instance.nomad_0.private_ip}"
   }
-
-  depends_on = ["aws_instance.nomad_0"]
 
 }
 
@@ -203,15 +195,18 @@ resource "aws_instance" "nomad_2" {
     inline = <<CMD
 cat > /etc/nomad.d/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
-bind_addr = "${self.private_ip}"
+log_level = "DEBUG"
+datacenter = "${var.region}"
 
 server {
   enabled = true
-  bootstrap_expect = 3
+  bootstrap_expect = ${var.nomad_bootstrap_expect}
+}
 
-  log_level = "DEBUG"
-  enable_debug = true
-  disable_update_check = true
+addresses {
+  http = "127.0.0.1"
+  rpc = "${self.private_ip}"
+  serf = "${self.private_ip}"
 }
 
 EOF
@@ -246,9 +241,93 @@ CMD
       agent    = "false"
     }
 
-    inline = "nomad server-join -address=http://${self.private_ip}:4646 ${aws_instance.nomad_0.private_ip}"
+    inline = "nomad server-join ${aws_instance.nomad_0.private_ip}"
   }
 
-  depends_on = ["aws_instance.nomad_0"]
+}
+
+//
+// Nomad Clients
+//
+resource "aws_instance" "nomad_client" {
+  instance_type          = "${var.instance_type}"
+  ami                    = "${var.source_ami}"
+  key_name               = "${aws_key_pair.main.key_name}"
+
+  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.nomad.id}"]
+  subnet_id              = "${aws_subnet.subnet_a.id}"
+
+  tags {
+    Name = "nomad_client"
+  }
+
+  count = 3
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/docker_install.sh"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = <<CMD
+cat > /etc/nomad.d/nomad.hcl <<EOF
+data_dir = "/opt/nomad/data"
+log_level = "DEBUG"
+datacenter = "${var.region}"
+
+client {
+  enabled = true
+  servers = ["${aws_instance.nomad_0.private_ip}:4647","${aws_instance.nomad_1.private_ip}:4647","${aws_instance.nomad_2.private_ip}:4647"]
+}
+
+EOF
+CMD
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/init/nomad.conf"
+    destination = "/etc/init/nomad.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = "sudo start nomad || sudo restart nomad"
+  }
 
 }

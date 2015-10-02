@@ -1,6 +1,8 @@
 variable "access_key" {}
 variable "secret_key" {}
-variable "region" {}
+variable "region" {
+	default = "us-east-1"
+}
 
 variable "atlas_token" { }
 variable "atlas_organization" {}
@@ -9,14 +11,16 @@ variable "atlas_environment" {}
 //
 // Instance Variables
 //
-variable "source_ami" {}
+variable "source_ami" {
+	default = "ami-9a562df2"
+}
 variable "key_name" {}
 
 variable "instance_type" {
-	default = "t2.micro"
+	default = "t2.medium"
 }
 
-variable "consul_bootstrap_expect" {
+variable "nomad_bootstrap_expect" {
 	default = "3"
 }
 
