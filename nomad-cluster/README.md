@@ -8,6 +8,8 @@ best practices for operating Nomad in production.
 #### Environment Setup
 
 ```
+$ terraform get -update aws-beginner-nomad-cluster/terraform/
+...
 $ terraform apply aws-beginner-nomad-cluster/terraform
 ```
 
