@@ -1,9 +1,18 @@
 # nomad-cluster
 
-A Terraform project for deploying a Nomad cluster to Amazon Web Services. 
+A Terraform project for deploying a Nomad cluster to Amazon Web Services.
 
-From the nomad-cluster directory run:
+#### Environment Setup
 
 ```
 $ terraform apply aws-beginner-nomad-cluster/terraform
 ```
+
+#### Environment Teardown
+```
+$ terraform destroy aws-beginner-nomad-cluster/terraform
+```
+
+#### Submitting Jobs
+
+Job examples are available in [shared/jobs/](shared/jobs/). Please see the [Getting Started guide](https://www.nomadproject.io/intro/getting-started/jobs.html) for how to submit and monitor jobs.
