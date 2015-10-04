@@ -5,7 +5,7 @@
     "region":         "{{env `AWS_DEFAULT_REGION`}}",
     "source_ami":     "{{env `SOURCE_AMI`}}",
     "atlas_username": "{{env `ATLAS_USERNAME`}}",
-    "atlas_name":     "spark-master"
+    "atlas_name":     "spark-consul"
   },
   "builders": [{
     "type":          "amazon-ebs",
@@ -24,18 +24,13 @@
     },
     {
       "type": "file",
-      "source": "files/init/consul_bootstrap.conf",
-      "destination": "/etc/init/consul.conf"
-    },
-    {
-      "type": "file",
       "source": "files/consul.d/consul-server.json",
       "destination": "/etc/consul.d/consul-server.json"
     },
     {
       "type": "file",
-      "source": "files/consul.d/spark-master.json",
-      "destination": "/etc/consul.d/spark-master.json"
+      "source": "files/init/consul_bootstrap.conf",
+      "destination": "/etc/init/consul.conf"
     },
     {
       "type": "shell",
