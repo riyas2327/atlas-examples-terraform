@@ -1,36 +1,36 @@
 job "batch" {
-	datacenters = ["us-east-1"]
+  datacenters = ["us-east-1"]
 
-	type = "batch"
+  type = "batch"
 
-	constraint {
-		attribute = "$attr.kernel.name"
-		value = "linux"
-	}
+  constraint {
+    attribute = "$attr.kernel.name"
+    value = "linux"
+  }
 
-	update {
-		stagger = "10s"
-		max_parallel = 1
-	}
+  update {
+    stagger = "10s"
+    max_parallel = 1
+  }
 
-	group "batch" {
-		count = 50
+  group "batch" {
+    count = 50
 
-		task "uptime" {
-			driver = "exec"
+    task "uptime" {
+      driver = "exec"
 
-			config {
-				command = "uptime"
-			}
+      config {
+        command = "uptime"
+      }
 
-			resources {
-				cpu = 100 # 500 Mhz
-				memory = 128 # 256MB
-				network {
-					mbits = 10
-				}
-			}
-		}
-	}
+      resources {
+        cpu = 100 # 500 Mhz
+        memory = 128 # 256MB
+        network {
+          mbits = 10
+        }
+      }
+    }
+  }
 
 }
