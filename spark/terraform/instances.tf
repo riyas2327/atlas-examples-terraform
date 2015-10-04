@@ -42,24 +42,24 @@ resource "template_file" "spark-slave-start" {
     }
 }
 
-resource "atlas_artifact" "consul" {
-    name = "${var.atlas_username}/consul-amazon-ebs"
-    type = "aws.ami"
+resource "atlas_artifact" "spark-consul" {
+    name = "${var.atlas_username}/spark-consul"
+    type = "amazon.image"
 }
 
 resource "atlas_artifact" "spark-master" {
-    name = "${var.atlas_username}/spark-master-amazon-ebs"
-    type = "aws.ami"
+    name = "${var.atlas_username}/spark-master"
+    type = "amazon.image"
 }
 
 resource "atlas_artifact" "spark-slave" {
-    name = "${var.atlas_username}/spark-slave-amazon-ebs"
-    type = "aws.ami"
+    name = "${var.atlas_username}/spark-slave"
+    type = "amazon.image"
 }
 
 resource "aws_instance" "consul" {
     instance_type = "${var.instance_type}"
-    ami = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
+    ami = "${atlas_artifact.spark-consul.metadata_full.region-us-east-1}"
     key_name = "${aws_key_pair.spark-poc.key_name}"
     count = "2"
 
