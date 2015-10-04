@@ -17,7 +17,7 @@
       "source_ami":    "{{user `source_ami`}}",
       "instance_type": "t2.micro",
       "ssh_username":  "ubuntu",
-      "ami_name":      "{{user `atlas_name`}} {{timestamp}}",
+      "ami_name":      "{{user `atlas_name`}}-{{timestamp}}",
       "ami_regions":   ["{{user `region_west`}}"]
     }
   ],
@@ -51,7 +51,6 @@
     [
       {
         "type":          "atlas",
-        "only":          ["amazon-ebs"],
         "artifact":      "{{user `atlas_organization`}}/{{user `atlas_name`}}",
         "artifact_type": "amazon.image",
         "metadata": {
