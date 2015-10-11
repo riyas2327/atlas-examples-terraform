@@ -1,29 +1,50 @@
-Atlas Examples
-==============
-This is a repository for Atlas examples.
+# Atlas Examples
 
+This repository contains application and infrastructure examples
+for [Atlas](https://atlas.hashicorp.com/) by HashiCorp.
 
-Authentication
---------------
-You will need an access token, which can be generated in your account page in
-[Atlas](https://atlas.hashicorp.com/settings/tokens?utm_source=github&utm_medium=examples&utm_campaign=readme). All
-CLIs and libraries respect the `ATLAS_TOKEN` environment variable, so you can
-add the token to your `.shellrc`.
+## Setup
 
+Set the environment variables listed below.
 
-Writing Examples
-----------------
-Pretty simple - create a folder named after the example. Add a README if there
-is setup required, and add supporting files.
+### Environment Variables
 
+```
+# For Atlas
+ATLAS_TOKEN
+ATLAS_USERNAME
+TF_VAR_atlas_username
 
-Issues
-------
+# For AWS
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_DEFAULT_REGION
+```
+
+### Atlas Token
+
+To generate an Atlas Token, visit your account page in [Atlas](https://atlas.hashicorp.com/settings/tokens?utm_source=github&utm_medium=examples&utm_campaign=readme).
+
+### AWS Access Keys
+
+To generate AWS access keys, visit the [IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-1#home).
+
+## Writing Examples
+
+Pretty simple - create a folder named after the example. Add a README if
+setup is required, and add supporting files.
+
+> Please try to follow the above environment variables as inputs to keep
+projects consistent and easy to adopt.
+
+## Issues
+
 To report issues (such as typographical errors or confusion) in these examples,
 please open a GitHub issue. **For Atlas-specific support, please email
 [support@hashicorp.com](mailto:support@hashicorp.com).**
 
 
-Documentation
-------------
-Additional documentation on Atlas, Vagrant, Packer, Terraform, and Consul can be [read here](https://atlas.hashicorp.com/help#documentation).
+## Documentation
+
+Additional documentation on Atlas, Vagrant, Packer, Terraform, and Consul
+can be [read here](https://atlas.hashicorp.com/help#documentation).
