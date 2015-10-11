@@ -1,18 +1,14 @@
 {
   "variables": {
-    "aws_access_key":     "{{ env `AWS_ACCESS_KEY_ID` }}",
-    "aws_secret_key":     "{{ env `AWS_SECRET_ACCESS_KEY` }}",
-    "region":             "{{ env `AWS_REGION` }}",
-    "region_west":        "{{ env `AWS_REGION_WEST` }}",
-    "source_ami":         "{{ env `SOURCE_AMI` }}",
-    "atlas_organization": "{{ env `ATLAS_ORGANIZATION` }}",
+    "region":             "us-east-1",
+    "region_west":        "us-west-2",
+    "source_ami":         "ami-9a562df2",
+    "atlas_username":     "{{ env `TF_VAR_atlas_username` }}",
     "atlas_name":         "consul_client"
   },
   "builders": [
     {
       "type":          "amazon-ebs",
-      "access_key":    "{{user `aws_access_key`}}",
-      "secret_key":    "{{user `aws_secret_key`}}",
       "region":        "{{user `region`}}",
       "source_ami":    "{{user `source_ami`}}",
       "instance_type": "t2.micro",
@@ -38,7 +34,7 @@
     }
   ],
   "push": {
-    "name":     "{{user `atlas_organization`}}/{{user `atlas_name`}}",
+    "name":     "{{user `atlas_username`}}/{{user `atlas_name`}}",
     "vcs":      false,
     "base_dir": "../../",
     "include": [
@@ -51,7 +47,7 @@
     [
       {
         "type":          "atlas",
-        "artifact":      "{{user `atlas_organization`}}/{{user `atlas_name`}}",
+        "artifact":      "{{user `atlas_username`}}/{{user `atlas_name`}}",
         "artifact_type": "amazon.image",
         "metadata": {
           "created_at": "{{timestamp}}"
