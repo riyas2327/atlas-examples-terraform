@@ -16,7 +16,7 @@
     }],
     "push": {
       "name": "{{user `atlas_username`}}/nodejs",
-      "vcs": false
+      "vcs": true
     },
     "provisioners": [
     {
