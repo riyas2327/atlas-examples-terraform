@@ -28,7 +28,7 @@
     },
     {
         "type": "file",
-        "source": "/packer/app",
+        "source": "app",
         "destination": "/application"
     },
     {
