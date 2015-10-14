@@ -6,7 +6,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <asp:Label runat="server" id="HelloWorldLabel">Hello, World! This is a front end web page.</asp:Label>
+        <asp:Label runat="server" id="HelloWorldLabel">Hello, World! This is an ASP.NET web page.</asp:Label>
     </div>
     </form>
 </body>

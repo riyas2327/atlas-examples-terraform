@@ -48,29 +48,20 @@ Follow the [Packer child template](../../../../setup/general.md#child-packer-tem
 Remember, all `packer push` commands must be performed in the base [`infrastructures`](../../../.) directory.
 
     $ packer push packer/aws/windows/web.json
-    $ packer push packer/aws/windows/app.json
 
 If you decide to update any of the artifact names, be sure those name changes are reflected in [terraform.tfvars](terraform.tfvars#L74-L79).
 
-## Upload your Applications to Atlas
+## Upload your Web Application to Atlas
 
-Follow the [Upload Applications](../../../../setup/general.md#upload-applications) docs to upload, compile, and link your applications to their associated Build Templates following the below steps.
+Follow the [Upload Applications](../../../../setup/general.md#upload-applications) docs to upload and link your application to an associated Build Template following the below steps.
 
 This example assumes you're using the [GitHub Integration](https://atlas.hashicorp.com/help/applications/uploading#github). If you are unable to do so, you can alternatively use [Vagrant Push](https://atlas.hashicorp.com/help/applications/uploading#vagrant-push) or the [Atlas Upload CLI](https://atlas.hashicorp.com/help/applications/uploading#upload-cli).
 
-### Web
-
-- Create a compiled [web](../../../apps/asp.net/web) front end "Application" named `asp.net-web`
+- Create an uncompiled [web](../../../apps/asp.net/web) "Application" named `asp.net-web`
 - Link to the `aws-windows-web` Build Template in "Settings"
-- Using the [GitHub Integration](../../../../setup/general.md#github-integration), select your GitHub repository, then enter `infrastructures/apps/asp.net/web` for "Application directory" and `infrastructures/apps/asp.net/web/compile.json` for "Application Template"
+- Using the [GitHub Integration](../../../../setup/general.md#github-integration), select your GitHub repository, then enter `infrastructures/apps/asp.net/web` for "Application directory" leaving "Application Template" blank
 
-### App
-
-- Create a compiled [app](../../../apps/asp.net/app) back end "Application" named `asp.net-app`
-- Link to the `aws-windows-app` Build Template in "Settings"
-- Using the [GitHub Integration](../../../../setup/general.md#github-integration), select your GitHub repository, then enter `infrastructures/apps/asp.net/app` for "Application directory" and `infrastructures/apps/asp.net/app/compile.json` for "Application Template"
-
-Upload new versions of these applications by merging a commit into master from the [app](../../../apps/asp.net/app) or [web](../../../apps/asp.net/web) directory. This will upload your latest app code, compile it into an artifact, then trigger a Packer build with the latest application code.
+Upload new versions by merging a commit into master from the [web](../../../apps/asp.net/web) directory. This will upload your latest app code and trigger a Packer build to create a new artifact.
 
 ## Provision Infrastructure with Terraform
 
@@ -89,7 +80,7 @@ If you updated the `atlas_environment` variable in [`terraform.tfvars`](terrafor
 
 If everything looks good, run
 
-    $ terraform push -name $ATLAS_USERNAME/example-02 -var "atlas_token=$ATLAS_TOKEN"
+    $ terraform push -name $ATLAS_USERNAME/example-02 -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
 This takes about 20 minutes to run as RDS takes quite awhile to provision. Don't forget to `terraform destroy` you're environment when your done so you don't rack up AWS bills (unless you plan on keeping it around).
 

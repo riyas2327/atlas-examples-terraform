@@ -52,18 +52,24 @@ Follow the [Packer child template docs](../../../../setup/general.md#child-packe
 
 Remember, all `packer push` commands must be performed in the base [`infrastructures`](../../../.) directory.
 
-Be sure to replace `YOUR_CERT_NAME` for the `cert_name` variable in [vault.json](../../../packer/aws/ubuntu/vault.json#L13) with the certificate name you used when [generating a cert](../../../../setup/general.md#generate-certs). This was the third parameter passed into `sh gen_cert.sh`.
-
     $ packer push packer/aws/ubuntu/consul.json
     $ packer push packer/aws/ubuntu/vault.json
     $ packer push packer/aws/ubuntu/rabbitmq.json
-
-Then, follow the [Upload Application docs](../../../../setup/general.md#upload-applications) to run the below commands.
-
     $ packer push packer/aws/windows/web.json
-    $ atlas-upload YOUR_ATLAS_USERNAME/asp.net-app apps/asp.net/web
 
 If you decide to update any of the artifact names, be sure those name changes are reflected in [terraform.tfvars](terraform.tfvars#L36-L47).
+
+## Upload your Web Application to Atlas
+
+Follow the [Upload Applications](../../../../setup/general.md#upload-applications) docs to upload and link your application to an associated Build Template following the below steps.
+
+This example assumes you're using the [GitHub Integration](https://atlas.hashicorp.com/help/applications/uploading#github). If you are unable to do so, you can alternatively use [Vagrant Push](https://atlas.hashicorp.com/help/applications/uploading#vagrant-push) or the [Atlas Upload CLI](https://atlas.hashicorp.com/help/applications/uploading#upload-cli).
+
+- Create an uncompiled [web](../../../apps/asp.net/web) "Application" named `asp.net-web`
+- Link to the `aws-windows-web` Build Template in "Settings"
+- Using the [GitHub Integration](../../../../setup/general.md#github-integration), select your GitHub repository, then enter `infrastructures/apps/asp.net/web` for "Application directory" leaving "Application Template" blank
+
+Upload new versions by merging a commit into master from the [web](../../../apps/asp.net/web) directory. This will upload your latest app code and trigger a Packer build to create a new artifact.
 
 ## Provision Infrastructure with Terraform
 
@@ -82,7 +88,7 @@ If you updated the `atlas_environment` variable in [`terraform.tfvars`](terrafor
 
 If everything looks good, run
 
-    $ terraform push -name $ATLAS_USERNAME/example-01 -var "atlas_token=$ATLAS_TOKEN"
+    $ terraform push -name $ATLAS_USERNAME/example-01 -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
 This takes about 20 minutes to run as RDS takes quite awhile to provision. Don't forget to `terraform destroy` you're environment when your done so you don't rack up AWS bills (unless you plan on keeping it around).
 

@@ -15,7 +15,6 @@ region = "us-east-1"
 # `terraform push` commands - changing this WILL affect your
 # terraform.tfstate file, so use caution
 atlas_environment = "example-01"
-atlas_username    = "jb_hashicorp"
 name              = "example"
 cert_name         = "example"
 key_name          = "example"

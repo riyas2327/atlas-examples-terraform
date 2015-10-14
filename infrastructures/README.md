@@ -22,4 +22,4 @@ A couple things to keep in mind...
 - Each project will assume you're using Atlas. If you plan on doing everything locally, there are portions of projects that may not work due to the extra features Atlas provides that we are take advantage of.
 - Each projects instructional documentation is running off of the assumption that certain information will be saved as environment variables. If you do not wish to use environment variables, there are different ways to pass this information, but you may have to take extra undocumented steps to get commands to work properly.
 - All `packer push` commands must be performed in the base [`infrastructures`]() directory
-- All `terraform push` commands must be performed in the appropriate Terraform project directory (e.g. [project 01](terraform/projects/01)
+- All `terraform push` commands must be performed in the appropriate Terraform project directory (e.g. [project 01](terraform/projects/01))

@@ -15,7 +15,6 @@ region = "us-east-1"
 # `terraform push` commands - changing this WILL affect your
 # terraform.tfstate file, so use caution
 atlas_environment = "example-02"
-atlas_username    = "jb_hashicorp"
 name              = "example"
 cert_name         = "example"
 key_name          = "example"
@@ -81,17 +80,11 @@ db_backup_window           = "10:19-10:49"
 aws_web_latest_name         = "aws-windows-web"
 aws_web_pinned_name         = "aws-windows-web"
 aws_web_pinned_version      = "latest"
-aws_app_latest_name         = "aws-windows-app"
-aws_app_pinned_name         = "aws-windows-app"
-aws_app_pinned_version      = "latest"
 
 #--------------------------------------------------------------
-# Web & App
+# Web
 #--------------------------------------------------------------
 
 web_instance_type = "t2.micro"
 web_blue_nodes = "2"
 web_green_nodes = "0"
-app_instance_type = "t2.micro"
-app_blue_nodes = "2"
-app_green_nodes = "0"

@@ -43,16 +43,10 @@ variable "db_backup_window" {}
 variable "aws_web_latest_name" {}
 variable "aws_web_pinned_name" {}
 variable "aws_web_pinned_version" {}
-variable "aws_app_latest_name" {}
-variable "aws_app_pinned_name" {}
-variable "aws_app_pinned_version" {}
 
 variable "web_instance_type" {}
 variable "web_blue_nodes" {}
 variable "web_green_nodes" {}
-variable "app_instance_type" {}
-variable "app_blue_nodes" {}
-variable "app_green_nodes" {}
 
 provider "aws" {
   region = "${var.region}"
@@ -217,39 +211,6 @@ module "web" {
   blue_ami      = "${module.aws_artifacts_web.latest}"
   blue_nodes    = "${var.web_blue_nodes}"
   green_ami     = "${module.aws_artifacts_web.pinned}"
-  green_nodes   = "${var.web_green_nodes}"
-}
-
-module "aws_artifacts_app" {
-  source = "../../aws/artifact"
-
-  atlas_username = "${var.atlas_username}"
-  latest_name    = "${var.aws_app_latest_name}"
-  pinned_name    = "${var.aws_app_pinned_name}"
-  pinned_version = "${var.aws_app_pinned_version}"
-}
-
-module "app" {
-  source = "../../aws/compute/simple"
-
-  name               = "${var.name}-app"
-  vpc_cidr           = "${var.vpc_cidr}"
-  azs                = "${var.azs}"
-  key_name           = "${var.key_name}"
-  public_subnet_ids  = "${module.public_subnet.subnet_ids}"
-  private_subnet_ids = "${module.private_subnet.subnet_ids}"
-  vpc_id             = "${module.vpc.vpc_id}"
-  ssl_cert_crt       = "${module.certs.crt_path}"
-  ssl_cert_key       = "${module.certs.key_path}"
-
-  atlas_username    = "${var.atlas_username}"
-  atlas_environment = "${var.atlas_environment}"
-  atlas_token       = "${var.atlas_token}"
-
-  instance_type = "${var.web_instance_type}"
-  blue_ami      = "${module.aws_artifacts_app.latest}"
-  blue_nodes    = "${var.web_blue_nodes}"
-  green_ami     = "${module.aws_artifacts_app.pinned}"
   green_nodes   = "${var.web_green_nodes}"
 }
 

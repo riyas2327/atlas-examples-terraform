@@ -141,7 +141,7 @@ Run the Terraform commands specified in your project
 
     $ terraform remote config -backend-config name=$ATLAS_USERNAME/YOUR_ATLAS_ENVIRONMENT
     $ terraform get
-    $ terraform push -name $ATLAS_USERNAME/YOUR_ATLAS_ENVIRONMENT -var "atlas_token=$ATLAS_TOKEN"
+    $ terraform push -name $ATLAS_USERNAME/YOUR_ATLAS_ENVIRONMENT -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
 The initial plan in Atlas after doing your first `terraform push` **will fail**, this is because you need to set some environment variables.
 
@@ -156,10 +156,10 @@ Once all environment variables have been added, go back to `Changes` on the left
 
 To view what's going to happen locally before doing a `terraform push`, run
 
-    $ terraform plan -var "atlas_token=$ATLAS_TOKEN"
+    $ terraform plan -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
 If you want to destroy the environment, run
 
-    $ terraform destroy -var "atlas_token=$ATLAS_TOKEN"
+    $ terraform destroy -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
 **Note:** `terraform destroy` deletes real resources, it is important that you take extra precaution when using this command. Verify that you are in the correct environment, verify that you are using the correct keys, and set any extra configuration necessary to prevent someone from accidentally destroying prod infrastructure.
