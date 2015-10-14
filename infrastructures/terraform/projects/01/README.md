@@ -27,9 +27,9 @@ Read the [Getting Started](../../../README.md#getting-started) section first. Be
 - [Generate an Atlas Token](../../../../setup/general.md#generate-atlas-token) and save your token as an environment variable
 - [Generate AWS Keys](../../../../setup/general.md#generate-aws-keys) and save the access key and secret as an environment variables
 - [Generate Certs](../../../../setup/general.md#generate-certs) if you haven't already done so
-  - `sh gen_cert.sh awsexample.com example example ../infrastructures/terraform/certs`
+  - `sh gen_cert.sh hashicorp.com example ../infrastructures/terraform/certs`
 - [Generate Keys](../../../../setup/general.md#generate-keys) if you haven't already done so
-  - `sh gen_key.sh example ../infrastructures/terraform/keys` or `sh gen_key.sh example ../infrastructures/terraform/keys ~/.ssh/my-existing-private-key.pem` if you have an existing private key you want to use
+  - `sh gen_key.sh ../infrastructures/terraform/keys` or `sh gen_key.sh ../infrastructures/terraform/keys ~/.ssh/my-existing-private-key.pem` if you have an existing private key you want to use
 
 ## Create Base Artifacts with Packer
 

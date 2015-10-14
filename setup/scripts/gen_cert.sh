@@ -11,9 +11,9 @@ Requires openssl is installed and available on \$PATH.
 
 Usage:
 
-  $0 <BASE_DOMAIN> <COMPANY> <NAME> <CERT_PATH>
+  $0 <BASE_DOMAIN> <COMPANY> <CERT_PATH>
 
-Where BASE_DOMAIN is the domain to be deployed, COMPANY is your companies name, NAME is the name of the environment, and CERT_PATH is the path to the directory these certs will be placed, in relation to the directory this script is in.
+Where BASE_DOMAIN is the domain to be deployed, COMPANY is your companies name, and CERT_PATH is the path to the directory these certs will be placed in relation to the directory this script is in.
 
 This will generate a single self-signed cert with the following subjectAltNames in the directory specified.
 
@@ -53,20 +53,11 @@ if [ "x$COMPANY" == "x" ]; then
   usage
 fi
 
-NAME=$3
-
-if [ "x$NAME" == "x" ]; then
-  echo
-  echo "ERROR: Specify name as the third argument, e.g. production"
-  echo
-  usage
-fi
-
-CERTPATH=$4
+CERTPATH=$3
 
 if [ "x$CERTPATH" == "x" ]; then
   echo
-  echo "ERROR: Specify cert directory as the fourth argument, e.g. ../infrastructures/terraform/certs"
+  echo "ERROR: Specify cert directory as the third argument, e.g. ../infrastructures/terraform/certs"
   echo
   usage
 fi
@@ -76,7 +67,7 @@ fi
 BUILDDIR=`mktemp -d /tmp/ssl-XXXXXX`
 trap "rm -rf $BUILDDIR" INT TERM EXIT
 
-BASE="$CERTPATH/$NAME"
+BASE="$CERTPATH/example"
 CSR="${BASE}.csr"
 KEY="${BASE}.key"
 CRT="${BASE}.crt"

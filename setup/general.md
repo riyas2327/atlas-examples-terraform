@@ -22,9 +22,9 @@ From the base [`setup`]() directory, navigate to `scripts/.`
 
 Then run
 
-    $ sh gen_cert.sh YOUR_DOMAIN.com YOUR_COMPANY YOUR_CERT_NAME YOUR_CERT_PATH
+    $ sh gen_cert.sh YOUR_DOMAIN.com YOUR_COMPANY YOUR_CERT_PATH
 
-This will create a self-signed certificate that can be used across projects. A `.crt`, `.key`, and `.csr` will be placed in the location you specified in the fourth parameter, `YOUR_CERT_PATH`.
+This will create a self-signed certificate that can be used across projects. A `.crt`, `.key`, and `.csr` will be placed in the location you specified in the third parameter, `YOUR_CERT_PATH`.
 
 ## Generate Keys
 
@@ -34,13 +34,13 @@ From the base [`setup`]() directory, navigate to `scripts/.`
 
 Then run
 
-    $ sh gen_key.sh YOUR_KEY_NAME YOUR_KEY_PATH
+    $ sh gen_key.sh YOUR_KEY_PATH
 
-If you have an existing private key you would like to use rather than generating a new one, pass the location of your existing private key as a third parameter into the shell script
+If you have an existing private key you would like to use rather than generating a new one, pass the location of your existing private key as a second parameter into the shell script
 
-    $ sh gen_key.sh YOUR_KEY_NAME YOUR_KEY_PATH ~/.ssh/my-existing-private-key.pem
+    $ sh gen_key.sh YOUR_KEY_PATH ~/.ssh/my-existing-private-key.pem
 
-This will create a .pem and .pub keypair in the location you specified in the second parameter, `YOUR_KEY_PATH`.
+This will create a .pem and .pub keypair in the location you specified in the first parameter, `YOUR_KEY_PATH`.
 
 ## Building Images with Packer
 

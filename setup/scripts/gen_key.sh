@@ -7,11 +7,11 @@ Generate a SSL keys
 
 Usage:
 
-  $0 <KEY_NAME> <KEY_PATH> **<EXISTING_KEY>**
+  $0 <KEY_PATH> **<EXISTING_KEY>**
 
-Where KEY_NAME is the filename of the keys that are generated, and KEY_PATH is the path to the directory these keys will be placed, in relation to the directory this script is in.
+Where KEY_PATH is the path to the directory these keys will be placed, in relation to the directory this script is in.
 
-There is an optional third argument you can include that takes an existing private key and generates new keys in the location specified.
+There is an optional second argument you can include that uses an existing private key.
 
 This will generate a .pem private key and a .pub public key in the directory specified.
 EOF
@@ -19,26 +19,17 @@ EOF
   exit 1
 }
 
-KEYNAME=$1
-
-if [ "x$KEYNAME" == "x" ]; then
-  echo
-  echo "ERROR: Specify key name as the first argument, e.g. example"
-  echo
-  usage
-fi
-
-KEYPATH=$2
+KEYPATH=$1
 
 if [ "x$KEYPATH" == "x" ]; then
   echo
-  echo "ERROR: Specify key directory as the second argument, e.g. ../infrastructures/terraform/keys"
+  echo "ERROR: Specify key path as the first argument, e.g. ../infrastructures/terraform/keys"
   echo
   usage
 fi
 
-EXISTINGKEY=$3
-KEY=$KEYPATH/$KEYNAME
+EXISTINGKEY=$2
+KEY="$KEYPATH/example"
 
 if [ -s "$KEY.pem" ] && [ -s "$KEY.pub" ] && [ -z "$EXISTINGKEY" ]; then
   echo Using existing key pair
