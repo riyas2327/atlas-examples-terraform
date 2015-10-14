@@ -94,13 +94,13 @@ atlas {
 module "certs" {
   source = "../../certs"
 
-  name       = "${var.cert_name}"
+  name = "${var.cert_name}"
 }
 
 module "keys" {
   source = "../../keys"
 
-  name       = "${var.key_name}"
+  name = "${var.key_name}"
 }
 
 module "scripts" {
@@ -113,24 +113,6 @@ module "access" {
   name       = "${var.atlas_environment}"
   iam_admins = "${var.iam_admins}"
   pub_path   = "${module.keys.pub_path}"
-}
-
-module "aws_artifacts" {
-  source = "../../aws/artifacts"
-
-  atlas_username          = "${var.atlas_username}"
-  consul_latest_name      = "${var.aws_consul_latest_name}"
-  consul_pinned_name      = "${var.aws_consul_pinned_name}"
-  consul_pinned_version   = "${var.aws_consul_pinned_version}"
-  vault_latest_name       = "${var.aws_vault_latest_name}"
-  vault_pinned_name       = "${var.aws_vault_pinned_name}"
-  vault_pinned_version    = "${var.aws_vault_pinned_version}"
-  rabbitmq_latest_name    = "${var.aws_rabbitmq_latest_name}"
-  rabbitmq_pinned_name    = "${var.aws_rabbitmq_pinned_name}"
-  rabbitmq_pinned_version = "${var.aws_rabbitmq_pinned_version}"
-  web_latest_name         = "${var.aws_web_latest_name}"
-  web_pinned_name         = "${var.aws_web_pinned_name}"
-  web_pinned_version      = "${var.aws_web_pinned_version}"
 }
 
 module "aws_network" {
@@ -158,6 +140,33 @@ module "aws_network" {
   openvpn_cidr       = "${var.openvpn_cidr}"
   openvpn_ssl_crt    = "${module.certs.crt_path}"
   openvpn_ssl_key    = "${module.certs.key_path}"
+}
+
+module "aws_artifacts_consul" {
+  source = "../../aws/artifact"
+
+  atlas_username = "${var.atlas_username}"
+  latest_name    = "${var.aws_consul_latest_name}"
+  pinned_name    = "${var.aws_consul_pinned_name}"
+  pinned_version = "${var.aws_consul_pinned_version}"
+}
+
+module "aws_artifacts_vault" {
+  source = "../../aws/artifact"
+
+  atlas_username = "${var.atlas_username}"
+  latest_name    = "${var.aws_vault_latest_name}"
+  pinned_name    = "${var.aws_vault_pinned_name}"
+  pinned_version = "${var.aws_vault_pinned_version}"
+}
+
+module "aws_artifacts_rabbitmq" {
+  source = "../../aws/artifact"
+
+  atlas_username = "${var.atlas_username}"
+  latest_name    = "${var.aws_rabbitmq_latest_name}"
+  pinned_name    = "${var.aws_rabbitmq_pinned_name}"
+  pinned_version = "${var.aws_rabbitmq_pinned_version}"
 }
 
 module "aws_data" {
@@ -218,25 +227,34 @@ module "aws_data" {
   # resource at a time and update to _latest.
   consul_ips           = "${var.consul_ips}"
   consul_instance_type = "${var.consul_instance_type}"
-  consul_amis          = "${module.aws_artifacts.consul_latest},${module.aws_artifacts.consul_latest},${module.aws_artifacts.consul_latest}"
+  consul_amis          = "${module.aws_artifacts_consul.latest},${module.aws_artifacts_consul.latest},${module.aws_artifacts_consul.latest}"
 
   # Number of AMIs must match the count. To update, change all artifacts
   # to _pinned at the previous version, then, `terraform taint` one
   # resource at a time and update to _latest.
   vault_count         = "${var.vault_count}"
   vault_instance_type = "${var.vault_instance_type}"
-  vault_amis          = "${module.aws_artifacts.vault_latest},${module.aws_artifacts.vault_latest}"
+  vault_amis          = "${module.aws_artifacts_vault.latest},${module.aws_artifacts_vault.latest}"
 
   rabbitmq_count         = "${var.rabbitmq_count}"
   rabbitmq_instance_type = "${var.rabbitmq_instance_type}"
-  rabbitmq_amis          = "${module.aws_artifacts.rabbitmq_latest}"
-  # rabbitmq_blue_ami      = "${module.aws_artifacts.rabbitmq_latest}"
+  rabbitmq_amis          = "${module.aws_artifacts_rabbitmq.latest}"
+  # rabbitmq_blue_ami      = "${module.aws_artifacts_rabbitmq.latest}"
   # rabbitmq_blue_nodes    = "${var.rabbitmq_blue_nodes}"
-  # rabbitmq_green_ami     = "${module.aws_artifacts.rabbitmq_pinned}"
+  # rabbitmq_green_ami     = "${module.aws_artifacts_rabbitmq.pinned}"
   # rabbitmq_green_nodes   = "${var.rabbitmq_green_nodes}"
   rabbitmq_username      = "${var.rabbitmq_username}"
   rabbitmq_password      = "${var.rabbitmq_password}"
   rabbitmq_vhost         = "${var.rabbitmq_vhost}"
+}
+
+module "aws_artifacts_web" {
+  source = "../../aws/artifact"
+
+  atlas_username = "${var.atlas_username}"
+  latest_name    = "${var.aws_web_latest_name}"
+  pinned_name    = "${var.aws_web_pinned_name}"
+  pinned_version = "${var.aws_web_pinned_version}"
 }
 
 module "aws_compute" {
@@ -281,9 +299,9 @@ module "aws_compute" {
   vault_domain     = "vault.${var.domain}"
 
   web_instance_type = "${var.web_instance_type}"
-  web_blue_ami      = "${module.aws_artifacts.web_latest}"
+  web_blue_ami      = "${module.aws_artifacts_web.latest}"
   web_blue_nodes    = "${var.web_blue_nodes}"
-  web_green_ami     = "${module.aws_artifacts.web_pinned}"
+  web_green_ami     = "${module.aws_artifacts_web.pinned}"
   web_green_nodes   = "${var.web_green_nodes}"
 }
 

@@ -4,7 +4,7 @@ variable "instance_type" {}
 variable "key_name" {}
 variable "admin_user" {}
 variable "admin_pw" {}
-variable "dns_ips" {}
+variable "dns_ips" { default = "" }
 variable "vpn_cidr" {}
 variable "vpc_id" {}
 variable "vpc_cidr" {}
@@ -67,6 +67,13 @@ admin_pw=${var.admin_pw}
 USERDATA
 
   provisioner "remote-exec" {
+    connection {
+      user         = "openvpnas"
+      host         = "${self.private_ip}"
+      key_file     = "${var.key_path}"
+      bastion_host = "${var.bastion_host}"
+      bastion_user = "${var.bastion_user}"
+    }
     inline = [
       # Insert our SSL cert
       "echo '${file("${var.ssl_cert}")}' | sudo tee /usr/local/openvpn_as/etc/web-ssl/server.crt > /dev/null",
@@ -82,13 +89,6 @@ USERDATA
       # Do a warm restart so the config is picked up
       "sudo /usr/local/openvpn_as/scripts/sacli start",
     ]
-    connection {
-      user         = "openvpnas"
-      host         = "${self.private_ip}"
-      key_file     = "${var.key_path}"
-      bastion_host = "${var.bastion_host}"
-      bastion_user = "${var.bastion_user}"
-    }
   }
 }
 

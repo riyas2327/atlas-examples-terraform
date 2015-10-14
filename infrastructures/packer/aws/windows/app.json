@@ -4,7 +4,7 @@
     "aws_secret_key": "{{env `AWS_SECRET_KEY`}}",
     "atlas_username": "{{env `ATLAS_USERNAME`}}",
     "base_ami":       "{{env `ATLAS_BASE_ARTIFACT_AMAZON_AMI_ID`}}",
-    "name":           "aws-windows-web",
+    "name":           "aws-windows-app",
     "region":         "us-east-1",
     "vpc_id":         "",
     "subnet_id":      "",

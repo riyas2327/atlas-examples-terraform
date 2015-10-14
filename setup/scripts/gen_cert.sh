@@ -11,11 +11,11 @@ Requires openssl is installed and available on \$PATH.
 
 Usage:
 
-  $0 <BASE_DOMAIN> <COMPANY> <NAME>
+  $0 <BASE_DOMAIN> <COMPANY> <NAME> <CERT_PATH>
 
-Where BASE_DOMAIN is the domain to be deployed, COMPANY is your companies name, and NAME is the name of the environment.
+Where BASE_DOMAIN is the domain to be deployed, COMPANY is your companies name, NAME is the name of the environment, and CERT_PATH is the path to the directory these certs will be placed, in relation to the directory this script is in.
 
-This will generate a single self-signed cert with the following subjectAltNames:
+This will generate a single self-signed cert with the following subjectAltNames in the directory specified.
 
  * BASE_DOMAIN
  * vault.BASE_DOMAIN
@@ -62,18 +62,26 @@ if [ "x$NAME" == "x" ]; then
   usage
 fi
 
+CERTPATH=$4
+
+if [ "x$CERTPATH" == "x" ]; then
+  echo
+  echo "ERROR: Specify cert directory as the fourth argument, e.g. ../infrastructures/terraform/certs"
+  echo
+  usage
+fi
+
 # Create a temporary build dir and make sure we clean it up. For
 # debugging, comment out the trap line.
 BUILDDIR=`mktemp -d /tmp/ssl-XXXXXX`
 trap "rm -rf $BUILDDIR" INT TERM EXIT
 
-BASEDIR=../terraform/certs
-BASENAME="$BASEDIR/$NAME"
-CSR="${BASENAME}.csr"
-KEY="${BASENAME}.key"
-CRT="${BASENAME}.crt"
+BASE="$CERTPATH/$NAME"
+CSR="${BASE}.csr"
+KEY="${BASE}.key"
+CRT="${BASE}.crt"
 SSLCONF=${BUILDDIR}/selfsigned_openssl.cnf
-mkdir -p $BASEDIR
+mkdir -p $CERTPATH
 
 cp openssl.cnf ${SSLCONF}
 (cat <<EOF
