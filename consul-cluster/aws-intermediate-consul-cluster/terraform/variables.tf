@@ -18,7 +18,7 @@ variable "atlas_environment" {}
 variable "key_name" {}
 
 variable "instance_type" {
-	default = "t2.small"
+	default = "t2.medium"
 }
 
 variable "consul_bootstrap_expect" {
