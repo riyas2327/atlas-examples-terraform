@@ -96,6 +96,3 @@ terraform apply aws-intermediate-consul-cluster/terraform/
 ```
 terraform destroy aws-intermediate-consul-cluster/terraform/
 ```
-
-> Note: The `environment-variables.sh` script does not need to be sourced
-each time, but is there for ease of copying and pasting.
