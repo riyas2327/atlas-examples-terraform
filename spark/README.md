@@ -4,50 +4,52 @@ The goal of this project is to deploy a Spark cluster on AWS using Packer, Terra
 
 # Atlas Deployment Steps
 
-## Prerequisites
+Run the commands below from the `spark` directory.
 
-1. Set environment variables on your local machine:
-    ```
-    # for Atlas
-    export ATLAS_USERNAME=YOUR_USERNAME                # Change this value.
-    export ATLAS_TOKEN=YOUR_TOKEN                      # Change this value.
+### Packer
 
-    export ATLAS_ENVIRONMENT=spark
+```
+packer push packer/spark-consul.json
+```
 
-    # for Packer
-    export AWS_DEFAULT_REGION=us-east-1
-    export SOURCE_AMI=ami-9a562df2
+```
+packer push packer/spark-master.json
+```
 
-    # for Terraform
-    export TF_VAR_region=$AWS_DEFAULT_REGION
-    export TF_VAR_source_ami=$SOURCE_AMI
+```
+packer push packer/spark-slave.json
+```
 
-    # for AWS
-    export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY           # Change this value.
-    export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY       # Change this value.
-    ```
+### Terraform
 
-## Builds
+Once the Packer builds have completed, you can proceed with the Terraform commands.
 
-1. In the `packer/` directory, run `packer push -name="$ATLAS_USERNAME/consul" consul.json`.
-1. Set the following variables to your build in Atlas:
-    ```
-    AWS_DEFAULT_REGION
-    SOURCE_AMI
-    AWS_ACCESS_KEY_ID
-    AWS_SECRET_ACCESS_KEY
-    ```
+#### Configure for Atlas
 
-1. Click *Rebuild* on your failed build.
-1. Repeat for `spark-master.json` and `spark-slave.json` also in the `packer/` directory.
+```
+terraform remote config -backend="Atlas" -backend-config="name=$ATLAS_USERNAME/spark-cluster"
+```
 
-## Environments
+#### Get Terraform Modules
 
-1. In the `terraform` directory, run `terraform remote config -backend="Atlas" -backend-config="name=$ATLAS_USERNAME/$ATLAS_ENVIRONMENT"`.
-1. In the `terraform` directory, run `terraform push -var="access_key=$AWS_ACCESS_KEY_ID" -var="secret_key=$AWS_SECRET_ACCESS_KEY" -var="region=$AWS_DEFAULT_REGION" -var="source_ami=$SOURCE_AMI" -var="atlas_user_token=$ATLAS_TOKEN" -var="atlas_username=$ATLAS_USERNAME" -var="atlas_environment=$ATLAS_ENVIRONMENT" -name="$ATLAS_USERNAME/$ATLAS_ENVIRONMENT"`.
+```
+terraform get -update terraform/
+```
 
-For future Terraform changes after the initial `push`, you can run just `terraform push -name="$ATLAS_USERNAME/$ATLAS_ENVIRONMENT" -input=false`.
+#### Push To Atlas
 
-## Spark Example Application
+```
+terraform push -vcs=false -name="$ATLAS_USERNAME/spark-cluster" terraform/
+```
 
-1. Once the cluster is *ALIVE*, run `MASTER=spark://MASTER_HOSTNAME:7077 /opt/spark/default/bin/run-example SparkPi 10` from any of the Spark instances to run an example Spark application.
+#### Apply with Terraform Locally
+
+```
+terraform apply terraform/
+```
+
+#### Destroy with Terraform Locally
+
+```
+terraform destroy terraform/
+```
