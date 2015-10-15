@@ -1,3 +1,11 @@
+//
+// Variables
+//
+variable "key_name" {}
+
+//
+// Outputs
+//
 output "path" {
   value = "${path.module}"
 }
