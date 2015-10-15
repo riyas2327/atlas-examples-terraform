@@ -5,7 +5,7 @@
   },
 
   "atlas_join": true,
-  "atlas_infrastructure": "{{ atlas_organization }}/{{ atlas_environment }}",
+  "atlas_infrastructure": "{{ atlas_username }}/{{ atlas_environment }}",
   "atlas_token": "{{ atlas_token }}",
 
   "data_dir": "/opt/consul/data",
