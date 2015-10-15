@@ -2,6 +2,9 @@ variable "access_key" {}
 variable "secret_key" {}
 variable "region" {}
 
+//
+// Atlas Variables
+//
 variable "atlas_token" { }
 variable "atlas_organization" {}
 variable "atlas_environment" {}
