@@ -4,7 +4,7 @@ resource "template_file" "west_consul_update" {
   vars {
     region                  = "${var.region_west}"
     atlas_token             = "${var.atlas_token}"
-    atlas_organization      = "${var.atlas_organization}"
+    atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
     consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
   }
