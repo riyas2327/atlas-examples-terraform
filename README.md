@@ -13,7 +13,6 @@ Set the environment variables listed below.
 # For Atlas
 ATLAS_TOKEN
 ATLAS_USERNAME
-TF_VAR_atlas_username
 
 # For AWS
 AWS_ACCESS_KEY_ID
@@ -21,9 +20,12 @@ AWS_SECRET_ACCESS_KEY
 AWS_DEFAULT_REGION
 ```
 
-### Atlas Token
+### Atlas Variables
 
 To generate an Atlas Token, visit your account page in [Atlas](https://atlas.hashicorp.com/settings/tokens?utm_source=github&utm_medium=examples&utm_campaign=readme).
+
+Your _Atlas Username_ is either your personal username in Atlas or
+the name of the organization you belong to within Atlas.
 
 ### AWS Access Keys
 
