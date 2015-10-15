@@ -3,7 +3,7 @@
     "region":             "us-east-1",
     "region_west":        "us-west-2",
     "source_ami":         "ami-9a562df2",
-    "atlas_username":     "{{ env `TF_VAR_atlas_username` }}",
+    "atlas_username":     "{{ env `ATLAS_USERNAME` }}",
     "atlas_name":         "consul_client"
   },
   "builders": [
@@ -13,7 +13,7 @@
       "source_ami":    "{{user `source_ami`}}",
       "instance_type": "t2.micro",
       "ssh_username":  "ubuntu",
-      "ami_name":      "{{user `atlas_name`}}-{{timestamp}}",
+      "ami_name":      "{{user `atlas_username`}}-{{user `atlas_name`}}-{{timestamp}}",
       "ami_regions":   ["{{user `region_west`}}"]
     }
   ],
