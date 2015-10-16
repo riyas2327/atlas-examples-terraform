@@ -4,26 +4,15 @@ Below are different sections referenced throughout the Atlas Examples repo that 
 
 ## Create Atlas Account
 
-Signup for an [Atlas account](https://atlas.hashicorp.com/account/new). The username you use to signup with will be your `ATLAS_USERNAME`. Save this username as an environment variable named `ATLAS_USERNAME`.
+Signup for an [Atlas account](https://atlas.hashicorp.com/account/new). Save the username you used to signup with as an environment variable named `ATLAS_USERNAME`.
 
 ## Generate Atlas Token
 
-After [creating an Atlas account](#create-atlas-account), [generate a token](https://atlas.hashicorp.com/settings/tokens). Save this token as an environment variable named `ATLAS_TOKEN`, and save your Atlas username as an environment variables named `ATLAS_USERNAME`.
-
-#### Atlas Env Vars
-
-- `ATLAS_TOKEN`
-- `ATLAS_USERNAME`
+After [creating an Atlas account](#create-atlas-account), [generate a token](https://atlas.hashicorp.com/settings/tokens). Save this token as an environment variable named `ATLAS_TOKEN`.
 
 ## Generate AWS Keys
 
-[Generate AWS keys](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) to provision infrastructure in Amazon. Generate these keys and save your Access Key ID as an environment variable named `AWS_ACCESS_KEY_ID` and your Secret Access Key as an environment variable named `AWS_SECRET_ACCESS_KEY`. You'll want to save your default AWS region as a third environment variable `AWS_DEFAULT_REGION`.
-
-#### AWS Env Vars
-
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_DEFAULT_REGION`
+[Generate AWS keys](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) to provision infrastructure in Amazon. Generate these keys and save your Access Key ID as an environment variable named `AWS_ACCESS_KEY_ID` and your Secret Access Key as an environment variable named `AWS_SECRET_ACCESS_KEY`. You'll want to save your default AWS region as a third environment variable named `AWS_DEFAULT_REGION`.
 
 ## Generate Certs
 
