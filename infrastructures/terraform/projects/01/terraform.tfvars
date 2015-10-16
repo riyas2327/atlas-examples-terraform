@@ -133,4 +133,4 @@ rabbitmq_vhost = "example"
 
 web_instance_type = "t2.micro"
 web_blue_nodes = "2"
-web_green_nodes = "2"
+web_green_nodes = "0"

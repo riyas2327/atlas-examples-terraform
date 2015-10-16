@@ -8,11 +8,22 @@ Signup for an [Atlas account](https://atlas.hashicorp.com/account/new). The user
 
 ## Generate Atlas Token
 
-After [creating an Atlas account](#create-atlas-account), [generate a token](https://atlas.hashicorp.com/settings/tokens). Save this token as an environment variable named `ATLAS_TOKEN`.
+After [creating an Atlas account](#create-atlas-account), [generate a token](https://atlas.hashicorp.com/settings/tokens). Save this token as an environment variable named `ATLAS_TOKEN`, and save your Atlas username as an environment variables named `ATLAS_USERNAME`.
+
+#### Atlas Env Vars
+
+- `ATLAS_TOKEN`
+- `ATLAS_USERNAME`
 
 ## Generate AWS Keys
 
-[Generate AWS keys](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) to provision infrastructure in Amazon. Generate these keys and save your Access Key ID as an environment variable named `AWS_ACCESS_KEY_ID` and your Secret Access Key as an environment variable named `AWS_SECRET_ACCESS_KEY`.
+[Generate AWS keys](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/AWSCredentials.html) to provision infrastructure in Amazon. Generate these keys and save your Access Key ID as an environment variable named `AWS_ACCESS_KEY_ID` and your Secret Access Key as an environment variable named `AWS_SECRET_ACCESS_KEY`. You'll want to save your default AWS region as a third environment variable `AWS_DEFAULT_REGION`.
+
+#### AWS Env Vars
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_DEFAULT_REGION`
 
 ## Generate Certs
 
@@ -46,7 +57,7 @@ This will create a .pem and .pub keypair in the location you specified in the fi
 
 Image creation can be done locally or with Atlas, however, all examples run under the assumption you are using Atlas. You will need to have an [Atlas account](https://atlas.hashicorp.com/account/new) to provision using Atlas.
 
-Be sure that your [`ATLAS_USERNAME`](#create-atlas-account), [`ATLAS_TOKEN`](#generate-atlas-token), and any other provider specific variables are set before runing Packer commands.
+It is assumed you have `ATLAS_TOKEN` set as an environment variable. See the [Packer variables section](https://www.packer.io/docs/templates/user-variables.html) for more information on how to pass variables if you do not want to use environment variables.
 
 If this is the first time pushing Packer templates to Atlas, the builds **will fail**, this is okay. After pushing a template, go to the [Atlas Builds tab](https://atlas.hashicorp.com/builds). Navigate to each `Build Configuration`, click on `Variables` in the left navigation, and add the below environment variables based on the provider you're using. Then, queue each build again by going back to `Builds` in the left navigation and clicking `Queue Build`.
 
@@ -124,18 +135,9 @@ To upload your application to Atlas, run
 
 **Before provisioning, make sure you understand that Terraform will create real resources for the specified provider that cost money. If you're deploying a large infrastructure, remember to destroy it when you're done or it could get expensive.**
 
-Update all of the `YOUR_` variables in your projects `terraform.tfvars` file and check that everything is configured to your liking.
-
 The Terraform root module that you should be running all Terraform commands from is the directory of your project that contains the `terraform.tfvars` file.
 
-The following variables are configurable and can be passed in via the command line with the `-var` switch, however, you should be fine running the Terraform commands defined in your project.
-
-- AWS Env Vars
-  - `AWS_ACCESS_KEY_ID` - _(required)_ the AWS access key to use
-  - `AWS_SECRET_ACCESS_KEY` - _(required)_ the AWS secret key to use
-  - `AWS_DEFAULT_REGION` - _(optional)_ the AWS region to use, defaults to `us-east-1`
-
-See the [Terraform variables section](https://www.terraform.io/intro/getting-started/variables.html) for more information on how to pass variables.
+It is assumed you have both `ATLAS_TOKEN` and `ATLAS_USERNAME` set as environment variables, if you don't, they'll need to be passed. See the [Terraform variables section](https://www.terraform.io/intro/getting-started/variables.html) for more information on how to pass variables.
 
 Run the Terraform commands specified in your project
 
