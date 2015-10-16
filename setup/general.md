@@ -56,9 +56,7 @@ If this is the first time pushing Packer templates to Atlas, the builds **will f
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
 
-** If you want to use a VPC/Subnet other than your providers default, be sure to fill in `vpc_id` and `subnet_id` for each of the Packer templates. If you're using AWS and deleted the default VPC, or one does not exist (Amazon EC2 "Classic" accounts), follow [these steps](../setup/vpc.md) to manually create one, or [create one with Terraform](terraform/aws/network/main.tf). **
-
-Wait for the build(s) to finish and an `Artifact` to successfully be created before moving to the next step.
+** If you want to use a VPC/Subnet other than your providers default, be sure to fill in `vpc_id` and `subnet_id` for each of the Packer templates. If you're using AWS and deleted the default VPC, or one does not exist (Amazon EC2 "Classic" accounts), follow [these steps](../setup/vpc.md) to manually create one, or create one with Terraform. **
 
 ### Packer Templates
 
@@ -100,7 +98,7 @@ Upload the application using [GitHub](https://atlas.hashicorp.com/help/applicati
 
 Now that you have linked the Build Template, upload your application to kick off a new build.
 
-### GitHub Integration
+#### GitHub Integration
 
 Go to "Integrations" in the left navigation of your "Application" in Atlas. Authenticate with GitHub if you have not already done so, then enter the integration information supplied by your project and click "Associate".
 
@@ -108,13 +106,13 @@ Go to "Integrations" in the left navigation of your "Application" in Atlas. Auth
 
 To compile "Applications" in Atlas, you need a `compile.json` file in the root directory of your application that tells Atlas how to compile it.
 
-When [creating your Application](#upload-applications), you should have checked "Compile Application". You can update this by going to "Settings" in the left navigation of your application.
+When [uploading your Application](#upload-applications), you should have checked "Compile Application". You can update this by going to "Settings" in the left navigation of your application.
 
 If you're using the GitHub Integration for your application upload, this will be the file that you will provide the path for when entering the "Application template".
 
 ## Atlas Upload CLI
 
-To upload "Applications" to Atlas using the Atlas Upload CLI, get the [tool](https://github.com/hashicorp/atlas-upload-cli) first. You can use one of the included [sample apps](apps), or upload an existing one.
+To upload "Applications" to Atlas using the Atlas Upload CLI, get the [tool](https://github.com/hashicorp/atlas-upload-cli) first.
 
 To upload your application to Atlas, run
 
@@ -122,7 +120,7 @@ To upload your application to Atlas, run
 
 ## Deploy with Terraform
 
-**Before provisioning, make sure you understand that Terraform will create real resources for the specified provider that cost money. If you're deploying a large infrastructure, remember to destroy it when you're done or it could get expensive.**
+**Before provisioning, make sure you understand that Terraform will create real resources for the specified provider that potentially cost money. If you're deploying a large infrastructure, remember to destroy it when you're done or it could get expensive.**
 
 The Terraform root module that you should be running all Terraform commands from is the directory of your project that contains the `terraform.tfvars` file.
 

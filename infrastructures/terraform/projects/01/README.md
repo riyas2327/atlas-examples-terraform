@@ -7,6 +7,7 @@ This project will deploy an end to end infrastructure including the below resour
   - 3 Public subnets
   - 3 Private subnets
   - 3 Ephemeral subnets
+    - Ephemeral nodes (nodes that are recycled often like ASG nodes), need to be in separate subnets from long-running nodes (like ElastiCache and RDS) because AWS maintains an ARP cache with a semi-long expiration time. So if node A with IP 10.0.0.123 gets terminated, and node B comes in and picks up 10.0.0.123 in a relatively short period of time, the stale ARP cache entry will still be there, so traffic will just fail to reach the new node.
   - NAT
   - OpenVPN
   - Bastion host
@@ -38,8 +39,6 @@ First read the [Building Images with Packer](../../../../setup/general.md#buildi
 Then, follow the [Packer base template docs](../../../../setup/general.md#base-packer-templates) to run the below commands.
 
 Remember, all `packer push` commands must be performed in the base [`infrastructures`](../../../.) directory.
-
-Be sure to replace `YOUR_CERT_NAME` for the `cert_name` variable in [base.json](../../../packer/aws/ubuntu/base.json#L13) with the certificate name you used when [generating a cert](../../../../setup/general.md#generate-certs). This was the third parameter passed into `sh gen_cert.sh`.
 
     $ packer push packer/aws/ubuntu/base.json
     $ packer push packer/aws/windows/base.json

@@ -35,8 +35,6 @@ Then, follow the [Packer base template docs](../../../../setup/general.md#base-p
 
 Remember, all `packer push` commands must be performed in the base [`infrastructures`](../../../.) directory.
 
-Be sure to replace `YOUR_CERT_NAME` for the `cert_name` variable in [base.json](../../../packer/aws/ubuntu/base.json#L13) with the certificate name you used when [generating a cert](../../../../setup/general.md#generate-certs). This was the third parameter passed into `sh gen_cert.sh`.
-
     $ packer push packer/aws/windows/base.json
 
 ## Create Child Artifacts with Packer
@@ -82,6 +80,6 @@ If everything looks good, run
 
     $ terraform push -name $ATLAS_USERNAME/example-02 -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
-This takes about 20 minutes to run as RDS takes quite awhile to provision. Don't forget to `terraform destroy` you're environment when your done so you don't rack up AWS bills (unless you plan on keeping it around).
+This takes about 10 minutes to run as RDS takes quite awhile to provision. Don't forget to `terraform destroy` you're environment when your done so you don't rack up AWS bills (unless you plan on keeping it around).
 
 That's it!
