@@ -17,6 +17,7 @@ service consul restart
 echo "Consul config updated"
 
 sed -i -- "s/{{ node_name }}/${node_name}/g" /etc/vault.d/vault_config.hcl
+sed -i -- "s/{{ cert_name }}/${cert_name}/g" /etc/vault.d/vault_config.hcl
 
 service vault restart
 

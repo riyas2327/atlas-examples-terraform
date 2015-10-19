@@ -14,36 +14,10 @@ region = "us-east-1"
 # change is reflected when doing `terraform remote config` and
 # `terraform push` commands - changing this WILL affect your
 # terraform.tfstate file, so use caution
-atlas_environment = "example-01"
+atlas_environment = "example-02"
 name              = "example"
 cert_name         = "example"
 key_name          = "example"
-
-#--------------------------------------------------------------
-# Access
-#--------------------------------------------------------------
-
-# Update to reflect your organizations admins
-iam_admins = "user1,user2"
-
-#--------------------------------------------------------------
-# AWS Artifacts
-#--------------------------------------------------------------
-
-# If any of these artifact names are changed in the Packer templates,
-# they must also be changed here
-aws_consul_latest_name      = "aws-ubuntu-consul"
-aws_consul_pinned_name      = "aws-ubuntu-consul"
-aws_consul_pinned_version   = "latest"
-aws_vault_latest_name       = "aws-ubuntu-vault"
-aws_vault_pinned_name       = "aws-ubuntu-vault"
-aws_vault_pinned_version    = "latest"
-aws_rabbitmq_latest_name    = "aws-ubuntu-rabbitmq"
-aws_rabbitmq_pinned_name    = "aws-ubuntu-rabbitmq"
-aws_rabbitmq_pinned_version = "latest"
-aws_web_latest_name         = "aws-windows-web"
-aws_web_pinned_name         = "aws-windows-web"
-aws_web_pinned_version      = "latest"
 
 #--------------------------------------------------------------
 # Network
@@ -71,21 +45,17 @@ openvpn_admin_user    = "vpnadmin"
 openvpn_admin_pw      = "sdEKxN2dwDK4FziU6QEKjUeegcC8ZfBYA3fzMgqXfocgQvWGRw"
 openvpn_cidr          = "172.27.139.0/24"
 
-# DNS
-domain = "awsexample.com"
-
 #--------------------------------------------------------------
 # Data
 #--------------------------------------------------------------
 
-# Postgres
 # db_name, db_username, and db_password should be
 # changed to reflect your preferences
 db_name           = "example"
 db_username       = "exampleuser"
 db_password       = "examplepass"
-db_engine         = "postgres"
-db_engine_version = "9.4.1"
+db_engine         = "mysql"
+db_engine_version = "5.6.17"
 db_port           = "5432"
 
 db_az                      = "us-east-1b"
@@ -101,34 +71,18 @@ db_maintenance_window      = "mon:04:03-mon:04:33"
 db_backup_retention_period = "7"
 db_backup_window           = "10:19-10:49"
 
-# Redis
-redis_instance_type = "cache.m1.small"
-redis_port = "6379"
-redis_initial_cached_nodes = "1"
-redis_apply_immediately = "true"
-redis_maintenance_window = "mon:05:00-mon:06:00"
+#--------------------------------------------------------------
+# AWS Artifacts
+#--------------------------------------------------------------
 
-# Consul
-consul_ips           = "10.139.1.4,10.139.2.4,10.139.3.4"
-consul_instance_type = "t2.micro"
-
-# Vault
-vault_count         = "2"
-vault_instance_type = "t2.micro"
-
-# RabbitMQ
-rabbitmq_count         = "1"
-rabbitmq_instance_type = "t2.micro"
-# rabbitmq_blue_nodes = "1"
-# rabbitmq_green_nodes = "0"
-
-# These should all be changed to reflect your preferences
-rabbitmq_username = "exampleuser"
-rabbitmq_password = "3PdgvsyukoG8y39G2rMD"
-rabbitmq_vhost = "example"
+# If any of these artifact names are changed in the Packer templates,
+# they must also be changed here
+aws_web_latest_name         = "aws-windows-web"
+aws_web_pinned_name         = "aws-windows-web"
+aws_web_pinned_version      = "latest"
 
 #--------------------------------------------------------------
-# App
+# Web
 #--------------------------------------------------------------
 
 web_instance_type = "t2.micro"

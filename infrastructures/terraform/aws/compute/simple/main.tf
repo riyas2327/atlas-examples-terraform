@@ -1,40 +1,16 @@
-variable "name" { default = "web" }
+variable "name" { default = "simple" }
 variable "vpc_cidr" {}
 variable "azs" {}
-variable "domain" {}
 variable "key_name" {}
-variable "key_path" {}
 variable "vpc_id" {}
-variable "private_subnet_ids" {}
 variable "public_subnet_ids" {}
+variable "private_subnet_ids" {}
 variable "ssl_cert_crt" {}
 variable "ssl_cert_key" {}
-variable "bastion_host" {}
-variable "bastion_user" {}
 
-variable "user_data" {}
 variable "atlas_username" {}
 variable "atlas_environment" {}
 variable "atlas_token" {}
-variable "consul_ips" {}
-
-variable "db_endpoint" {}
-variable "db_username" {}
-variable "db_password" {}
-variable "db_name" {}
-
-variable "redis_host" {}
-variable "redis_port" {}
-variable "redis_password" {}
-
-variable "rabbitmq_host" {}
-variable "rabbitmq_port" {}
-variable "rabbitmq_username" {}
-variable "rabbitmq_password" {}
-variable "rabbitmq_vhost" {}
-
-variable "vault_private_ip" {}
-variable "vault_domain" {}
 
 variable "instance_type" {}
 variable "blue_ami" {}
@@ -45,7 +21,7 @@ variable "green_nodes" {}
 resource "aws_security_group" "elb" {
   name        = "${var.name}.elb"
   vpc_id      = "${var.vpc_id}"
-  description = "Security group for Web ELB"
+  description = "Security group for Simple ELB"
 
   tags { Name = "${var.name}-elb" }
 
@@ -71,7 +47,7 @@ resource "aws_security_group" "elb" {
   }
 }
 
-resource "aws_iam_server_certificate" "web" {
+resource "aws_iam_server_certificate" "simple" {
   name             = "${var.name}"
   certificate_body = "${file("${var.ssl_cert_crt}")}"
   private_key      = "${file("${var.ssl_cert_key}")}"
@@ -85,7 +61,7 @@ EOF
   }
 }
 
-resource "aws_elb" "web" {
+resource "aws_elb" "simple" {
   name                        = "${var.name}"
   connection_draining         = true
   connection_draining_timeout = 400
@@ -105,7 +81,7 @@ resource "aws_elb" "web" {
     lb_protocol        = "https"
     instance_port      = 80
     instance_protocol  = "http"
-    ssl_certificate_id = "${aws_iam_server_certificate.web.arn}"
+    ssl_certificate_id = "${aws_iam_server_certificate.simple.arn}"
   }
 
   health_check {
@@ -117,12 +93,12 @@ resource "aws_elb" "web" {
   }
 }
 
-resource "aws_security_group" "web" {
-  name        = "${var.name}.web"
+resource "aws_security_group" "simple" {
+  name        = "${var.name}.simple"
   vpc_id      = "${var.vpc_id}"
-  description = "Security group for Web Launch Configuration"
+  description = "Security group for Simple Launch Configuration"
 
-  tags { Name = "${var.name}-web" }
+  tags { Name = "${var.name}-simple" }
 
   ingress {
     protocol    = -1
@@ -139,24 +115,11 @@ resource "aws_security_group" "web" {
   }
 }
 
-resource "template_file" "user_data_blue" {
-  filename = "${var.user_data}"
-
-  vars {
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    atlas_token       = "${var.atlas_token}"
-    node_name         = "${var.name}-blue"
-    service           = "${var.name}"
-  }
-}
-
 resource "aws_launch_configuration" "blue" {
   image_id        = "${var.blue_ami}"
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
-  security_groups = ["${aws_security_group.web.id}"]
-  user_data       = "${template_file.user_data_blue.rendered}"
+  security_groups = ["${aws_security_group.simple.id}"]
 
   # lifecycle { create_before_destroy = true }
 }
@@ -170,7 +133,7 @@ resource "aws_autoscaling_group" "blue" {
   min_elb_capacity     = "${var.blue_nodes}"
   availability_zones   = ["${split(",", var.azs)}"]
   vpc_zone_identifier  = ["${split(",", var.private_subnet_ids)}"]
-  load_balancers       = ["${aws_elb.web.id}"]
+  load_balancers       = ["${aws_elb.simple.id}"]
 
   # lifecycle { create_before_destroy = true }
 
@@ -181,24 +144,11 @@ resource "aws_autoscaling_group" "blue" {
   }
 }
 
-resource "template_file" "user_data_green" {
-  filename = "${var.user_data}"
-
-  vars {
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    atlas_token       = "${var.atlas_token}"
-    node_name         = "${var.name}-green"
-    service           = "${var.name}"
-  }
-}
-
 resource "aws_launch_configuration" "green" {
   image_id        = "${var.green_ami}"
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
-  security_groups = ["${aws_security_group.web.id}"]
-  user_data       = "${template_file.user_data_green.rendered}"
+  security_groups = ["${aws_security_group.simple.id}"]
 
   # lifecycle { create_before_destroy = true }
 }
@@ -212,7 +162,7 @@ resource "aws_autoscaling_group" "green" {
   min_elb_capacity     = "${var.green_nodes}"
   availability_zones   = ["${split(",", var.azs)}"]
   vpc_zone_identifier  = ["${split(",", var.private_subnet_ids)}"]
-  load_balancers       = ["${aws_elb.web.id}"]
+  load_balancers       = ["${aws_elb.simple.id}"]
 
   # lifecycle { create_before_destroy = true }
 
@@ -223,39 +173,5 @@ resource "aws_autoscaling_group" "green" {
   }
 }
 
-module "vault_setup" {
-  source = "../vault_setup"
-
-  name             = "${var.name}"
-  vault_private_ip = "${var.vault_private_ip}"
-  key_path         = "${var.key_path}"
-  bastion_host     = "${var.bastion_host}"
-  bastion_user     = "${var.bastion_user}"
-  consul_ips       = "${var.consul_ips}"
-}
-
-output "remote_commands" {
-  value = <<COMMANDS
-  curl -XPUT http://127.0.0.1:8500/v1/kv/service/${var.name}/vault-addr -d 'https://${var.vault_domain}'
-  (cat <<EOF
-AMQP_URL='amqp://${var.rabbitmq_username}:${var.rabbitmq_password}@${var.rabbitmq_host}:${var.rabbitmq_port}/${var.rabbitmq_vhost}'
-ANALYTICS_ENABLED='1'
-ASSET_HOST=''
-BASE_DOMAIN='${var.domain}'
-DATABASE_URL='postgres://${var.db_username}:${var.db_password}@${var.db_endpoint}/${var.db_name}'
-PRETTY_URL='https://${var.domain}'
-ENV='${var.name}'
-PGBACKUPS_URL=''
-REDIS_URL='redis://:${var.redis_password}@${var.redis_host}:${var.redis_port}'
-SENTRY_DSN=''
-SENTRY_FRONTEND_DSN=''
-VAULT_APP='${var.name}'
-VAULT_ADDR=''
-VAULT_TOKEN=''
-EOF
-) | curl -X PUT 127.0.0.1:8500/v1/kv/service/${var.name}/env --data-binary @-
-COMMANDS
-}
-
-output "dns_name" { value = "${aws_elb.web.dns_name}" }
-output "zone_id"  { value = "${aws_elb.web.zone_id}" }
+output "dns_name" { value = "${aws_elb.simple.dns_name}" }
+output "zone_id"  { value = "${aws_elb.simple.zone_id}" }
