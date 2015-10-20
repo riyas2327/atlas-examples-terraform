@@ -40,9 +40,9 @@ resource "aws_security_group" "haproxy" {
   }
 
   ingress {
-    protocol    = "tcp"
-    from_port   = 1936
-    to_port     = 1936
+    protocol    = -1
+    from_port   = 0
+    to_port     = 0
     cidr_blocks = ["${var.vpc_cidr}"]
   }
 
