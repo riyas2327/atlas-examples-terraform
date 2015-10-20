@@ -2,6 +2,9 @@ variable "name" { default = "haproxy" }
 variable "vpc_id" {}
 variable "vpc_cidr" {}
 variable "user_data" {}
+variable "atlas_username" {}
+variable "atlas_environment" {}
+variable "atlas_token" {}
 variable "amis" {}
 variable "instance_type" {}
 variable "key_name" {}
