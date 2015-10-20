@@ -50,7 +50,7 @@ resource "template_file" "user_data" {
 
 resource "aws_instance" "haproxy" {
   ami           = "${element(split(",", var.amis), count.index)}"
-  count         = "${var.count}"
+  count         = "${length(split(",", var.amis))}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
   subnet_id     = "${element(split(",", var.subnet_ids), count.index)}"
