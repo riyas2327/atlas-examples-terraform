@@ -79,4 +79,5 @@ resource "aws_instance" "haproxy" {
   tags { Name = "${var.name}" }
 }
 
-output "ip" { value = "${aws_instance.haproxy.public_ip}" }
+output "private_ip" { value = "${aws_instance.haproxy.private_ip}" }
+output "public_ip"  { value = "${aws_instance.haproxy.public_ip}" }
