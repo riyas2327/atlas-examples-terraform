@@ -1,17 +1,18 @@
 variable "atlas_username" {}
+variable "type" { default = "amazon.ami" }
 variable "latest_name"    {}
 variable "pinned_name"    {}
 variable "pinned_version" { default = "latest" }
 
 resource "atlas_artifact" "latest" {
   name = "${var.atlas_username}/${var.latest_name}"
-  type = "amazon.ami"
+  type = "${var.type}"
   version = "latest"
 }
 
 resource "atlas_artifact" "pinned" {
   name = "${var.atlas_username}/${var.pinned_name}"
-  type = "amazon.ami"
+  type = "${var.type}"
   version = "${var.pinned_version}"
 }
 
