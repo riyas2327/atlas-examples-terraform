@@ -1,5 +1,5 @@
-variable "atlas_username" {}
 variable "type" { default = "amazon.ami" }
+variable "atlas_username" {}
 variable "latest_name"    {}
 variable "pinned_name"    {}
 variable "pinned_version" { default = "latest" }
