@@ -12,7 +12,7 @@
     "winrm_username": "Administrator",
     "user_data_file": "packer/scripts/windows/ec2_user_data.conf",
     "scripts_dir":    "packer/scripts/windows",
-    "app_dir":       "apps/ASP.NET"
+    "slug_app_dir":   "app/"
   },
   "push": {
     "name": "{{user `atlas_username`}}/{{user `name`}}",
@@ -58,7 +58,7 @@
     },
     {
       "type": "file",
-      "source": "/packer/app",
+      "source": "{{user `slug_app_dir`}}",
       "destination": "C:\\{{user `name`}}"
     },
     {

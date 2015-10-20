@@ -10,7 +10,7 @@
     "ssh_username":    "ubuntu",
     "scripts_dir":     "packer/scripts/ubuntu",
     "certs_dir":       "terraform/certs",
-    "cert_name":       "YOUR_CERT_NAME.crt",
+    "cert_name":       "example.crt",
     "consul_download": "https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip",
     "consul_web_ui":   "https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip"
   },

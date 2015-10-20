@@ -52,8 +52,9 @@ resource "template_file" "user_data" {
     atlas_username    = "${var.atlas_username}"
     atlas_environment = "${var.atlas_environment}"
     atlas_token       = "${var.atlas_token}"
-    node_name         = "${var.name}.${count.index+1}"
     service           = "${var.name}"
+    node_name         = "${var.name}.${count.index+1}"
+    cert_name         = "${var.ssl_cert_name}"
   }
 }
 
