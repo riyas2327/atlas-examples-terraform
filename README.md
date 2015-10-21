@@ -7,12 +7,19 @@ for [Atlas](https://atlas.hashicorp.com/) by HashiCorp.
 
 | Example | Description | Tools Used |
 | ------- | ----------- | ---------- |
-| [consul-cluster](consul-cluster/) | Deploy and bootstrap a consul-cluster in various configurations. | Atlas, Consul, Packer, and Terraform |
-| google-hyperspace | Deploy a real-time multiplayer space shooter game to Google Compute Engine. | Atlas, Packer, and Terraofrm |
+| [HAProxy-Nodejs](HAProxy-Nodejs) | Deploy a HAProxy and Node.js application on AWS. | Atlas, Consul, Packer, and Terraform |
+| [consul-cluster](consul-cluster) | Deploy and bootstrap a consul-cluster in various configurations. | Atlas, Consul, Packer, and Terraform |
+| [google-hyperspace](google-hyperspace) | Deploy a real-time multiplayer space shooter game to Google Compute Engine. | Atlas, Packer, and Terraform |
+| [infrastructures](infrastructures) | Deploy full application architectures including database, cache, and messaging servers. | Atlas, Consul, Packer, Terraform, and Vault |
+| [metamon](metamon) | Deploy a python web app to AWS using Ansible for configuration. | Atlas, Packer, and Terraform |
+| [nomad-cluster](nomad-cluster) | Deploy and bootstrap a Nomad cluster on AWS. | Atlas, Nomad, and Terraform |
+| [spark](spark) | Deploy a Spark cluster to AWS. | Atlas, Consul, consul-template, and Terraform |
 
 ## Setup
 
-Set the environment variables listed below.
+Examples should use common inputs and structures as much as possible.
+The most commonly used environment variables for the examples are listed
+and explained below.
 
 ### Environment Variables
 
@@ -27,23 +34,31 @@ AWS_SECRET_ACCESS_KEY
 AWS_DEFAULT_REGION
 ```
 
+See the  [Environment variable](https://en.wikipedia.org/wiki/Environment_variable)
+article on Wikipedia for an explanation of how to set and use
+environment variables.
+
 ### Atlas Variables
 
-To generate an Atlas Token, visit your account page in [Atlas](https://atlas.hashicorp.com/settings/tokens?utm_source=github&utm_medium=examples&utm_campaign=readme).
+To generate an _Atlas Token_, visit your account page in [Atlas](https://atlas.hashicorp.com/settings/tokens?utm_source=github&utm_medium=examples&utm_campaign=readme).
 
-Your _Atlas Username_ is either your personal username in Atlas or
-the name of the organization you belong to within Atlas.
+_Atlas Username_ can be either your personal username in Atlas (e.g., clstokes) or
+the name of the organization you belong to within Atlas (e.g., hashicorp).
 
-### AWS Access Keys
+### Amazon Web Services Credentials
 
-To generate AWS access keys, visit the [IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-1#home).
+Visit the [IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-1#home) and follow th instructions at [Managing Access Keys for IAM Users](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html).
+
+### Google Cloud Platform Credentials
+
+Visit the [Google Developers Console](https://console.developers.google.com/) and follow the instructions at  [Service accounts](https://developers.google.com/console/help/new/#serviceaccounts).
 
 ## Writing Examples
 
 Pretty simple - create a folder named after the example. Add a README if
 setup is required, and add supporting files.
 
-> Please try to follow the above environment variables as inputs to keep
+> Please try to adhere to the above environment variables to keep
 projects consistent and easy to adopt.
 
 ## Issues
