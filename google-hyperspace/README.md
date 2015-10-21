@@ -21,7 +21,7 @@ credit card on file.
    billing and reviewed / accepted the terms of service.
 2. Next, make sure to create a new GCP Project and record the Project ID.
 3. Navigate to the Compute - Compute Engine page and ensure GCE is ready.
-4. Finnaly, navigate to APIs & auth - Credentials and under Service Accounts
+4. Finally, navigate to APIs & auth - Credentials and under Service Accounts
    download the JSON account file. You will need to name this file `pkey.json`
    and save the file in both the `packer/` directory and `terraform/`
    directories.
