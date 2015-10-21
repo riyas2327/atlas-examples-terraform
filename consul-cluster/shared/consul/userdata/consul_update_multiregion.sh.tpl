@@ -7,7 +7,7 @@ FILE_TMP=$FILE_FINAL.tmp
 
 sed -i -- "s/{{ region }}/${region}/g" $FILE_TMP
 sed -i -- "s/{{ atlas_token }}/${atlas_token}/g" $FILE_TMP
-sed -i -- "s/{{ atlas_organization }}/${atlas_organization}/g" $FILE_TMP
+sed -i -- "s/{{ atlas_username }}/${atlas_username}/g" $FILE_TMP
 sed -i -- "s/{{ atlas_environment }}/${atlas_environment}/g" $FILE_TMP
 # Note: consul_bootstrap_expect isn't required for consul clients, only servers.
 sed -i -- "s/{{ consul_bootstrap_expect }}/${consul_bootstrap_expect}/g" $FILE_TMP

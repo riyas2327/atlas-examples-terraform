@@ -10,7 +10,7 @@ best practices for operating Nomad in production.
 To configure the project for [Atlas](https://atlas.hashicorp.com/), run:
 
 ```
-terraform remote config -backend=Atlas -backend-config=name=$ATLAS_ORGANIZATION/$ATLAS_ENVIRONMENT
+terraform remote config -backend=Atlas -backend-config=name=$ATLAS_USERNAME/nomad-cluster
 ```
 
 #### Environment Setup
@@ -20,7 +20,7 @@ Run the commands below and then click _Confirm & Apply_ on the new environment i
 ```
 $ terraform get -update aws-beginner-nomad-cluster/terraform/
 ...
-$ terraform push -vcs=false -name=$ATLAS_ORGANIZATION/$ATLAS_ENVIRONMENT aws-beginner-nomad-cluster/terraform/
+$ terraform push -vcs=false -name=$ATLAS_USERNAME/nomad-cluster aws-beginner-nomad-cluster/terraform/
 ```
 
 #### Environment Teardown

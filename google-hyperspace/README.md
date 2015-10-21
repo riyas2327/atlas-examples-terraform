@@ -21,7 +21,7 @@ credit card on file.
    billing and reviewed / accepted the terms of service.
 2. Next, make sure to create a new GCP Project and record the Project ID.
 3. Navigate to the Compute - Compute Engine page and ensure GCE is ready.
-4. Finaly, navigte to APIs & auth - Credentials and under Service Accounts
+4. Finally, navigate to APIs & auth - Credentials and under Service Accounts
    download the JSON account file. You will need to name this file `pkey.json`
    and save the file in both the `packer/` directory and `terraform/`
    directories.
@@ -133,4 +133,3 @@ NOTE: The images you built are stored as `atlas_artifacts` and won't be
 
 # TODO
 1. Add support for consul to better match the HAProxy/Nodejs example
-
