@@ -3,6 +3,13 @@
 This repository contains application and infrastructure examples
 for [Atlas](https://atlas.hashicorp.com/) by HashiCorp.
 
+## Examples
+
+| Example | Description | Tools Used |
+| ------- | ----------- | ---------- |
+| [consul-cluster](consul-cluster/) | Deploy and bootstrap a consul-cluster in various configurations. | Atlas, Consul, Packer, and Terraform |
+| google-hyperspace | Deploy a real-time multiplayer space shooter game to Google Compute Engine. | Atlas, Packer, and Terraofrm |
+
 ## Setup
 
 Set the environment variables listed below.
