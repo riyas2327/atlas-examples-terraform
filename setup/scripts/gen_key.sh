@@ -48,4 +48,6 @@ else
     chmod 400 $KEY.pem
     ssh-keygen -y -f $KEY.pem > $KEY.pub
   fi
+
+  ssh-add $KEY.pem
 fi

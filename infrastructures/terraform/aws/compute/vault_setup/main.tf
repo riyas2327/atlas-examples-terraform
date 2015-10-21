@@ -68,6 +68,11 @@ vault policy-write ${var.name} /tmp/${var.name}-policy.hcl
 echo "Creating Vault token..."
 TOKEN=$(vault token-create -policy=${var.name} | grep ^token[^_] | awk '{print $2}')
 
+echo "Saving Vault token in env var for Consul Template..."
+BASHRCPATH="~/.bashrc"
+sh -c echo -e "\n" >> $BASHRCPATH
+echo "export VAULT_TOKEN=$TOKEN" | tee -a $BASHRCPATH
+
 echo "Saving Vault token to Consul"
 curl -XPUT http://127.0.0.1:8500/v1/kv/service/${var.name}/vault-token -d $TOKEN
 
