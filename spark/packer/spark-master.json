@@ -28,13 +28,13 @@
     },
     {
       "type": "file",
-      "source": "files/init/consul_bootstrap.conf",
+      "source": "files/init/consul_client.conf",
       "destination": "/etc/init/consul.conf"
     },
     {
       "type": "file",
-      "source": "files/consul.d/consul-server.json",
-      "destination": "/etc/consul.d/consul-server.json"
+      "source": "files/consul.d/consul-client.json",
+      "destination": "/etc/consul.d/consul-client.json"
     },
     {
       "type": "file",

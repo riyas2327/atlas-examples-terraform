@@ -20,10 +20,6 @@
     },
     {
       "type": "shell",
-      "script": "files/installers/spark-install.sh"
-    },
-    {
-      "type": "shell",
       "script": "files/installers/consul-install.sh"
     },
     {
