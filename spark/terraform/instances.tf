@@ -53,7 +53,7 @@ resource "aws_instance" "consul" {
     instance_type = "${var.instance_type}"
     ami = "${atlas_artifact.spark-consul.metadata_full.region-us-east-1}"
     key_name = "${aws_key_pair.main.key_name}"
-    count = "2"
+    count = "3"
 
     user_data = "${template_file.consul-update.rendered}"
 

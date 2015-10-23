@@ -16,26 +16,30 @@
   "provisioners": [
     {
       "type": "shell",
+      "script": "files/installers/ubuntu-install.sh"
+    },
+    {
+      "type": "shell",
+      "script": "files/installers/spark-install.sh"
+    },
+    {
+      "type": "shell",
       "script": "files/installers/consul-install.sh"
     },
     {
       "type": "file",
-      "source": "files/init/consul_bootstrap.conf",
+      "source": "files/init/consul_client.conf",
       "destination": "/etc/init/consul.conf"
     },
     {
       "type": "file",
-      "source": "files/consul.d/consul-server.json",
-      "destination": "/etc/consul.d/consul-server.json"
+      "source": "files/consul.d/consul-client.json",
+      "destination": "/etc/consul.d/consul-client.json"
     },
     {
       "type": "file",
       "source": "files/consul.d/spark-master.json",
       "destination": "/etc/consul.d/spark-master.json"
-    },
-    {
-      "type": "shell",
-      "script": "files/installers/spark-install.sh"
     }
   ],
   "push": {
