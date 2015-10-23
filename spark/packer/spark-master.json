@@ -16,6 +16,14 @@
   "provisioners": [
     {
       "type": "shell",
+      "script": "files/installers/ubuntu-install.sh"
+    },
+    {
+      "type": "shell",
+      "script": "files/installers/spark-install.sh"
+    },
+    {
+      "type": "shell",
       "script": "files/installers/consul-install.sh"
     },
     {
@@ -32,10 +40,6 @@
       "type": "file",
       "source": "files/consul.d/spark-master.json",
       "destination": "/etc/consul.d/spark-master.json"
-    },
-    {
-      "type": "shell",
-      "script": "files/installers/spark-install.sh"
     }
   ],
   "push": {

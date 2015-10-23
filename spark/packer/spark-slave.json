@@ -16,6 +16,14 @@
   "provisioners": [
     {
       "type": "shell",
+      "script": "files/installers/ubuntu-install.sh"
+    },
+    {
+      "type": "shell",
+      "script": "files/installers/spark-install.sh"
+    },
+    {
+      "type": "shell",
       "script": "files/installers/consul-install.sh"
     },
     {
@@ -46,10 +54,6 @@
       "type": "file",
       "source": "files/init/consul_template.conf",
       "destination": "/etc/init/consul_template.conf"
-    },
-    {
-      "type": "shell",
-      "script": "files/installers/spark-install.sh"
     }
   ],
   "push": {
