@@ -2,14 +2,21 @@
 
 set -e
 
-CT_VERSION=0.10.0
+CT_VERSION=0.11.0
+
+# install consul
+echo "Installing dependencies..."
+sudo apt-get install -y unzip
 
 echo "Fetching consul-template..."
-wget -q https://github.com/hashicorp/consul-template/releases/download/v${CT_VERSION}/consul-template_${CT_VERSION}_linux_amd64.tar.gz
+cd /tmp/
+wget -q https://github.com/hashicorp/consul-template/releases/download/v${CT_VERSION}/consul_template_${CT_VERSION}_linux_amd64.zip  -O consul-template.zip
+
 echo "Installing consul-template..."
-tar xzf consul-template_${CT_VERSION}_linux_amd64.tar.gz
-sudo mv consul-template_${CT_VERSION}_linux_amd64/consul-template /usr/bin
-sudo rmdir consul-template_${CT_VERSION}_linux_amd64
+unzip consul-template.zip
+sudo rm consul-template.zip
+sudo chmod +x consul-template
+sudo mv consul-template /usr/bin/
 sudo mkdir -m 777 /etc/ctmpl
 
 echo "consul-template installation complete."
