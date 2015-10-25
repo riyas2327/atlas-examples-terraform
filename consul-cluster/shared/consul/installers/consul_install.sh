@@ -20,9 +20,7 @@ echo "Installing consul..."
 unzip consul.zip
 sudo chmod +x consul
 sudo mv consul /usr/bin/consul
-sudo mkdir -m 777 /etc/consul.d
-sudo chmod a+w /var/log
-sudo chmod a+w /etc/init/
+sudo mkdir -m 0600 /etc/consul.d
 
 # setup consul directories
 sudo mkdir -p /opt/consul/data

@@ -25,12 +25,16 @@
     {
       "type":        "file",
       "source":      "shared/consul/consul.d/consul_server.json",
-      "destination": "/etc/consul.d/consul.json.tmp"
+      "destination": "/tmp/consul.json.tmp"
     },
     {
       "type":        "file",
       "source":      "shared/consul/init/consul.conf",
-      "destination": "/etc/init/consul.conf"
+      "destination": "/tmp/consul.conf"
+    },
+    {
+      "type":   "shell",
+      "script": "shared/consul/installers/consul_conf_install.sh"
     }
   ],
   "push": {
@@ -38,6 +42,7 @@
     "vcs":      false,
     "base_dir": "../../",
     "include": [
+      "shared/consul/installers/consul_conf_install.sh",
       "shared/consul/installers/consul_install.sh",
       "shared/consul/consul.d/consul_server.json",
       "shared/consul/init/consul.conf"
