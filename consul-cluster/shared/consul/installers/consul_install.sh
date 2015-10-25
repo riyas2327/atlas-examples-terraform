@@ -24,7 +24,7 @@ sudo mv consul /usr/bin/consul
 sudo mkdir -m 0600 /etc/consul.d
 
 # setup consul directories
-sudo mkdir -m 0600 -p /opt/consul
+sudo mkdir -m 0600 /opt/consul
 sudo mkdir /opt/consul/data
 sudo mkdir /opt/consul/web
 
