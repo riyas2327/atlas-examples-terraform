@@ -2,7 +2,7 @@
 
 set -ex
 
-CONSUL_VERSION=0.5.2
+CONSUL_VERSION=0.6.0-rc1
 
 sudo apt-get -y update
 
@@ -14,7 +14,8 @@ sudo apt-get install -y curl
 # install consul
 echo "Fetching consul..."
 cd /tmp/
-wget -q https://dl.bintray.com/mitchellh/consul/${CONSUL_VERSION}_linux_amd64.zip -O consul.zip
+
+wget -q https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip -O consul.zip
 
 echo "Installing consul..."
 unzip consul.zip
@@ -29,8 +30,8 @@ sudo mkdir -p /opt/consul/data
 
 # install consul-web
 echo "Fetching consul-web..."
-wget -q https://dl.bintray.com/mitchellh/consul/${CONSUL_VERSION}_web_ui.zip -O consul-web.zip
-unzip consul-web.zip
+wget -q https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip -O consul-web.zip
+unzip consul-web.zip -d dist
 sudo mv dist /opt/consul/web
 
 echo "Consul installation complete."
