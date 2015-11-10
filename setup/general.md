@@ -55,6 +55,7 @@ If this is the first time pushing Packer templates to Atlas, the builds **will f
 - AWS Env Vars
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
+  - `AWS_DEFAULT_REGION`
 
 ** If you want to use a VPC/Subnet other than your providers default, be sure to fill in `vpc_id` and `subnet_id` for each of the Packer templates. If you're using AWS and deleted the default VPC, or one does not exist (Amazon EC2 "Classic" accounts), follow [these steps](../setup/vpc.md) to manually create one, or create one with Terraform. **
 
