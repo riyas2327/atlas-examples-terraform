@@ -33,7 +33,8 @@ resource "aws_instance" "consul_client" {
     }
 
     scripts = [
-      "${module.shared.path}/consul/installers/consul_install.sh"
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -94,7 +95,8 @@ resource "aws_instance" "consul_0" {
     }
 
     scripts = [
-      "${module.shared.path}/consul/installers/consul_install.sh"
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -152,7 +154,8 @@ resource "aws_instance" "consul_1" {
     }
 
     scripts = [
-      "${module.shared.path}/consul/installers/consul_install.sh"
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -210,7 +213,8 @@ resource "aws_instance" "consul_2" {
     }
 
     scripts = [
-      "${module.shared.path}/consul/installers/consul_install.sh"
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 

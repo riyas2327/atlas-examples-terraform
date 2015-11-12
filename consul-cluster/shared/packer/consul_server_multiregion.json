@@ -31,6 +31,10 @@
       "type":        "file",
       "source":      "shared/consul/init/consul.conf",
       "destination": "/etc/init/consul.conf"
+    },
+    {
+      "type":   "shell",
+      "script": "shared/consul/installers/dnsmasq_install.sh"
     }
   ],
   "push": {
@@ -39,6 +43,7 @@
     "base_dir": "../../",
     "include": [
       "shared/consul/installers/consul_install.sh",
+      "shared/consul/installers/dnsmasq_install.sh",
       "shared/consul/consul.d/consul_server_multiregion.json",
       "shared/consul/init/consul.conf"
     ]
