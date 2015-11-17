@@ -1,0 +1,48 @@
+{
+    "variables": {
+        "app_slug": "{{ env `ATLAS_APPLICATION_SLUG` }}",
+        "bundle_without": "development test"
+    },
+    "builders": [
+        {
+            "type": "docker",
+            "image": "justincampbell/rails-compile",
+            "commit": true
+
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": ".",
+            "destination": "/tmp/app"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "cd /tmp/app",
+                "bundle install --path vendor/bundle --deployment --retry 3 --without {{ user `bundle_without` }}",
+                "tar czf /tmp/slug.tar.gz ."
+            ]
+        },
+        {
+            "type": "file",
+            "source": "/tmp/slug.targ.gz",
+            "destination": "slug.tar.gz",
+            "direction": "download"
+        }
+    ],
+    "post-processors": [
+        [
+            {
+                "type": "artifice",
+                "files": ["slug.tar.gz"]
+            },
+            {
+                "type": "atlas",
+                "artifact": "{{ user `app_slug` }}",
+                "artifact_type": "archive"
+            }
+        ]
+    ]
+}
