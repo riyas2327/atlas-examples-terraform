@@ -4,8 +4,8 @@ set -e
 
 cd /tmp
 
-CONSULURL=https://releases.hashicorp.com/consul/0.6.0-rc1/consul_0.6.0-rc1_linux_amd64.zip
-CONSULUI=https://releases.hashicorp.com/consul/0.6.0-rc1/consul_0.6.0-rc1_web_ui.zip
+CONSULURL=https://releases.hashicorp.com/consul/0.6.0-rc2/consul_0.6.0-rc2_linux_amd64.zip
+CONSULUI=https://releases.hashicorp.com/consul/0.6.0-rc2/consul_0.6.0-rc2_web_ui.zip
 CONSULCONFIGDIR=/etc/consul.d
 CONSULDIR=/opt/consul
 
