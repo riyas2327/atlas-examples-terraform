@@ -87,7 +87,7 @@
   "post-processors": [
     {
       "type": "atlas",
-      "artifact": "{{user `atlas_username`}}/{{user `us_east_1_name`}}",
+      "artifact": "{{user `atlas_username`}}/{{user `name`}}",
       "artifact_type": "amazon.image",
       "metadata": {
         "created_at": "{{timestamp}}"
