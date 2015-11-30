@@ -18,7 +18,7 @@ apt-get install -y apt-transport-https ca-certificates
 sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main > /etc/apt/sources.list.d/passenger.list'
 apt-get update
 # Install Passenger + Apache module
-apt-get install -y libapache2-mod-passenger
+apt-get install -y --force-yes libapache2-mod-passenger
 a2enmod passenger
 
 cp $CONFIGDIR/apache2/rails.conf /etc/apache2/sites-available/rails.conf
