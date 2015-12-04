@@ -13,6 +13,8 @@ module "shared" {
 //
 // Variables
 //
+variable "atlas_token"       {}
+variable "atlas_username"    {}
 variable "atlas_environment" { default = "nomad-cluster" }
 
 variable "region"        { default = "us-east-1" }

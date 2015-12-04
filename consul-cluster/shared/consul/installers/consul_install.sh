@@ -4,17 +4,16 @@ set -ex
 
 CONSUL_VERSION=0.6.0
 
-sudo apt-get -y update
+apt-get -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -y unzip
-sudo apt-get install -y curl
+apt-get install -y unzip
+apt-get install -y curl
 
 # install consul
 echo "Fetching consul..."
 cd /tmp/
-
 wget -q https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip -O consul.zip
 
 echo "Installing consul..."

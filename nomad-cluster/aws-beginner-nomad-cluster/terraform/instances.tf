@@ -259,6 +259,31 @@ CMD
 }
 
 //
+// Consul Servers
+//
+
+module "consul" {
+  source = "../../../consul-cluster/aws-beginner-consul-cluster"
+  # source = "github.com/hashicorp/atlas-examples/consul-cluster/aws-beginner-consul-cluster"
+
+  atlas_token       = "${var.atlas_token}"
+  atlas_username    = "${var.atlas_username}"
+  atlas_environment = "${var.atlas_environment}"
+}
+
+
+resource "template_file" "consul_update" {
+  filename = "${module.consul.shared_path}/consul/userdata/consul_update.sh.tpl"
+
+  vars {
+    region                  = "${var.region}"
+    atlas_token             = "${var.atlas_token}"
+    atlas_username          = "${var.atlas_username}"
+    atlas_environment       = "${var.atlas_environment}"
+  }
+}
+
+//
 // Nomad Clients
 //
 resource "aws_instance" "nomad_client" {
@@ -282,11 +307,61 @@ resource "aws_instance" "nomad_client" {
       agent    = "false"
     }
 
+    scripts = [
+      "${module.consul.shared_path}/consul/installers/consul_install.sh",
+      "${module.consul.shared_path}/consul/installers/dnsmasq_install.sh",
+      "${module.shared.path}/nomad/installers/docker_install.sh",
+      "${module.shared.path}/nomad/installers/nomad_install.sh"
+    ]
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.consul.shared_path}/consul/consul.d/consul_client.json"
+    destination = "/etc/consul.d/consul.json"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.consul.shared_path}/consul/init/consul.conf"
+    destination = "/etc/init/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = ["${template_file.consul_update.rendered}"]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
+
+consul {
+}
 
 client {
   enabled = true
@@ -334,5 +409,4 @@ CMD
       "sudo start nomad || sudo restart nomad",
     ]
   }
-
 }

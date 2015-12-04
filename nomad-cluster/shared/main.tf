@@ -1,3 +1,5 @@
+variable "key_name" {}
+
 output "path" {
   value = "${path.module}"
 }

@@ -19,6 +19,19 @@ job "web" {
     task "nginx" {
       driver = "docker"
 
+      service {
+        # name = "nginx"
+        tags = ["nginx"]
+        port = "nginx"
+
+        check {
+          name     = "alive"
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
       config {
         image = "nginx"
       }
@@ -26,9 +39,14 @@ job "web" {
       resources {
         cpu = 500 # 500 Mhz
         memory = 256 # 256MB
+
         network {
           mbits = 10
           reserved_ports = [80,443]
+
+          # Request for a dynamic port
+          port "nginx" {
+          }
         }
       }
     }
