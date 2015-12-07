@@ -2,7 +2,7 @@
 
 set -ex
 
-CONSUL_VERSION=0.6.0-rc1
+CONSUL_VERSION=0.6.0
 
 sudo apt-get -y update
 
