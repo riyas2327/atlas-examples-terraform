@@ -14,6 +14,7 @@ sudo apt-get install -y curl
 # install consul
 echo "Fetching consul..."
 cd /tmp/
+
 wget -q https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip -O consul.zip
 
 echo "Installing consul..."
