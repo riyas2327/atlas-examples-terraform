@@ -45,7 +45,3 @@ output "consul_1" {
 output "consul_2" {
   value = "${aws_instance.consul_2.public_ip}"
 }
-
-output "shared_path" {
-  value = "${module.shared.path}"
-}
