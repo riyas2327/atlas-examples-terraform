@@ -18,15 +18,14 @@ wget -q https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_
 
 echo "Installing consul..."
 unzip consul.zip
-rm consul.zip
 sudo chmod +x consul
 sudo mv consul /usr/bin/consul
-sudo mkdir -m 0600 /etc/consul.d
+sudo mkdir -m 777 /etc/consul.d
+sudo chmod a+w /var/log
+sudo chmod a+w /etc/init/
 
 # setup consul directories
-sudo mkdir -m 0600 /opt/consul
-sudo mkdir /opt/consul/data
-sudo mkdir /opt/consul/web
+sudo mkdir -p /opt/consul/data
 
 # install consul-web
 echo "Fetching consul-web..."

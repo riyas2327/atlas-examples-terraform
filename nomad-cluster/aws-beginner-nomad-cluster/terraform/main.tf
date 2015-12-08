@@ -25,7 +25,8 @@ variable "instance_type" { default = "t2.micro" }
 variable "vpc_cidr"  { default = "172.31.0.0/16" }
 variable "vpc_cidrs" { default = "172.31.0.0/20,172.31.16.0/20,172.31.32.0/20" }
 
-variable "nomad_bootstrap_expect" { default = "3" }
+variable "consul_bootstrap_expect" { default = "3" }
+variable "nomad_bootstrap_expect"  { default = "3" }
 
 //
 // Outputs

@@ -1,16 +1,78 @@
+resource "template_file" "consul_update" {
+  template = "${module.shared.path}/consul/userdata/consul_update.sh.tpl"
+
+  vars {
+    region                  = "${var.region}"
+    atlas_token             = "${var.atlas_token}"
+    atlas_username          = "${var.atlas_username}"
+    atlas_environment       = "${var.atlas_environment}"
+    consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
+  }
+}
+
 //
-// Nomad Servers
+// Consul & Nomad Servers
 //
 resource "aws_instance" "nomad_0" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
+  subnet_id     = "${aws_subnet.subnet_a.id}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.nomad.id}"]
-  subnet_id              = "${aws_subnet.subnet_a.id}"
+  vpc_security_group_ids = [
+    "${aws_security_group.default_egress.id}",
+    "${aws_security_group.admin_access.id}",
+    "${aws_security_group.nomad.id}"
+  ]
 
   tags {
-    Name = "nomad_0"
+    Name = "nomad_server_0"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+    ]
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
+    destination = "/etc/consul.d/consul.json.tmp"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/init/consul.conf"
+    destination = "/etc/init/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = ["${template_file.consul_update.rendered}"]
   }
 
   provisioner "remote-exec" {
@@ -77,19 +139,68 @@ CMD
       "sudo start nomad || sudo restart nomad",
     ]
   }
-
 }
 
 resource "aws_instance" "nomad_1" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
+  subnet_id     = "${aws_subnet.subnet_b.id}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.nomad.id}"]
-  subnet_id              = "${aws_subnet.subnet_a.id}"
+  vpc_security_group_ids = [
+    "${aws_security_group.default_egress.id}",
+    "${aws_security_group.admin_access.id}",
+    "${aws_security_group.nomad.id}"
+  ]
 
   tags {
-    Name = "nomad_1"
+    Name = "nomad_server_1"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+    ]
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
+    destination = "/etc/consul.d/consul.json.tmp"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/init/consul.conf"
+    destination = "/etc/init/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = ["${template_file.consul_update.rendered}"]
   }
 
   provisioner "remote-exec" {
@@ -170,15 +281,65 @@ CMD
 }
 
 resource "aws_instance" "nomad_2" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
+  subnet_id     = "${aws_subnet.subnet_c.id}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.nomad.id}"]
-  subnet_id              = "${aws_subnet.subnet_a.id}"
+  vpc_security_group_ids = [
+    "${aws_security_group.default_egress.id}",
+    "${aws_security_group.admin_access.id}",
+    "${aws_security_group.nomad.id}"
+  ]
 
   tags {
-    Name = "nomad_2"
+    Name = "nomad_server_2"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+    ]
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
+    destination = "/etc/consul.d/consul.json.tmp"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/init/consul.conf"
+    destination = "/etc/init/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = ["${template_file.consul_update.rendered}"]
   }
 
   provisioner "remote-exec" {
@@ -259,43 +420,22 @@ CMD
 }
 
 //
-// Consul Servers
-//
-
-module "consul" {
-  source = "../../../consul-cluster/aws-beginner-consul-cluster"
-  # source = "github.com/hashicorp/atlas-examples/consul-cluster/aws-beginner-consul-cluster"
-
-  atlas_token       = "${var.atlas_token}"
-  atlas_username    = "${var.atlas_username}"
-  atlas_environment = "${var.atlas_environment}"
-}
-
-
-resource "template_file" "consul_update" {
-  filename = "${module.consul.shared_path}/consul/userdata/consul_update.sh.tpl"
-
-  vars {
-    region                  = "${var.region}"
-    atlas_token             = "${var.atlas_token}"
-    atlas_username          = "${var.atlas_username}"
-    atlas_environment       = "${var.atlas_environment}"
-  }
-}
-
-//
-// Nomad Clients
+// Nomad & Consul Clients
 //
 resource "aws_instance" "nomad_client" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
+  subnet_id     = "${aws_subnet.subnet_a.id}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.nomad.id}"]
-  subnet_id              = "${aws_subnet.subnet_a.id}"
+  vpc_security_group_ids = [
+    "${aws_security_group.default_egress.id}",
+    "${aws_security_group.admin_access.id}",
+    "${aws_security_group.nomad.id}"
+  ]
 
   tags {
-    Name = "nomad_client"
+    Name = "nomad_client_${count.index}"
   }
 
   count = 3
@@ -308,10 +448,10 @@ resource "aws_instance" "nomad_client" {
     }
 
     scripts = [
-      "${module.consul.shared_path}/consul/installers/consul_install.sh",
-      "${module.consul.shared_path}/consul/installers/dnsmasq_install.sh",
       "${module.shared.path}/nomad/installers/docker_install.sh",
-      "${module.shared.path}/nomad/installers/nomad_install.sh"
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
     ]
   }
 
@@ -322,8 +462,8 @@ resource "aws_instance" "nomad_client" {
       agent    = "false"
     }
 
-    source      = "${module.consul.shared_path}/consul/consul.d/consul_client.json"
-    destination = "/etc/consul.d/consul.json"
+    source      = "${module.shared.path}/consul/consul.d/consul_client.json"
+    destination = "/etc/consul.d/consul.json.tmp"
   }
 
   provisioner "file" {
@@ -333,7 +473,7 @@ resource "aws_instance" "nomad_client" {
       agent    = "false"
     }
 
-    source      = "${module.consul.shared_path}/consul/init/consul.conf"
+    source      = "${module.shared.path}/consul/init/consul.conf"
     destination = "/etc/init/consul.conf"
   }
 
@@ -365,7 +505,11 @@ consul {
 
 client {
   enabled = true
-  servers = ["${aws_instance.nomad_0.private_ip}:4647","${aws_instance.nomad_1.private_ip}:4647","${aws_instance.nomad_2.private_ip}:4647"]
+  servers = [
+    "${aws_instance.nomad_0.private_ip}:4647",
+    "${aws_instance.nomad_1.private_ip}:4647",
+    "${aws_instance.nomad_2.private_ip}:4647"
+  ]
 }
 
 EOF
