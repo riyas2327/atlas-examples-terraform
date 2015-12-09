@@ -37,15 +37,24 @@ job "web" {
       }
 
       resources {
-        cpu = 500 # 500 Mhz
-        memory = 256 # 256MB
+        cpu = 100 # Mhz
+        memory = 128 # MB
 
         network {
           mbits = 10
-          reserved_ports = [80,443]
 
           # Request for a dynamic port
           port "nginx" {
+          }
+
+          # Request for a static port
+          port "http" {
+            static = 80
+          }
+
+          # Request for a static port
+          port "https" {
+            static = 443
           }
         }
       }

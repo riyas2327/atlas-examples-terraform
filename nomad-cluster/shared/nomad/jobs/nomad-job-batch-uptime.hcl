@@ -37,8 +37,8 @@ job "batch" {
       }
 
       resources {
-        cpu = 100 # 500 Mhz
-        memory = 128 # 256MB
+        cpu = 100 # Mhz
+        memory = 128 # MB
 
         network {
           mbits = 10
