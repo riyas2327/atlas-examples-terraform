@@ -35,6 +35,10 @@
     {
       "type":   "shell",
       "script": "shared/consul/installers/consul_conf_install.sh"
+    },
+    {
+      "type":   "shell",
+      "script": "shared/consul/installers/dnsmasq_install.sh"
     }
   ],
   "push": {
@@ -44,6 +48,7 @@
     "include": [
       "shared/consul/installers/consul_conf_install.sh",
       "shared/consul/installers/consul_install.sh",
+      "shared/consul/installers/dnsmasq_install.sh",
       "shared/consul/consul.d/consul_client.json",
       "shared/consul/init/consul.conf"
     ]

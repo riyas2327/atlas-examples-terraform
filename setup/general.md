@@ -55,6 +55,7 @@ If this is the first time pushing Packer templates to Atlas, the builds **will f
 - AWS Env Vars
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
+  - `AWS_DEFAULT_REGION`
 
 ** If you want to use a VPC/Subnet other than your providers default, be sure to fill in `vpc_id` and `subnet_id` for each of the Packer templates. If you're using AWS and deleted the default VPC, or one does not exist (Amazon EC2 "Classic" accounts), follow [these steps](../setup/vpc.md) to manually create one, or create one with Terraform. **
 
@@ -152,3 +153,35 @@ If you want to destroy the environment, run
     $ terraform destroy -var "atlas_token=$ATLAS_TOKEN" -var "atlas_username=$ATLAS_USERNAME"
 
 **Note:** `terraform destroy` deletes real resources, it is important that you take extra precaution when using this command. Verify that you are in the correct environment, verify that you are using the correct keys, and set any extra configuration necessary to prevent someone from accidentally destroying prod infrastructure.
+
+## Setup Vault
+
+Initialize Vault
+
+    $ vault init | tee /tmp/vault.init > /dev/null
+
+Retrieve the unseal keys and root token from `/tmp/vault.init` and store these in a safe place.
+
+Once they keys and token are stored in a safe place, run
+
+    $ shred /tmp/vault.init
+
+Use the unseal keys you just retrieved to unseal Vault
+
+    $ vault unseal YOUR_UNSEAL_KEY_1
+    $ vault unseal YOUR_UNSEAL_KEY_2
+    $ vault unseal YOUR_UNSEAL_KEY_3
+
+Authenticate with Vault by entering your root token
+
+    $ vault auth YOUR_ROOT_TOKEN
+
+Mount the transit backend
+
+    $ vault mount transit
+
+Shred the token
+
+    $ shred -u -z ~/.vault-token
+
+Now you'll want to [configure Vault](https://vaultproject.io/docs/index.html) specific to your needs.
