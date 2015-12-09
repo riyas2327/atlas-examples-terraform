@@ -20,20 +20,8 @@ resource "aws_instance" "nomad_0" {
       agent    = "false"
     }
 
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = <<CMD
-cat > /etc/nomad.d/nomad.hcl <<EOF
+cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
@@ -61,7 +49,7 @@ CMD
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/etc/init/nomad.conf"
+    destination = "/tmp/nomad.conf"
   }
 
   provisioner "remote-exec" {
@@ -71,7 +59,23 @@ CMD
       agent    = "false"
     }
 
-    inline = "sudo start nomad || sudo restart nomad"
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = [
+      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
+      "sudo mv /tmp/nomad.conf /etc/init/",
+      "sudo start nomad || sudo restart nomad",
+    ]
   }
 
 }
@@ -95,20 +99,8 @@ resource "aws_instance" "nomad_1" {
       agent    = "false"
     }
 
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = <<CMD
-cat > /etc/nomad.d/nomad.hcl <<EOF
+cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
@@ -136,7 +128,7 @@ CMD
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/etc/init/nomad.conf"
+    destination = "/tmp/nomad.conf"
   }
 
   provisioner "remote-exec" {
@@ -146,7 +138,23 @@ CMD
       agent    = "false"
     }
 
-    inline = "sudo start nomad || sudo restart nomad"
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = [
+      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
+      "sudo mv /tmp/nomad.conf /etc/init/",
+      "sudo start nomad || sudo restart nomad",
+    ]
   }
 
   provisioner "remote-exec" {
@@ -180,20 +188,8 @@ resource "aws_instance" "nomad_2" {
       agent    = "false"
     }
 
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = <<CMD
-cat > /etc/nomad.d/nomad.hcl <<EOF
+cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
@@ -221,7 +217,7 @@ CMD
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/etc/init/nomad.conf"
+    destination = "/tmp/nomad.conf"
   }
 
   provisioner "remote-exec" {
@@ -231,7 +227,23 @@ CMD
       agent    = "false"
     }
 
-    inline = "sudo start nomad || sudo restart nomad"
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = [
+      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
+      "sudo mv /tmp/nomad.conf /etc/init/",
+      "sudo start nomad || sudo restart nomad",
+    ]
   }
 
   provisioner "remote-exec" {
@@ -270,32 +282,8 @@ resource "aws_instance" "nomad_client" {
       agent    = "false"
     }
 
-    scripts = [
-      "${module.shared.path}/nomad/installers/docker_install.sh"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = <<CMD
-cat > /etc/nomad.d/nomad.hcl <<EOF
+cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
@@ -317,7 +305,7 @@ CMD
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/etc/init/nomad.conf"
+    destination = "/tmp/nomad.conf"
   }
 
   provisioner "remote-exec" {
@@ -327,7 +315,24 @@ CMD
       agent    = "false"
     }
 
-    inline = "sudo start nomad || sudo restart nomad"
+    scripts = [
+      "${module.shared.path}/nomad/installers/docker_install.sh",
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    inline = [
+      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
+      "sudo mv /tmp/nomad.conf /etc/init/",
+      "sudo start nomad || sudo restart nomad",
+    ]
   }
 
 }
