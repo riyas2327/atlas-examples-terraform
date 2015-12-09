@@ -1,7 +1,7 @@
 {
   "node_name": "{{ instance_id }}",
   "service": {
-    "name": "consul-client"
+    "name": "nomad-client"
   },
 
   "atlas_join": true,
