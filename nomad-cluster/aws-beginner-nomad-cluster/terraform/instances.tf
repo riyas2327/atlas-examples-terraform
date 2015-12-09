@@ -13,7 +13,7 @@ resource "template_file" "consul_update" {
 //
 // Consul & Nomad Servers
 //
-resource "aws_instance" "nomad_0" {
+resource "aws_instance" "nomad_server_0" {
   instance_type = "${var.instance_type}"
   ami           = "${var.source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -29,20 +29,6 @@ resource "aws_instance" "nomad_0" {
     Name = "nomad_server_0"
   }
 
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
-    ]
-  }
-
   provisioner "file" {
     connection {
       user     = "ubuntu"
@@ -51,7 +37,7 @@ resource "aws_instance" "nomad_0" {
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
-    destination = "/etc/consul.d/consul.json.tmp"
+    destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
@@ -62,7 +48,22 @@ resource "aws_instance" "nomad_0" {
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/etc/init/consul.conf"
+    destination = "/tmp/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/consul_conf_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+    ]
   }
 
   provisioner "remote-exec" {
@@ -126,6 +127,28 @@ CMD
     ]
   }
 
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/jobs/batch-uptime.hcl"
+    destination = "/tmp/batch-uptime.hcl"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/jobs/docker-nginx.hcl"
+    destination = "/tmp/docker-nginx.hcl"
+  }
+
   provisioner "remote-exec" {
     connection {
       user     = "ubuntu"
@@ -136,12 +159,14 @@ CMD
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo start nomad || sudo restart nomad",
+      "sudo mv /tmp/batch-uptime.hcl /opt/nomad/jobs/",
+      "sudo mv /tmp/docker-nginx.hcl /opt/nomad/jobs/",
+      "sudo service nomad start || sudo service nomad restart",
     ]
   }
 }
 
-resource "aws_instance" "nomad_1" {
+resource "aws_instance" "nomad_server_1" {
   instance_type = "${var.instance_type}"
   ami           = "${var.source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -157,20 +182,6 @@ resource "aws_instance" "nomad_1" {
     Name = "nomad_server_1"
   }
 
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
-    ]
-  }
-
   provisioner "file" {
     connection {
       user     = "ubuntu"
@@ -179,7 +190,7 @@ resource "aws_instance" "nomad_1" {
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
-    destination = "/etc/consul.d/consul.json.tmp"
+    destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
@@ -190,7 +201,22 @@ resource "aws_instance" "nomad_1" {
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/etc/init/consul.conf"
+    destination = "/tmp/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/consul_conf_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+    ]
   }
 
   provisioner "remote-exec" {
@@ -254,6 +280,28 @@ CMD
     ]
   }
 
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/jobs/batch-uptime.hcl"
+    destination = "/tmp/batch-uptime.hcl"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/jobs/docker-nginx.hcl"
+    destination = "/tmp/docker-nginx.hcl"
+  }
+
   provisioner "remote-exec" {
     connection {
       user     = "ubuntu"
@@ -264,7 +312,9 @@ CMD
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo start nomad || sudo restart nomad",
+      "sudo mv /tmp/batch-uptime.hcl /opt/nomad/jobs/",
+      "sudo mv /tmp/docker-nginx.hcl /opt/nomad/jobs/",
+      "sudo service nomad start || sudo service nomad restart",
     ]
   }
 
@@ -275,12 +325,11 @@ CMD
       agent    = "false"
     }
 
-    inline = "nomad server-join ${aws_instance.nomad_0.private_ip}"
+    inline = "nomad server-join ${aws_instance.nomad_server_0.private_ip}"
   }
-
 }
 
-resource "aws_instance" "nomad_2" {
+resource "aws_instance" "nomad_server_2" {
   instance_type = "${var.instance_type}"
   ami           = "${var.source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -296,20 +345,6 @@ resource "aws_instance" "nomad_2" {
     Name = "nomad_server_2"
   }
 
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
-    ]
-  }
-
   provisioner "file" {
     connection {
       user     = "ubuntu"
@@ -318,7 +353,7 @@ resource "aws_instance" "nomad_2" {
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
-    destination = "/etc/consul.d/consul.json.tmp"
+    destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
@@ -329,7 +364,22 @@ resource "aws_instance" "nomad_2" {
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/etc/init/consul.conf"
+    destination = "/tmp/consul.conf"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    scripts = [
+      "${module.shared.path}/nomad/installers/nomad_install.sh",
+      "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/consul_conf_install.sh",
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+    ]
   }
 
   provisioner "remote-exec" {
@@ -393,6 +443,28 @@ CMD
     ]
   }
 
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/jobs/batch-uptime.hcl"
+    destination = "/tmp/batch-uptime.hcl"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/nomad/jobs/docker-nginx.hcl"
+    destination = "/tmp/docker-nginx.hcl"
+  }
+
   provisioner "remote-exec" {
     connection {
       user     = "ubuntu"
@@ -403,7 +475,9 @@ CMD
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo start nomad || sudo restart nomad",
+      "sudo mv /tmp/batch-uptime.hcl /opt/nomad/jobs/",
+      "sudo mv /tmp/docker-nginx.hcl /opt/nomad/jobs/",
+      "sudo service nomad start || sudo service nomad restart",
     ]
   }
 
@@ -414,9 +488,8 @@ CMD
       agent    = "false"
     }
 
-    inline = "nomad server-join ${aws_instance.nomad_0.private_ip}"
+    inline = "nomad server-join ${aws_instance.nomad_server_0.private_ip}"
   }
-
 }
 
 //
@@ -440,6 +513,28 @@ resource "aws_instance" "nomad_client" {
 
   count = 3
 
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/consul.d/consul_client.json"
+    destination = "/tmp/consul.json.tmp"
+  }
+
+  provisioner "file" {
+    connection {
+      user     = "ubuntu"
+      key_file = "${module.shared.private_key_path}"
+      agent    = "false"
+    }
+
+    source      = "${module.shared.path}/consul/init/consul.conf"
+    destination = "/tmp/consul.conf"
+  }
+
   provisioner "remote-exec" {
     connection {
       user     = "ubuntu"
@@ -451,30 +546,9 @@ resource "aws_instance" "nomad_client" {
       "${module.shared.path}/nomad/installers/docker_install.sh",
       "${module.shared.path}/nomad/installers/nomad_install.sh",
       "${module.shared.path}/consul/installers/consul_install.sh",
+      "${module.shared.path}/consul/installers/consul_conf_install.sh",
       "${module.shared.path}/consul/installers/dnsmasq_install.sh"
     ]
-  }
-
-  provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    source      = "${module.shared.path}/consul/consul.d/consul_client.json"
-    destination = "/etc/consul.d/consul.json.tmp"
-  }
-
-  provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/etc/init/consul.conf"
   }
 
   provisioner "remote-exec" {
@@ -506,9 +580,9 @@ consul {
 client {
   enabled = true
   servers = [
-    "${aws_instance.nomad_0.private_ip}:4647",
-    "${aws_instance.nomad_1.private_ip}:4647",
-    "${aws_instance.nomad_2.private_ip}:4647"
+    "${aws_instance.nomad_server_0.private_ip}:4647",
+    "${aws_instance.nomad_server_1.private_ip}:4647",
+    "${aws_instance.nomad_server_2.private_ip}:4647"
   ]
 }
 
@@ -550,7 +624,7 @@ CMD
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo start nomad || sudo restart nomad",
+      "sudo service nomad start || sudo service nomad restart",
     ]
   }
 }

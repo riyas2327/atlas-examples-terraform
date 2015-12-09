@@ -31,16 +31,16 @@ variable "nomad_bootstrap_expect"  { default = "3" }
 //
 // Outputs
 //
-output "nomad_0" {
-  value = "${aws_instance.nomad_0.private_ip} - ${aws_instance.nomad_0.public_ip}"
+output "nomad_server_0" {
+  value = "${aws_instance.nomad_server_0.private_ip} - ${aws_instance.nomad_server_0.public_ip}"
 }
 
-output "nomad_1" {
-  value = "${aws_instance.nomad_1.private_ip} - ${aws_instance.nomad_1.public_ip}"
+output "nomad_server_1" {
+  value = "${aws_instance.nomad_server_1.private_ip} - ${aws_instance.nomad_server_1.public_ip}"
 }
 
-output "nomad_2" {
-  value = "${aws_instance.nomad_2.private_ip} - ${aws_instance.nomad_2.public_ip}"
+output "nomad_server_2" {
+  value = "${aws_instance.nomad_server_2.private_ip} - ${aws_instance.nomad_server_2.public_ip}"
 }
 
 output "nomad clients" {

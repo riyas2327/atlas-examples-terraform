@@ -22,12 +22,12 @@ unzip consul.zip
 rm consul.zip
 sudo chmod +x consul
 sudo mv consul /usr/bin/consul
-sudo mkdir -m 0600 /etc/consul.d
+sudo mkdir -pm 0600 /etc/consul.d
 
 # setup consul directories
-sudo mkdir -m 0600 /opt/consul
-sudo mkdir /opt/consul/data
-sudo mkdir /opt/consul/web
+sudo mkdir -pm 0600 /opt/consul
+sudo mkdir -p /opt/consul/data
+sudo mkdir -p /opt/consul/web
 
 # install consul-web
 echo "Fetching consul-web..."

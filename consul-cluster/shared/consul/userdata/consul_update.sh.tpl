@@ -17,7 +17,7 @@ METADATA_INSTANCE_ID=`curl http://169.254.169.254/2014-02-25/meta-data/instance-
 sudo sed -i -- "s/{{ instance_id }}/$METADATA_INSTANCE_ID/g" $FILE_TMP
 
 sudo mv $FILE_TMP $FILE_FINAL
-sudo service consul restart
+sudo service consul start || sudo service consul restart
 
 echo "Consul environment updated."
 
