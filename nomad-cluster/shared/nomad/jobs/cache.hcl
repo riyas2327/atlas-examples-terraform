@@ -62,8 +62,8 @@ job "cache" {
       }
 
       service {
-        name = "redis-${TASKGROUP}"
-        tags = ["global", "cache"]
+        name = "redis"
+        tags = ["global"]
         port = "db"
 
         check {
@@ -85,7 +85,9 @@ job "cache" {
           mbits = 10
 
           # Request for a dynamic port
-          port "db" {}
+          port "db" {
+            static = 6379
+          }
         }
       }
     }

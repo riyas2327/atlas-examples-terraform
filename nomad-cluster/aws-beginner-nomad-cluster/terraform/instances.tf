@@ -62,7 +62,7 @@ resource "aws_instance" "nomad_server_1" {
       "${module.shared.path}/nomad/installers/nomad_install.sh",
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -115,18 +115,6 @@ CMD
     destination = "/tmp/nomad.conf"
   }
 
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-    ]
-  }
-
   provisioner "file" {
     connection {
       user     = "ubuntu"
@@ -174,6 +162,8 @@ CMD
       "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
       "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
       "sudo service nomad start || sudo service nomad restart",
+      "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
+      "sudo service dnsmasq restart",
     ]
   }
 }
@@ -227,7 +217,7 @@ resource "aws_instance" "nomad_server_2" {
       "${module.shared.path}/nomad/installers/nomad_install.sh",
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -280,18 +270,6 @@ CMD
     destination = "/tmp/nomad.conf"
   }
 
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-    ]
-  }
-
   provisioner "file" {
     connection {
       user     = "ubuntu"
@@ -339,6 +317,8 @@ CMD
       "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
       "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
       "sudo service nomad start || sudo service nomad restart",
+      "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
+      "sudo service dnsmasq restart",
     ]
   }
 
@@ -402,7 +382,7 @@ resource "aws_instance" "nomad_server_3" {
       "${module.shared.path}/nomad/installers/nomad_install.sh",
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -455,18 +435,6 @@ CMD
     destination = "/tmp/nomad.conf"
   }
 
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-    ]
-  }
-
   provisioner "file" {
     connection {
       user     = "ubuntu"
@@ -514,6 +482,8 @@ CMD
       "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
       "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
       "sudo service nomad start || sudo service nomad restart",
+      "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
+      "sudo service dnsmasq restart",
     ]
   }
 
@@ -583,7 +553,7 @@ resource "aws_instance" "nomad_client" {
       "${module.shared.path}/nomad/installers/nomad_install.sh",
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh"
+      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -635,19 +605,6 @@ CMD
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
     destination = "/tmp/nomad.conf"
-  }
-
-  provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
-    scripts = [
-      "${module.shared.path}/nomad/installers/docker_install.sh",
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-    ]
   }
 
   provisioner "remote-exec" {

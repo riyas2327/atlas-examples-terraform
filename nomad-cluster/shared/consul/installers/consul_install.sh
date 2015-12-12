@@ -8,8 +8,7 @@ sudo apt-get -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -y unzip
-sudo apt-get install -y curl
+sudo apt-get install -y unzip curl
 
 # install consul
 echo "Fetching consul..."
