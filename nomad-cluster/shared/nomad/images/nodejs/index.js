@@ -12,6 +12,6 @@ app.get('/', function(req, res, next) {
   });
 });
 
-http.createServer(app).listen(process.env.PORT || 8080, function() {
-  console.log('Listening on port ' + (process.env.PORT || 8080));
+http.createServer(app).listen(process.env.NOMAD_PORT_http || 8080, function() {
+  console.log('Listening on port ' + (process.env.NOMAD_PORT_http || 8080));
 });
