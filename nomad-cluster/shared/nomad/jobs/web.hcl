@@ -54,7 +54,7 @@ job "web" {
 
       # Configure Docker driver with the image
       config {
-        image        = "bensojona/nginx:latest"
+        image        = "hashidemo/nginx:latest"
         network_mode = "host"
       }
 
@@ -115,7 +115,7 @@ job "web" {
 
       # Configure Docker driver with the image
       config {
-        image        = "bensojona/nodejs:latest"
+        image        = "hashidemo/nodejs:latest"
         network_mode = "host"
       }
 
