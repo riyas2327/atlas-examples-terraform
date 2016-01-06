@@ -2,7 +2,7 @@
 
 set -ex
 
-NOMAD_VERSION=0.2.1
+NOMAD_VERSION=0.2.3
 
 sudo apt-get -y update
 
