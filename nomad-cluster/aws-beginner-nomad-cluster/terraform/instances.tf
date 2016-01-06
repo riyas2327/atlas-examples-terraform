@@ -89,6 +89,10 @@ data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
 
+atlas_join = true
+atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+atlas_token = "${var.atlas_token}"
+
 server {
   enabled = true
   bootstrap_expect = ${var.nomad_bootstrap_expect}
@@ -243,6 +247,10 @@ cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
+
+atlas_join = true
+atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+atlas_token = "${var.atlas_token}"
 
 server {
   enabled = true
@@ -408,6 +416,10 @@ cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
+
+atlas_join = true
+atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+atlas_token = "${var.atlas_token}"
 
 server {
   enabled = true
@@ -579,6 +591,10 @@ cat > /tmp/nomad.hcl <<EOF
 data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
+
+atlas_join = true
+atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+atlas_token = "${var.atlas_token}"
 
 consul {
 }
