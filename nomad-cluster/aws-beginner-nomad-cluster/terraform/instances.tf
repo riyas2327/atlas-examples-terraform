@@ -89,9 +89,10 @@ data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
 
-atlas_join = true
-atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-atlas_token = "${var.atlas_token}"
+atlas {
+  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+  token = "${var.atlas_token}"
+}
 
 server {
   enabled = true
@@ -248,9 +249,10 @@ data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
 
-atlas_join = true
-atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-atlas_token = "${var.atlas_token}"
+atlas {
+  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+  token = "${var.atlas_token}"
+}
 
 server {
   enabled = true
@@ -417,9 +419,10 @@ data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
 
-atlas_join = true
-atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-atlas_token = "${var.atlas_token}"
+atlas {
+  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+  token = "${var.atlas_token}"
+}
 
 server {
   enabled = true
@@ -592,9 +595,10 @@ data_dir = "/opt/nomad/data"
 log_level = "DEBUG"
 datacenter = "${var.region}"
 
-atlas_join = true
-atlas_infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-atlas_token = "${var.atlas_token}"
+atlas {
+  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+  token = "${var.atlas_token}"
+}
 
 consul {
 }
