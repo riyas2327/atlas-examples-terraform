@@ -19,7 +19,7 @@ METADATA_PUBLIC_IPV4=`curl http://169.254.169.254/2014-02-25/meta-data/public-ip
 sed -i -- "s/{{ public_ipv4 }}/$METADATA_PUBLIC_IPV4/g" $FILE_TMP
 
 sudo mv $FILE_TMP $FILE_FINAL
-sudo service consul start
+sudo service consul start || sudo service consul restart
 
 echo "Consul environment updated."
 

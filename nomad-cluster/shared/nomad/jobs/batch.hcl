@@ -19,18 +19,35 @@ job "batch" {
     task "uptime" {
       driver = "exec"
 
+      service {
+        # name = "uptime"
+        tags = ["uptime"]
+        port = "uptime"
+
+        check {
+          name     = "alive"
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+
       config {
         command = "uptime"
       }
 
       resources {
-        cpu = 100 # 500 Mhz
-        memory = 128 # 256MB
+        cpu = 100 # Mhz
+        memory = 128 # MB
+
         network {
           mbits = 10
+
+          # Request for a dynamic port
+          port "uptime" {
+          }
         }
       }
     }
   }
-
 }

@@ -8,7 +8,7 @@ PRIVATE_KEY_PATH="$KEY_PATH/$KEY_NAME.pem"
 PUBLIC_KEY_PATH="$KEY_PATH/$KEY_NAME.pub"
 
 if [ ! -d "$KEY_PATH" ]; then
-  echo "Directory [$KEY_PATH] does not exist. This script must be run from the 'consul-cluster' directory."
+  echo "Directory [$KEY_PATH] does not exist. This script must be run from the 'nomad-cluster' directory."
   exit 1
 fi
 
