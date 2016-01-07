@@ -6,5 +6,5 @@ log_level = "warn"
 template {
   source = "/opt/consul_template/nginx.ctmpl"
   destination = "/etc/nginx/nginx.conf"
-  command = "service nginx reload || service nginx start || service nginx restart"
+  command = "service nginx restart"
 }
