@@ -21,6 +21,8 @@ resource "aws_instance" "consul_client" {
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul_client.id}"]
   subnet_id              = "${aws_subnet.subnet_a.id}"
 
+  iam_instance_profile = "${aws_iam_instance_profile.codedeploy.name}"
+
   tags {
     Name = "consul_client"
   }
@@ -45,6 +47,7 @@ resource "aws_instance" "consul_client" {
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
       "${module.shared.path}/consul/installers/dnsmasq_install.sh",
+      "${module.shared.path}/codedeploy-agent/installers/codedeploy-agent_install.sh",
     ]
   }
 
