@@ -31,9 +31,8 @@ resource "aws_instance" "nomad_server_1" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
@@ -42,9 +41,8 @@ resource "aws_instance" "nomad_server_1" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
@@ -53,9 +51,8 @@ resource "aws_instance" "nomad_server_1" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     scripts = [
@@ -68,9 +65,8 @@ resource "aws_instance" "nomad_server_1" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = ["${template_file.consul_update.rendered}"]
@@ -78,9 +74,8 @@ resource "aws_instance" "nomad_server_1" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = <<CMD
@@ -111,9 +106,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
@@ -122,9 +116,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/batch.hcl"
@@ -133,9 +126,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/cache.hcl"
@@ -144,9 +136,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/web.hcl"
@@ -155,9 +146,8 @@ CMD
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = [
@@ -191,9 +181,8 @@ resource "aws_instance" "nomad_server_2" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
@@ -202,9 +191,8 @@ resource "aws_instance" "nomad_server_2" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
@@ -213,9 +201,8 @@ resource "aws_instance" "nomad_server_2" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     scripts = [
@@ -228,9 +215,8 @@ resource "aws_instance" "nomad_server_2" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = ["${template_file.consul_update.rendered}"]
@@ -238,9 +224,8 @@ resource "aws_instance" "nomad_server_2" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = <<CMD
@@ -271,9 +256,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
@@ -282,9 +266,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/batch.hcl"
@@ -293,9 +276,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/cache.hcl"
@@ -304,9 +286,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/web.hcl"
@@ -315,9 +296,8 @@ CMD
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = [
@@ -334,9 +314,8 @@ CMD
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = "nomad server-join ${aws_instance.nomad_server_1.private_ip}"
@@ -361,9 +340,8 @@ resource "aws_instance" "nomad_server_3" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
@@ -372,9 +350,8 @@ resource "aws_instance" "nomad_server_3" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
@@ -383,9 +360,8 @@ resource "aws_instance" "nomad_server_3" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     scripts = [
@@ -398,9 +374,8 @@ resource "aws_instance" "nomad_server_3" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = ["${template_file.consul_update.rendered}"]
@@ -408,9 +383,8 @@ resource "aws_instance" "nomad_server_3" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = <<CMD
@@ -441,9 +415,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
@@ -452,9 +425,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/batch.hcl"
@@ -463,9 +435,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/cache.hcl"
@@ -474,9 +445,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/jobs/web.hcl"
@@ -485,9 +455,8 @@ CMD
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = [
@@ -504,9 +473,8 @@ CMD
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = "nomad server-join ${aws_instance.nomad_server_1.private_ip}"
@@ -536,9 +504,8 @@ resource "aws_instance" "nomad_client" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/consul.d/consul_client.json"
@@ -547,9 +514,8 @@ resource "aws_instance" "nomad_client" {
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/consul/init/consul.conf"
@@ -558,9 +524,8 @@ resource "aws_instance" "nomad_client" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     scripts = [
@@ -574,9 +539,8 @@ resource "aws_instance" "nomad_client" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = ["${template_file.consul_update.rendered}"]
@@ -584,9 +548,8 @@ resource "aws_instance" "nomad_client" {
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = <<CMD
@@ -618,9 +581,8 @@ CMD
 
   provisioner "file" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     source      = "${module.shared.path}/nomad/init/nomad.conf"
@@ -629,9 +591,8 @@ CMD
 
   provisioner "remote-exec" {
     connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
+      user        = "ubuntu"
+      private_key = "${var.private_key}"
     }
 
     inline = [
