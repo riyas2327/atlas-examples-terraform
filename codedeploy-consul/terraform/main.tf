@@ -15,7 +15,7 @@ module "shared" {
 //
 variable "atlas_token"       {}
 variable "atlas_username"    {}
-variable "atlas_environment" { default = "consul-cluster" }
+variable "atlas_environment" { default = "codedeploy" }
 
 variable "region"        { default = "us-east-1" }
 variable "source_ami"    { default = "ami-9a562df2" }
