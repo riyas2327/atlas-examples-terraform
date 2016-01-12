@@ -2,7 +2,5 @@
 **/terraform.tfstate
 **/terraform.tfstate.backup
 
-**/environment-variables.sh
-
 **/*.pem
 **/*.pub
