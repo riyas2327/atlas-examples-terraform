@@ -26,6 +26,8 @@ resource "aws_instance" "consul_client" {
   # don't launch the instance before the profile's policy is attached
   depends_on = ["aws_iam_policy_attachment.codedeploy_instance"]
 
+  count = 3
+
   tags {
     Name = "consul_client"
     codedeploy = "true"    #TODO: better indentifier for instances

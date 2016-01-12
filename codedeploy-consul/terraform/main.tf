@@ -31,7 +31,7 @@ variable "consul_bootstrap_expect" { default = "3" }
 // Outputs
 //
 output "consul_client" {
-  value = "${aws_instance.consul_client.public_ip}"
+  value = "${join(",",aws_instance.consul_client.*.public_ip)}"
 }
 
 output "consul_0" {
