@@ -1,0 +1,7 @@
+#!/bin/bash
+
+consul maint -enable
+
+# The sleep amount must be lower than the timeout defined in appspec.yml,
+# otherwise the deployment will fail.
+sleep 30
