@@ -1,9 +1,9 @@
 resource "aws_codedeploy_app" "sampleapp" {
-  name = "SampleApp_Linux"
+  name = "SampleApp_Linux_Consul"
 }
 
 resource "aws_codedeploy_deployment_group" "sampleapp" {
-  deployment_group_name = "SampleApp_Linux"
+  deployment_group_name = "SampleApp_Linux_Consul"
 
   app_name              = "${aws_codedeploy_app.sampleapp.name}"
   service_role_arn      = "${aws_iam_role.codedeploy_service_role.arn}"

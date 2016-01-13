@@ -39,8 +39,9 @@ Consul Server Instances: ${aws_instance.consul_0.public_ip}, ${aws_instance.cons
 CodeDeploy Deployment Group Name: ${aws_codedeploy_deployment_group.sampleapp.deployment_group_name}
 
 To deploy a new version of the application:
-  1) aws deploy push --application-name SampleApp_Linux --s3-location s3://YOUR_BUCKET/YOUR_PATH/SampleApp_Linux_Consul.zip --source applications/SampleApp_Linux/
+  1) aws deploy push --application-name SampleApp_Linux_Consul --s3-location s3://YOUR_BUCKET/YOUR_PATH/SampleApp_Linux_Consul.zip --source applications/SampleApp_Linux_Consul/
   2) Follow the instructions in the output from the push command or use the AWS console.
 
+Happy deploying!
 OUTPUT
 }
