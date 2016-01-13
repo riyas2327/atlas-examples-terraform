@@ -13,7 +13,7 @@ resource "template_file" "consul_update" {
 //
 // CodeDeploy Instances
 //
-resource "aws_instance" "consul_client" {
+resource "aws_instance" "codedeploy" {
   instance_type          = "${var.instance_type}"
   ami                    = "${var.source_ami}"
   key_name               = "${aws_key_pair.main.key_name}"

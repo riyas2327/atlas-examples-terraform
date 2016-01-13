@@ -30,18 +30,17 @@ variable "consul_bootstrap_expect" { default = "3" }
 //
 // Outputs
 //
-output "consul_client" {
-  value = "${join(",",aws_instance.consul_client.*.public_ip)}"
-}
+output "instructions" {
+  value = <<OUTPUT
 
-output "consul_0" {
-  value = "${aws_instance.consul_0.public_ip}"
-}
+CodeDeploy Instances:    ${join(", ",aws_instance.codedeploy.*.public_ip)}
+Consul Server Instances: ${aws_instance.consul_0.public_ip}, ${aws_instance.consul_1.public_ip}, ${aws_instance.consul_2.public_ip}
 
-output "consul_1" {
-  value = "${aws_instance.consul_1.public_ip}"
-}
+CodeDeploy Deployment Group Name: ${aws_codedeploy_deployment_group.sampleapp.deployment_group_name}
 
-output "consul_2" {
-  value = "${aws_instance.consul_2.public_ip}"
+To deploy a new version of the application:
+  1) aws deploy push --application-name SampleApp_Linux --s3-location s3://YOUR_BUCKET/YOUR_PATH/SampleApp_Linux_Consul.zip --source applications/SampleApp_Linux/
+  2) Follow the instructions in the output from the push command or use the AWS console.
+
+OUTPUT
 }
