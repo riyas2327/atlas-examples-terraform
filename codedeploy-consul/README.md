@@ -39,6 +39,7 @@ application are healthy in Consul's service catalog
 ### Setup
 
 To run this example:
+
 1. Run the following command to generate an SSH key for use in this example.
   ```
   $ bash shared/ssh_keys/generate_key_pair.sh
@@ -54,7 +55,7 @@ To run this example:
   ```
   $ terraform get -update terraform
   Get: file:///Users/clstokes/cc/hashicorp/atlas-examples/codedeploy-consul/shared (update)
-  
+
   ```
 1. Create the environment using Terraform:
   ```
@@ -76,6 +77,7 @@ To run this example:
 ### Teardown
 
 To teardown the example:
+
 1. Use Terraform to destroy the environment:
   ```
   $ terraform destroy terraform
