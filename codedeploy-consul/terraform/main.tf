@@ -19,7 +19,7 @@ variable "atlas_environment" { default = "codedeploy" }
 
 variable "region"        { default = "us-east-1" }
 variable "source_ami"    { default = "ami-9a562df2" }
-variable "key_name"      { default = "atlas-example" }
+variable "key_name"      { default = "codedeploy-consul" }
 variable "instance_type" { default = "t2.micro" }
 
 variable "vpc_cidr"  { default = "172.31.0.0/16" }
