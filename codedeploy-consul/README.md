@@ -53,6 +53,7 @@ To run this example:
   Private key: shared/ssh_keys/codedeploy-consul.pem
   ```
 1. Prepare the Terraform modules:
+
   ```
   $ terraform get -update terraform
   Get: file:///Users/clstokes/cc/hashicorp/atlas-examples/codedeploy-consul/shared (update)
