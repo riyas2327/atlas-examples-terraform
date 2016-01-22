@@ -6,10 +6,14 @@
   "atlas_token": "{{ atlas_token }}",
 
   "data_dir": "/opt/consul/data",
-  "ui_dir": "/opt/consul/web",
+  "ui": true,
 
   "leave_on_terminate": false,
   "skip_leave_on_interrupt": true,
+
+  "addresses": {
+    "http": "{{ http_address }}"
+  },
 
   "datacenter": "{{ region }}",
   "server": true,

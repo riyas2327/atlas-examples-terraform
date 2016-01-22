@@ -1,5 +1,7 @@
 #!/bin/bash
 
+METADATA_LOCAL_IPV4=`curl http://169.254.169.254/2014-02-25/meta-data/local-ipv4`
+
 SERVICE_NAME=sampleapp
 EXPECTED_STATUS=passing
 
@@ -10,7 +12,7 @@ EXPECTED_STATUS=passing
 return_value=1
 while [ $return_value != 0 ]; do
   sleep 1
-  actual_status=$(curl -s localhost:8500/v1/agent/checks | jq -r '.["service:sampleapp"].Status')
+  actual_status=$(curl -s $METADATA_LOCAL_IPV4:8500/v1/agent/checks | jq -r '.["service:sampleapp"].Status')
   if [ "$actual_status" == "$EXPECTED_STATUS" ]; then
     return_value=0
   fi

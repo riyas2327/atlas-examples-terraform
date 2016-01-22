@@ -16,6 +16,9 @@ sudo sed -i -- "s/{{ consul_bootstrap_expect }}/${consul_bootstrap_expect}/g" $F
 METADATA_INSTANCE_ID=`curl http://169.254.169.254/2014-02-25/meta-data/instance-id`
 sudo sed -i -- "s/{{ instance_id }}/$METADATA_INSTANCE_ID/g" $FILE_TMP
 
+METADATA_LOCAL_IPV4=`curl http://169.254.169.254/2014-02-25/meta-data/local-ipv4`
+sudo sed -i -- "s/{{ http_address }}/$METADATA_LOCAL_IPV4/g" $FILE_TMP
+
 sudo mv $FILE_TMP $FILE_FINAL
 sudo service consul start
 

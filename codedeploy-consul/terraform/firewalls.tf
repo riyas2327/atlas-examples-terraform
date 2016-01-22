@@ -199,3 +199,22 @@ resource "aws_security_group_rule" "consul_serf_lan_udp_consul_client" {
   to_port                  = 8301
   source_security_group_id = "${aws_security_group.consul_client.id}"
 }
+
+//
+// Consul Web UI Access
+// - required for Consul Servers
+//
+resource "aws_security_group" "consul_web_ui" {
+  name        = "consul_web_ui"
+  description = "Consul Web UI Access"
+  vpc_id      = "${aws_vpc.main.id}"
+}
+
+resource "aws_security_group_rule" "consul_web_ui" {
+  security_group_id = "${aws_security_group.consul_web_ui.id}"
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 8500
+  to_port           = 8500
+  cidr_blocks       = ["${var.consul_ui_access_cidr}"]
+}
