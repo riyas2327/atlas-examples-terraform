@@ -1,12 +1,3 @@
-// - Default egress to 0.0.0.0/0 to talk to SCADA
-//
-// - Servers can talk to other Servers on tcp/8300, tcp/8301, udp/8301, tcp/8302, udp/8302
-// - Servers can talk to Clients on tcp/8301, udp/8301
-//
-// - Clients can talk to Servers on tcp/8300, tcp/8301, udp/8301
-// - Clients can talk to other Clients on tcp/8301, udp/8301
-//
-
 //
 // Default Egress
 //
@@ -23,6 +14,42 @@ resource "aws_security_group_rule" "default_egress" {
   from_port         = 0
   to_port           = 0
   cidr_blocks       = ["0.0.0.0/0"]
+}
+
+//
+// ELB WWW Access
+//
+resource "aws_security_group" "elb_www" {
+  name        = "elb_www"
+  description = "ELB WWW"
+  vpc_id      = "${aws_vpc.main.id}"
+}
+
+resource "aws_security_group_rule" "elb_www" {
+  security_group_id = "${aws_security_group.elb_www.id}"
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+//
+// Instance WWW Access
+//
+resource "aws_security_group" "instance_www" {
+  name        = "instance_www"
+  description = "Instance WWW"
+  vpc_id      = "${aws_vpc.main.id}"
+}
+
+resource "aws_security_group_rule" "instance_www" {
+  security_group_id        = "${aws_security_group.instance_www.id}"
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 80
+  to_port                  = 80
+  source_security_group_id = "${aws_security_group.elb_www.id}"
 }
 
 //

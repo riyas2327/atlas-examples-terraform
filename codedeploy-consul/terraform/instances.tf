@@ -18,8 +18,13 @@ resource "aws_instance" "codedeploy" {
   ami                    = "${var.source_ami}"
   key_name               = "${aws_key_pair.main.key_name}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul_client.id}"]
-  subnet_id              = "${aws_subnet.subnet_a.id}"
+  vpc_security_group_ids = [
+    "${aws_security_group.default_egress.id}",
+    "${aws_security_group.admin_access.id}",
+    "${aws_security_group.consul_client.id}",
+    "${aws_security_group.instance_www.id}",
+  ]
+  subnet_id = "${element(split(",","${aws_subnet.subnet_a.id},${aws_subnet.subnet_b.id},${aws_subnet.subnet_c.id}"),count.index)}"
 
   iam_instance_profile = "${aws_iam_instance_profile.codedeploy.name}"
 
@@ -29,8 +34,8 @@ resource "aws_instance" "codedeploy" {
   count = 3
 
   tags {
-    Name = "consul_client"
-    codedeploy = "true"    #TODO: better indentifier for instances
+    Name = "codedeploy_${count.index}"
+    codedeploy = "true"
   }
 
   connection {
