@@ -56,7 +56,6 @@ To run this example:
   ```
   $ terraform get -update terraform
   Get: file:///Users/clstokes/cc/hashicorp/atlas-examples/codedeploy-consul/shared (update)
-
   ```
 1. Create the environment using Terraform:
   ```
