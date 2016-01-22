@@ -42,6 +42,7 @@ application are healthy in Consul's service catalog
 To run this example:
 
 1. Run the following command to generate an SSH key for use in this example.
+
   ```
   $ bash shared/ssh_keys/generate_key_pair.sh
   Generating RSA private key, 1024 bit long modulus
@@ -59,6 +60,7 @@ To run this example:
   Get: file:///Users/clstokes/cc/hashicorp/atlas-examples/codedeploy-consul/shared (update)
   ```
 1. Create the environment using Terraform:
+
   ```
   $ terraform apply terraform
   template_file.consul_update: Creating...
@@ -80,6 +82,7 @@ To run this example:
 To teardown the example:
 
 1. Use Terraform to destroy the environment:
+
   ```
   $ terraform destroy terraform
   Do you really want to destroy?
