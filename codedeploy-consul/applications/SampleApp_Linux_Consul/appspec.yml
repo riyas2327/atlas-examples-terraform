@@ -1,7 +1,9 @@
 version: 0.0
 os: linux
 files:
-  - source: /index.html
+  - source: index.html
+    destination: /var/www/html/
+  - source: health
     destination: /var/www/html/
   - source: /conf/sampleapp.json
     destination: /etc/consul.d/

@@ -22,7 +22,7 @@ resource "aws_elb" "codedeploy" {
     healthy_threshold = 2
     unhealthy_threshold = 2
     timeout = 2
-    target = "HTTP:80/"
+    target = "HTTP:80/health"
     interval = 10
   }
 
