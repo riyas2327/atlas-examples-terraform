@@ -34,6 +34,7 @@ application are healthy in Consul's service catalog
   $ export AWS_DEFAULT_REGION=us-west-2
   ```
 2. You will need an S3 bucket for pushing application files to.
+
 > This is not managed by Terraform because S3 buckets cannot be created, destroyed, and recreated quickly without [causing issues](http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html).
 
 ### Setup
