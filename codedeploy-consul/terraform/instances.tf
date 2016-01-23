@@ -22,7 +22,6 @@ resource "aws_instance" "codedeploy" {
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
     "${aws_security_group.consul_client.id}",
-    "${aws_security_group.consul_web_ui.id}",
     "${aws_security_group.instance_www.id}",
   ]
   subnet_id = "${element(split(",","${aws_subnet.subnet_a.id},${aws_subnet.subnet_b.id},${aws_subnet.subnet_c.id}"),count.index)}"

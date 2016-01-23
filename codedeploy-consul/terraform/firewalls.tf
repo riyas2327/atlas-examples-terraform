@@ -35,6 +35,24 @@ resource "aws_security_group_rule" "elb_www" {
 }
 
 //
+// ELB WWW Access
+//
+resource "aws_security_group" "elb_consul" {
+  name        = "elb_consul"
+  description = "ELB Consul Web"
+  vpc_id      = "${aws_vpc.main.id}"
+}
+
+resource "aws_security_group_rule" "elb_consul_web" {
+  security_group_id = "${aws_security_group.elb_consul.id}"
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+  cidr_blocks       = ["${var.consul_ui_access_cidr}"]
+}
+
+//
 // Instance WWW Access
 //
 resource "aws_security_group" "instance_www" {
@@ -50,6 +68,15 @@ resource "aws_security_group_rule" "instance_www" {
   from_port                = 80
   to_port                  = 80
   source_security_group_id = "${aws_security_group.elb_www.id}"
+}
+
+resource "aws_security_group_rule" "instance_consul_web" {
+  security_group_id        = "${aws_security_group.instance_www.id}"
+  type                     = "ingress"
+  protocol                 = "tcp"
+  from_port                = 8500
+  to_port                  = 8500
+  source_security_group_id = "${aws_security_group.elb_consul.id}"
 }
 
 //
@@ -198,23 +225,4 @@ resource "aws_security_group_rule" "consul_serf_lan_udp_consul_client" {
   from_port                = 8301
   to_port                  = 8301
   source_security_group_id = "${aws_security_group.consul_client.id}"
-}
-
-//
-// Consul Web UI Access
-// - required for Consul Servers
-//
-resource "aws_security_group" "consul_web_ui" {
-  name        = "consul_web_ui"
-  description = "Consul Web UI Access"
-  vpc_id      = "${aws_vpc.main.id}"
-}
-
-resource "aws_security_group_rule" "consul_web_ui" {
-  security_group_id = "${aws_security_group.consul_web_ui.id}"
-  type              = "ingress"
-  protocol          = "tcp"
-  from_port         = 8500
-  to_port           = 8500
-  cidr_blocks       = ["${var.consul_ui_access_cidr}"]
 }
