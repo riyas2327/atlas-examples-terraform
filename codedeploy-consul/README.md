@@ -22,7 +22,10 @@ application are healthy in Consul's service catalog
 
 ### Prerequisites
 
-1. The following environments must be set in your local shell:
+1. Install Terraform from the
+[Downloads](https://www.terraform.io/downloads.html) page.
+
+1. Set the following environment variables in your local shell:
   ```
   # For Atlas
   $ export ATLAS_TOKEN=YOUR_ATLAS_TOKEN
@@ -31,15 +34,15 @@ application are healthy in Consul's service catalog
   # For AWS
   $ export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
   $ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-  $ export AWS_DEFAULT_REGION=us-west-2
+  $ export AWS_DEFAULT_REGION=us-east-1
   ```
-2. You will need an S3 bucket for pushing application files to.
+2. Create an S3 bucket for application files.
 
-> This is not managed by Terraform because S3 buckets cannot be created, destroyed, and recreated quickly without [causing issues](http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html).
+  > The S3 bucket is not managed by Terraform because S3 buckets cannot be
+  created, destroyed, and recreated quickly without
+  [causing issues](http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html).
 
 ### Setup
-
-To run this example:
 
 1. Run the following command to generate an SSH key for use in this example.
 
@@ -76,6 +79,32 @@ To run this example:
   Happy deploying!
   ```
 1. Follow the instructions in the output from the previous `terraform apply` step to push and deploy the sample application with CodeDeploy.
+
+> Note: AWS accounts can have different availability zones allocated to them -
+e.g. your account might have zones _a_, _b_, and _c_ while someone else's
+account might have zones _c_, _d_, and _e_. This project assumes _a_, _b_, and
+_c_ are available. If you need to change these values, please see the section on
+[Custom Variables](#custom-variables).
+
+### Custom Variables
+
+The defaults used for this project should work for most cases. If you would
+like to customize the values, the easiest way is to create a `terraform.tfvars`
+file in the top-level the `codedeploy-consul` directory. The
+[Terraform documentation](https://www.terraform.io/intro/getting-started/variables.html)
+can provide further explanation about variables.
+
+Here is an example with customized values:
+
+```
+codedeploy_s3_bucket = "my-bucket-name"
+codedeploy_s3_path   = "projects/codedeploy-consul"
+zone_a               = "us-east-1b"
+zone_b               = "us-east-1d"
+zone_c               = "us-east-1e"
+
+consul_ui_access_cidr = "172.31.0.0/16"
+```
 
 ### Teardown
 
