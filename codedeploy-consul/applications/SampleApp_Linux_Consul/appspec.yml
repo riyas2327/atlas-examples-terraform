@@ -16,17 +16,17 @@ hooks:
       timeout: 300
       runas: root
   ApplicationStop:
-    - location: scripts/enable_maintenance
+    - location: scripts/consul_enable_maintenance
       timeout: 300
     - location: scripts/stop_server
       timeout: 300
       runas: root
   AfterInstall:
-    - location: scripts/reload_consul
+    - location: scripts/consul_reload
       timeout: 300
   ApplicationStart:
-    - location: scripts/disable_maintenance
+    - location: scripts/consul_disable_maintenance
       timeout: 30
   ValidateService:
-    - location: scripts/validate
+    - location: scripts/consul_validate_health
       timeout: 60
