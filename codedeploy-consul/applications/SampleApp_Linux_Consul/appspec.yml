@@ -1,8 +1,8 @@
 version: 0.0
 os: linux
 files:
-  - source: index.html
-    destination: /var/www/html/
+  - source: index.html.ctmpl
+    destination: /tmp/
   - source: health
     destination: /var/www/html/
   - source: /conf/sampleapp.json
@@ -25,6 +25,8 @@ hooks:
     - location: scripts/consul_reload
       timeout: 300
   ApplicationStart:
+    - location: scripts/consul_update_from_kv
+      timeout: 30
     - location: scripts/consul_disable_maintenance
       timeout: 30
   ValidateService:
