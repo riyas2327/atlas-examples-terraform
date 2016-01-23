@@ -94,6 +94,10 @@ file in the top-level the `codedeploy-consul` directory. The
 [Terraform documentation](https://www.terraform.io/intro/getting-started/variables.html)
 can provide further explanation about variables.
 
+To view the [Consul Web UI](https://www.consul.io/intro/getting-started/ui.html)
+set the `consul_ui_access_cidr` variable shown below to your workstation's
+public IP address.
+
 Here is an example with customized values:
 
 ```
