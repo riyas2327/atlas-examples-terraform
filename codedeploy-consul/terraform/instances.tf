@@ -58,6 +58,7 @@ resource "aws_instance" "codedeploy" {
     scripts = [
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
+      "${module.shared.path}/consul/installers/consul_template_install.sh",
       "${module.shared.path}/consul/installers/dnsmasq_install.sh",
       "${module.shared.path}/codedeploy-agent/installers/codedeploy-agent_install.sh",
     ]
