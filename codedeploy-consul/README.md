@@ -13,10 +13,12 @@ discovery
 CodeDeploy deployment
 - Prevent the CodeDeploy deployment from proceeding until the node and
 application are healthy in Consul's service catalog
+- Provide application data to the application from Consul's
+[Key/Value Datastore](https://www.consul.io/intro/getting-started/kv.html)
 
 ## Getting Started
 
-[Terraform](https://terraform.io/) is used to provision the example environment on Amazon Web Services including the VPC and subnets, Consul cluster, and CodeDeploy instances. Additionally, a CodeDeploy Application named *SampleApp_Linux_Consul* and a CodeDeploy Deployment Group named *SampleApp_Linux_Consul* will be created.
+[Terraform](https://terraform.io/) is used to provision the example environment on Amazon Web Services including the VPC, load balancers, Consul cluster, and CodeDeploy instances. Additionally, a CodeDeploy Application named *SampleApp_Linux_Consul* and a CodeDeploy Deployment Group named *SampleApp_Linux_Consul* will be created.
 
 [HashiCorp Atlas](https://hashicorp.com/atlas.html) is used to provide the initial bootstrap for the Consul cluster.
 
@@ -70,11 +72,8 @@ application are healthy in Consul's service catalog
     rendered:                     "" => "<computed>"
   ...
 
-  CodeDeploy Deployment Group Name: SampleApp_Linux_Consul
-
-  To deploy a new version of the application:
-    1) aws deploy push --application-name SampleApp_Linux_Consul --s3-location s3://YOUR_BUCKET/YOUR_PATH/SampleApp_Linux_Consul.zip --source applications/SampleApp_Linux_Consul/
-    2) Follow the instructions in the output from the push command or use the AWS console.
+  Apply complete! Resources: 51 added, 0 changed, 0 destroyed.
+  ...
 
   Happy deploying!
   ```
@@ -129,6 +128,6 @@ To teardown the example:
   aws_vpc.main: Destroying...
   aws_vpc.main: Destruction complete
 
-  Apply complete! Resources: 0 added, 0 changed, 41 destroyed.
+  Apply complete! Resources: 0 added, 0 changed, 51 destroyed.
   ```
 1. Clean up any remaining application files in your S3 bucket.
