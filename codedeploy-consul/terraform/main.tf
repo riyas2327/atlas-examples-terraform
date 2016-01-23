@@ -41,16 +41,19 @@ variable "consul_ui_access_cidr"   { default = "172.31.0.0/16" }
 output "instructions" {
   value = <<OUTPUT
 
-CodeDeploy Deployment Group Name: ${aws_codedeploy_deployment_group.sampleapp.deployment_group_name}
-
 To deploy a new version of the application:
   1) Run the following command to upload the application to S3.
+
         aws deploy push --application-name SampleApp_Linux_Consul --s3-location s3://${var.codedeploy_s3_bucket}/${var.codedeploy_s3_path}/SampleApp_Linux_Consul.zip --source applications/SampleApp_Linux_Consul/
 
   2) Follow the instructions in the output from the `aws deploy push` command
-     or use the AWS console to deploy the uploaded application.
+     or use the AWS console to deploy the uploaded application. Use the
+     deployment group name shown below:
+
+        CodeDeploy Deployment Group Name: ${aws_codedeploy_deployment_group.sampleapp.deployment_group_name}
 
   3) Once the deployment is complete, the following URLs will be available.
+  
         Application URL:   http://${aws_elb.codedeploy.dns_name}/
         Consul Web UI URL: http://${aws_elb.consul_web.dns_name}/ui/
 
