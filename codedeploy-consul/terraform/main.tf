@@ -52,8 +52,14 @@ To deploy a new version of the application:
 
         CodeDeploy Deployment Group Name: ${aws_codedeploy_deployment_group.sampleapp.deployment_group_name}
 
-  3) Once the deployment is complete, the following URLs will be available.
-  
+  3) Monitor the deployment using the Deployment Id returned by the
+     `aws deploy create-deployment` command:
+
+        aws deploy get-deployment --deployment-id <deployment-id>
+
+  4) Once the deployment is complete, access the application and
+     Consul Web UI through the following URLs:
+
         Application URL:   http://${aws_elb.codedeploy.dns_name}/
         Consul Web UI URL: http://${aws_elb.consul_web.dns_name}/ui/
 
