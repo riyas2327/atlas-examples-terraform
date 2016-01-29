@@ -34,6 +34,9 @@ variable "vpc_cidrs" { default = "172.31.0.0/20,172.31.16.0/20,172.31.32.0/20" }
 
 variable "consul_bootstrap_expect" { default = "3" }
 variable "consul_ui_access_cidr"   { default = "172.31.0.0/16" }
+variable "codedeploy_iam_role_name" {
+  default = "DemoCodeDeployServiceRole"
+}
 
 //
 // Outputs
@@ -51,6 +54,12 @@ To deploy a new version of the application:
      deployment group name shown below:
 
         CodeDeploy Deployment Group Name: ${aws_codedeploy_deployment_group.sampleapp.deployment_group_name}
+
+     You will also need to specify a CodeDeploy Deployment config.  Example:
+
+        --deployment-config-name CodeDeployDefault.AllAtOnce
+
+     A deployment description is optional.
 
   3) Monitor the deployment using the Deployment Id returned by the
      `aws deploy create-deployment` command:

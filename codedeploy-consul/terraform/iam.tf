@@ -2,7 +2,7 @@
 // Service role for CodeDeploy service
 //
 resource "aws_iam_role" "codedeploy_service_role" {
-  name = "CodeDeployServiceRole"
+  name = "${var.codedeploy_iam_role_name}"
   assume_role_policy = "${file("${module.shared.path}/codedeploy-agent/iam/CodeDeployDemo-Trust.json")}"
 }
 

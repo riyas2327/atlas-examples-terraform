@@ -38,7 +38,7 @@ application are healthy in Consul's service catalog
   $ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
   $ export AWS_DEFAULT_REGION=us-east-1
   ```
-2. Create an S3 bucket for application files.
+2. Create an S3 bucket for application files.  The bucket should be created in the same region you will create the CodeDeploy application.
 
   > The S3 bucket is not managed by Terraform because S3 buckets cannot be
   created, destroyed, and recreated quickly without
