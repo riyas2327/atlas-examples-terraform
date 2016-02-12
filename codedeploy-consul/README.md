@@ -131,3 +131,9 @@ To teardown the example:
   Apply complete! Resources: 0 added, 0 changed, 51 destroyed.
   ```
 1. Clean up any remaining application files in your S3 bucket.
+
+# License
+
+These samples and templates are all licensed under Apache 2.0. This license
+applies only to the samples and templates contained within this directory and
+its sub-directories.
