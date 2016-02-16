@@ -1,4 +1,4 @@
-# codedeploy-consul
+# aws-codedeploy-consul
 
 This example demonstrates using [Consul](https://www.consul.io/) for
 service health checks and orchestrating deployments for an
