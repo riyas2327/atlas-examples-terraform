@@ -242,8 +242,10 @@ CMD
   }
 
   provisioner "remote-exec" {
-    inline = "echo -n 'Joining Nomad... ' && nomad server-join ${google_compute_instance.nomad_server_1.network_interface.0.address}"
-    inline = "echo -n 'Joining Consul... ' && consul join ${google_compute_instance.nomad_server_1.network_interface.0.address}"
+    inline = [
+      "echo -n 'Joining Nomad... ' && nomad server-join ${google_compute_instance.nomad_server_1.network_interface.0.address}",
+      "echo -n 'Joining Consul... ' && consul join ${google_compute_instance.nomad_server_1.network_interface.0.address}",
+    ]
   }
 }
 
@@ -359,8 +361,10 @@ CMD
   }
 
   provisioner "remote-exec" {
-    inline = "echo -n 'Joining Nomad... ' && nomad server-join ${google_compute_instance.nomad_server_1.network_interface.0.address}"
-    inline = "echo -n 'Joining Consul... ' && consul join ${google_compute_instance.nomad_server_1.network_interface.0.address}"
+    inline = [
+      "echo -n 'Joining Nomad... ' && nomad server-join ${google_compute_instance.nomad_server_1.network_interface.0.address}",
+      "echo -n 'Joining Consul... ' && consul join ${google_compute_instance.nomad_server_1.network_interface.0.address}",
+    ]
   }
 }
 
