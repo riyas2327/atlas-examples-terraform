@@ -483,7 +483,7 @@ resource "null_resource" "gce_join_wan" {
   provisioner "remote-exec" {
     inline = [
       # test WAN connectivity over VPN - bash is needed so the for loop short circuits correctly
-      "bash -c 'for i in {1..${var.vpn_wait_timeout}}; do ping -q -c1 -W1 ${aws_instance.nomad_server_1.private_ip} && break; done;'",
+      "bash -c 'for i in {1..${var.vpn_wait_timeout}}; do ping -q -c1 -W1 ${aws_instance.nomad_server_1.private_ip} 1>/dev/null && break; done;'",
     ]
   }
 
