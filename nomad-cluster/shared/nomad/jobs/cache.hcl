@@ -84,7 +84,7 @@ job "cache" {
         network {
           mbits = 10
 
-          # Request for a dynamic port
+          # Request for a static port
           port "db" {
             static = 6379
           }
