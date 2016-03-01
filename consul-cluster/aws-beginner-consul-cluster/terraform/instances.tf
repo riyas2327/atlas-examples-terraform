@@ -25,35 +25,23 @@ resource "aws_instance" "consul_client" {
     Name = "consul_client"
   }
 
-  provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
+  connection {
+    user     = "ubuntu"
+    key_file = "${module.shared.private_key_path}"
+    agent    = "false"
+  }
 
+  provisioner "file" {
     source      = "${module.shared.path}/consul/consul.d/consul_client.json"
     destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     source      = "${module.shared.path}/consul/init/consul.conf"
     destination = "/tmp/consul.conf"
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     scripts = [
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
@@ -62,12 +50,6 @@ resource "aws_instance" "consul_client" {
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = ["${template_file.consul_update.rendered}"]
   }
 
@@ -88,35 +70,23 @@ resource "aws_instance" "consul_0" {
     Name = "consul_0"
   }
 
-  provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
+  connection {
+    user     = "ubuntu"
+    key_file = "${module.shared.private_key_path}"
+    agent    = "false"
+  }
 
+  provisioner "file" {
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
     destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     source      = "${module.shared.path}/consul/init/consul.conf"
     destination = "/tmp/consul.conf"
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     scripts = [
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
@@ -125,12 +95,6 @@ resource "aws_instance" "consul_0" {
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = ["${template_file.consul_update.rendered}"]
   }
 
@@ -148,35 +112,23 @@ resource "aws_instance" "consul_1" {
     Name = "consul_1"
   }
 
-  provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
+  connection {
+    user     = "ubuntu"
+    key_file = "${module.shared.private_key_path}"
+    agent    = "false"
+  }
 
+  provisioner "file" {
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
     destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     source      = "${module.shared.path}/consul/init/consul.conf"
     destination = "/tmp/consul.conf"
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     scripts = [
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
@@ -185,12 +137,6 @@ resource "aws_instance" "consul_1" {
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = ["${template_file.consul_update.rendered}"]
   }
 
@@ -208,35 +154,23 @@ resource "aws_instance" "consul_2" {
     Name = "consul_2"
   }
 
-  provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
+  connection {
+    user     = "ubuntu"
+    key_file = "${module.shared.private_key_path}"
+    agent    = "false"
+  }
 
+  provisioner "file" {
     source      = "${module.shared.path}/consul/consul.d/consul_server.json"
     destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     source      = "${module.shared.path}/consul/init/consul.conf"
     destination = "/tmp/consul.conf"
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     scripts = [
       "${module.shared.path}/consul/installers/consul_install.sh",
       "${module.shared.path}/consul/installers/consul_conf_install.sh",
@@ -245,12 +179,6 @@ resource "aws_instance" "consul_2" {
   }
 
   provisioner "remote-exec" {
-    connection {
-      user     = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-      agent    = "false"
-    }
-
     inline = ["${template_file.consul_update.rendered}"]
   }
 
