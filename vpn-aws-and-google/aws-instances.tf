@@ -1,5 +1,5 @@
 resource "template_file" "consul_update_aws" {
-  template = "${module.shared.path}/consul/userdata/consul_update_aws.sh.tpl"
+  template = "${module.shared.path}/consul/userdata/consul_update.sh.tpl"
 
   vars {
     region                  = "${var.aws_region}"
@@ -7,15 +7,22 @@ resource "template_file" "consul_update_aws" {
     atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
     consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
+    instance_id_url         = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
+    instance_address_url    = "http://169.254.169.254/2014-02-25/meta-data/local-ipv4"
   }
 
   depends_on = ["aws_vpn_gateway.vpn"] // give the VPN some time to connect
 }
 
+resource "template_file" "pqs_aws" {
+  template = "${module.shared.path}/consul/userdata/pqs.sh.tpl"
+}
+
 //
 // Consul & Nomad Servers
 //
-resource "aws_instance" "nomad_server_1" {
+resource "aws_instance" "server" {
+  count         = 3
   instance_type = "${var.aws_instance_type}"
   ami           = "${var.aws_source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -28,7 +35,7 @@ resource "aws_instance" "nomad_server_1" {
   ]
 
   tags {
-    Name = "nomad_server_1"
+    Name = "${var.atlas_environment}-nomad-server-${count.index + 1}"
   }
 
   connection {
@@ -56,7 +63,10 @@ resource "aws_instance" "nomad_server_1" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update_aws.rendered}"]
+    inline = [
+      "${template_file.consul_update_aws.rendered}",
+      "${template_file.pqs_aws.rendered}"
+    ]
   }
 
   provisioner "remote-exec" {
@@ -93,11 +103,6 @@ CMD
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/batch.hcl"
-    destination = "/tmp/batch.hcl"
-  }
-
-  provisioner "file" {
     source      = "${module.shared.path}/nomad/jobs/cache.hcl"
     destination = "/tmp/cache.hcl"
   }
@@ -111,7 +116,6 @@ CMD
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo mv /tmp/batch.hcl /opt/nomad/jobs/",
       "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
       "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
       "sudo service nomad start || sudo service nomad restart",
@@ -121,228 +125,24 @@ CMD
   }
 }
 
-resource "aws_instance" "nomad_server_2" {
-  instance_type = "${var.aws_instance_type}"
-  ami           = "${var.aws_source_ami}"
-  key_name      = "${aws_key_pair.main.key_name}"
-  subnet_id     = "${aws_subnet.subnet_a.id}"
+resource "null_resource" "aws_server_join" {
+  count = 3
 
-  vpc_security_group_ids = [
-    "${aws_security_group.default_egress.id}",
-    "${aws_security_group.admin_access.id}",
-    "${aws_security_group.internal_access.id}",
+  depends_on = [
+    "aws_instance.server",
   ]
 
-  tags {
-    Name = "nomad_server_2"
-  }
-
   connection {
-    user        = "ubuntu"
+    host = "${element(aws_instance.server.*.public_ip, count.index)}"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
-    destination = "/tmp/consul.json.tmp"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/tmp/consul.conf"
-  }
-
-  provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["${template_file.consul_update_aws.rendered}"]
-  }
-
-  provisioner "remote-exec" {
-    inline = <<CMD
-cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
-region = "${var.nomad_region}"
-datacenter = "${var.aws_region}"
-
-atlas {
-  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token = "${var.atlas_token}"
-}
-
-server {
-  enabled = true
-  bootstrap_expect = ${var.nomad_bootstrap_expect}
-}
-
-addresses {
-  http = "127.0.0.1"
-  rpc = "${self.private_ip}"
-  serf = "${self.private_ip}"
-}
-
-EOF
-CMD
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/tmp/nomad.conf"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/batch.hcl"
-    destination = "/tmp/batch.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/cache.hcl"
-    destination = "/tmp/cache.hcl"
-  }
-
-  provisioner "file" {
-    connection {
-      user        = "ubuntu"
-      key_file = "${module.shared.private_key_path}"
-    }
-
-    source      = "${module.shared.path}/nomad/jobs/web.hcl"
-    destination = "/tmp/web.hcl"
-  }
-
   provisioner "remote-exec" {
     inline = [
-      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
-      "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo mv /tmp/batch.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
-      "sudo service nomad start || sudo service nomad restart",
-      "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
-      "sudo service dnsmasq restart",
+      "echo -n 'Joining Nomad... ' && nomad server-join ${join(" ", aws_instance.server.*.private_ip)}",
+      "echo -n 'Joining Consul... ' && consul join ${join(" ", aws_instance.server.*.private_ip)}",
     ]
-  }
-
-  provisioner "remote-exec" {
-    inline = "nomad server-join ${aws_instance.nomad_server_1.private_ip}"
-  }
-}
-
-resource "aws_instance" "nomad_server_3" {
-  instance_type = "${var.aws_instance_type}"
-  ami           = "${var.aws_source_ami}"
-  key_name      = "${aws_key_pair.main.key_name}"
-  subnet_id     = "${aws_subnet.subnet_a.id}"
-
-  vpc_security_group_ids = [
-    "${aws_security_group.default_egress.id}",
-    "${aws_security_group.admin_access.id}",
-    "${aws_security_group.internal_access.id}",
-  ]
-
-  tags {
-    Name = "nomad_server_3"
-  }
-
-  connection {
-    user        = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
-    destination = "/tmp/consul.json.tmp"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/tmp/consul.conf"
-  }
-
-  provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["${template_file.consul_update_aws.rendered}"]
-  }
-
-  provisioner "remote-exec" {
-    inline = <<CMD
-cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
-region = "${var.nomad_region}"
-datacenter = "${var.aws_region}"
-
-atlas {
-  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token = "${var.atlas_token}"
-}
-
-server {
-  enabled = true
-  bootstrap_expect = ${var.nomad_bootstrap_expect}
-}
-
-addresses {
-  http = "127.0.0.1"
-  rpc = "${self.private_ip}"
-  serf = "${self.private_ip}"
-}
-
-EOF
-CMD
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/tmp/nomad.conf"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/batch.hcl"
-    destination = "/tmp/batch.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/cache.hcl"
-    destination = "/tmp/cache.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/web.hcl"
-    destination = "/tmp/web.hcl"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
-      "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo mv /tmp/batch.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
-      "sudo service nomad start || sudo service nomad restart",
-      "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
-      "sudo service dnsmasq restart",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = "nomad server-join ${aws_instance.nomad_server_1.private_ip}"
   }
 }
 
@@ -362,7 +162,7 @@ resource "aws_instance" "nomad_client" {
   ]
 
   tags {
-    Name = "nomad_client_${count.index+1}"
+    Name = "${var.atlas_environment}-nomad-client-${count.index + 1}"
   }
 
   count = "${var.nomad_client_nodes}"
@@ -415,9 +215,7 @@ consul {
 client {
   enabled = true
   servers = [
-    "${aws_instance.nomad_server_1.private_ip}:4647",
-    "${aws_instance.nomad_server_2.private_ip}:4647",
-    "${aws_instance.nomad_server_3.private_ip}:4647"
+    ${join("\n    ", formatlist("%s:4647", aws_instance.server.*.private_ip))}
   ]
 }
 
@@ -432,6 +230,7 @@ CMD
 
   provisioner "remote-exec" {
     inline = [
+      "consul join ${join(" ", aws_instance.server.*.private_ip)}",
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
       "sudo service nomad start || sudo service nomad restart",

@@ -1,19 +1,14 @@
 #!/bin/bash
 
 KEY_PATH="shared/ssh_keys"
-KEY_NAME=$1
-EXISTING_KEY=$2
+KEY_NAME=hybrid-cloud
+EXISTING_KEY=$1
 
 PRIVATE_KEY_PATH="$KEY_PATH/$KEY_NAME.pem"
 PUBLIC_KEY_PATH="$KEY_PATH/$KEY_NAME.pub"
 
 if [ ! -d "$KEY_PATH" ]; then
-  echo "Directory [$KEY_PATH] does not exist. This script must be run from the 'consul-cluster' directory."
-  exit 1
-fi
-
-if [ -z "$1" ]; then
-  echo "A key name must be passed as the first argument."
+  echo "Directory [$KEY_PATH] does not exist. This script must be run from the 'vpn-aws-and-google' directory."
   exit 1
 fi
 
@@ -35,6 +30,8 @@ else
       ssh-keygen -y -f $PRIVATE_KEY_PATH > $PUBLIC_KEY_PATH
       chmod 700 $PUBLIC_KEY_PATH
     fi
+
+    ssh-add $PRIVATE_KEY_PATH
 fi
 
 echo ""

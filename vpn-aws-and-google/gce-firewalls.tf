@@ -8,7 +8,6 @@ resource "google_compute_firewall" "admin_access" {
   }
 
   source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["admin"]
 }
 
 resource "google_compute_firewall" "internal_access" {
@@ -29,5 +28,8 @@ resource "google_compute_firewall" "internal_access" {
     ports    = ["0-65535"]
   }
 
-  source_ranges = ["${var.aws_vpc_cidr}","${var.gce_vpc_cidr}"]
+  source_ranges = [
+    "${var.aws_vpc_cidr}",
+    "${var.gce_vpc_cidr}"
+  ]
 }
