@@ -4,11 +4,11 @@ set -ex
 
 NOMAD_VERSION=0.3.0
 
-sudo apt-get -y update
+sudo apt-get -qq -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get -y install curl unzip
+sudo apt-get -qq -y install curl unzip
 
 # install nomad
 echo "Fetching nomad..."

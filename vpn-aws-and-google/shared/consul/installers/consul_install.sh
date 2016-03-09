@@ -5,8 +5,8 @@ set -ex
 CONSUL_VERSION=0.6.3
 
 echo "Installing dependencies..."
-sudo apt-get -y update
-sudo apt-get -y install unzip curl
+sudo apt-get -qq -y update
+sudo apt-get -qq -y install unzip curl
 
 echo "Fetching consul..."
 cd /tmp/

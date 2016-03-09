@@ -3,8 +3,8 @@ set -ex
 
 echo Installing Dnsmasq...
 
-sudo apt-get -y update
-sudo apt-get -y install dnsmasq-base dnsmasq
+sudo apt-get -qq -y update
+sudo apt-get -qq -y install dnsmasq-base dnsmasq
 
 echo Configuring Dnsmasq...
 
