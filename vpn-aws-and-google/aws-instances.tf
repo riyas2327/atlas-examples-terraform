@@ -7,7 +7,6 @@ resource "template_file" "consul_update_aws" {
     atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
     consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
-    instance_id_url         = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
     instance_address_url    = "http://169.254.169.254/2014-02-25/meta-data/local-ipv4"
   }
 
@@ -65,34 +64,44 @@ resource "aws_instance" "server" {
   provisioner "remote-exec" {
     inline = [
       "${template_file.consul_update_aws.rendered}",
-      "${template_file.pqs_aws.rendered}"
+      "${template_file.pqs_aws.rendered}",
     ]
   }
 
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
-region = "${var.nomad_region}"
-datacenter = "${var.aws_region}"
+data_dir     = "/opt/nomad/data"
+enable_debug = true
+bind_addr    = "0.0.0.0"
+region       = "${var.nomad_region}"
+datacenter   = "${var.aws_region}"
+node_id      = "aws-server-${count.index + 1}"
+log_level    = "DEBUG"
+
+advertise {
+  http = "${self.private_ip}:4646"
+  rpc  = "${self.private_ip}:4647"
+  serf = "${self.private_ip}:4648"
+}
+
+consul {
+}
 
 atlas {
   infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token = "${var.atlas_token}"
-}
-
-server {
-  enabled = true
-  bootstrap_expect = ${var.nomad_bootstrap_expect}
+  token          = "${var.atlas_token}"
 }
 
 addresses {
-  http = "127.0.0.1"
   rpc = "${self.private_ip}"
   serf = "${self.private_ip}"
 }
 
+server {
+  enabled          = true
+  bootstrap_expect = ${var.nomad_bootstrap_expect}
+}
 EOF
 CMD
   }
@@ -150,6 +159,7 @@ resource "null_resource" "aws_server_join" {
 // Nomad & Consul Clients
 //
 resource "aws_instance" "nomad_client" {
+  count         = "${var.nomad_client_nodes}"
   instance_type = "${var.aws_instance_type}"
   ami           = "${var.aws_source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -164,8 +174,6 @@ resource "aws_instance" "nomad_client" {
   tags {
     Name = "${var.atlas_environment}-nomad-client-${count.index + 1}"
   }
-
-  count = "${var.nomad_client_nodes}"
 
   connection {
     user        = "ubuntu"
@@ -193,32 +201,53 @@ resource "aws_instance" "nomad_client" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update_aws.rendered}"]
+    inline = [
+      "${template_file.consul_update_aws.rendered}",
+    ]
   }
 
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
-region = "${var.nomad_region}"
-datacenter = "${var.aws_region}"
+data_dir     = "/opt/nomad/data"
+enable_debug = true
+bind_addr    = "0.0.0.0"
+region       = "${var.nomad_region}"
+datacenter   = "${var.aws_region}"
+node_id      = "aws-nomad-client-${count.index + 1}"
+log_level    = "DEBUG"
 
-atlas {
-  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token = "${var.atlas_token}"
+advertise {
+  http = "${self.private_ip}:4646"
+  rpc  = "${self.private_ip}:4647"
+  serf = "${self.private_ip}:4648"
 }
 
 consul {
 }
 
-client {
-  enabled = true
-  servers = [
-    ${join("\n    ", formatlist("%s:4647,", aws_instance.server.*.private_ip))}
-  ]
+atlas {
+  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+  token          = "${var.atlas_token}"
 }
 
+client {
+  enabled    = true
+  node_id    = "aws-nomad-client-${count.index + 1}"
+  node_class = "aws"
+  servers    = [
+    ${join(",\n    ", formatlist("\"%s:4647\"", aws_instance.server.*.private_ip))}
+  ]
+
+  options {
+    "docker.cleanup.image"   = "0"
+    "driver.raw_exec.enable" = "1"
+  }
+
+  meta {
+    region = "${var.aws_region}"
+  }
+}
 EOF
 CMD
   }

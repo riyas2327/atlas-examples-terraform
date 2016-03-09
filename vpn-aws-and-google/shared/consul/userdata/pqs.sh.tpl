@@ -4,6 +4,7 @@ set -e
 logger() {
   DT=$(date '+%Y/%m/%d %H:%M:%S')
   echo "$DT pqs.sh: $1" | sudo tee -a /var/log/user_data.log > /dev/null
+  echo "$DT pqs.sh: $1"
 }
 
 logger "Begin script"

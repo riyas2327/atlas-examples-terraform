@@ -54,20 +54,21 @@ module "shared" {
 //
 // Outputs
 //
-output "aws_servers" {
-  value = "${join("\n", formatlist("%s/%s - ssh ubuntu@%s", aws_instance.server.*.private_ip, aws_instance.server.*.public_ip, aws_instance.server.*.public_ip))}"
-}
+output "info" {
+  value = <<EOF
 
-output "aws_clients" {
-  value = "${join("\n", formatlist("%s/%s - ssh ubuntu@%s", aws_instance.nomad_client.*.private_ip, aws_instance.nomad_client.*.public_ip, aws_instance.nomad_client.*.public_ip))}"
-}
+AWS servers:
+    ${join("\n    ", formatlist("%s/%s - ssh ubuntu@%s", aws_instance.server.*.private_ip, aws_instance.server.*.public_ip, aws_instance.server.*.public_ip))}
 
-output "gce_servers" {
-  value = "${join("\n", formatlist("%s/%s - ssh ubuntu@%s", google_compute_instance.server.*.network_interface.0.address, google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip))}"
-}
+AWS clients:
+    ${join("\n    ", formatlist("%s/%s - ssh ubuntu@%s", aws_instance.nomad_client.*.private_ip, aws_instance.nomad_client.*.public_ip, aws_instance.nomad_client.*.public_ip))}
 
-output "gce_clients" {
-  value = "${join("\n", formatlist("%s/%s - ssh ubuntu@%s", google_compute_instance.nomad_client.*.network_interface.0.address, google_compute_instance.nomad_client.*.network_interface.0.access_config.0.assigned_nat_ip, google_compute_instance.nomad_client.*.network_interface.0.access_config.0.assigned_nat_ip))}"
+GCE servers:
+    ${join("\n    ", formatlist("%s/%s - ssh ubuntu@%s", google_compute_instance.server.*.network_interface.0.address, google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip))}
+
+GCE clients:
+    ${join("\n    ", formatlist("%s/%s - ssh ubuntu@%s", google_compute_instance.nomad_client.*.network_interface.0.address, google_compute_instance.nomad_client.*.network_interface.0.access_config.0.assigned_nat_ip, google_compute_instance.nomad_client.*.network_interface.0.access_config.0.assigned_nat_ip))}
+EOF
 }
 
 output "ping_aws_to_google" {
