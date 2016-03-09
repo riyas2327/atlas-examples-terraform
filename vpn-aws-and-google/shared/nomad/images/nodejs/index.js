@@ -2,9 +2,9 @@ var express = require('express'),
     http = require('http'),
     redis = require('redis'),
     app = express(),
-    client = redis.createClient('6379', 'redis.service.consul');
+    client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_ADDR);
 
-app.get('/', function(req, res, next) {
+app.get('/counter', function(req, res, next) {
   client.incr('counter', function(err, counter) {
     if(err) return next(err);
 
