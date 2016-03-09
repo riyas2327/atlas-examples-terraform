@@ -6,7 +6,7 @@ resource "template_file" "consul_update_aws" {
     atlas_token             = "${var.atlas_token}"
     atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
-    consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
+    consul_bootstrap_expect = "${var.aws_servers}"
     instance_address_url    = "http://169.254.169.254/2014-02-25/meta-data/local-ipv4"
   }
 
@@ -21,7 +21,7 @@ resource "template_file" "pqs_aws" {
 // Consul & Nomad Servers
 //
 resource "aws_instance" "server" {
-  count         = 3
+  count         = "${var.aws_servers}"
   instance_type = "${var.aws_instance_type}"
   ami           = "${var.aws_source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -100,7 +100,7 @@ addresses {
 
 server {
   enabled          = true
-  bootstrap_expect = ${var.nomad_bootstrap_expect}
+  bootstrap_expect = ${var.aws_servers}
 }
 EOF
 CMD
@@ -135,7 +135,7 @@ CMD
 }
 
 resource "null_resource" "aws_server_join" {
-  count = 3
+  count = "${var.aws_servers}"
 
   depends_on = [
     "aws_instance.server",
@@ -159,7 +159,7 @@ resource "null_resource" "aws_server_join" {
 // Nomad & Consul Clients
 //
 resource "aws_instance" "nomad_client" {
-  count         = "${var.nomad_client_nodes}"
+  count         = "${var.aws_nomad_clients}"
   instance_type = "${var.aws_instance_type}"
   ami           = "${var.aws_source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -234,7 +234,7 @@ atlas {
 client {
   enabled    = true
   node_id    = "aws-nomad-client-${count.index + 1}"
-  node_class = "aws"
+  node_class = "class_${(count.index % var.aws_nomad_clients) + 1}"
   servers    = [
     ${join(",\n    ", formatlist("\"%s:4647\"", aws_instance.server.*.private_ip))}
   ]

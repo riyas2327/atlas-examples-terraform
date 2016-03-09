@@ -13,6 +13,8 @@ variable "aws_source_ami"    { default = "ami-9a562df2" }
 variable "aws_instance_type" { default = "t2.small" }
 variable "aws_vpc_cidr"      { default = "10.10.0.0/16" }
 variable "aws_vpc_cidrs"     { default = "10.10.0.0/20,10.10.16.0/20,10.10.32.0/20" }
+variable "aws_servers"       { default = "3" }
+variable "aws_nomad_clients" { default = "3" }
 
 //
 // Google Specific
@@ -22,14 +24,13 @@ variable "gce_source_image"  { default = "ubuntu-1404-trusty-v20160114e" }
 variable "gce_instance_type" { default = "g1-small" }
 variable "gce_vpc_cidr"      { default = "10.11.0.0/16" }
 variable "gce_vpc_cidrs"     { default = "10.11.0.0/20,10.11.16.0/20,10.11.32.0/20" }
+variable "gce_servers"       { default = "3" }
+variable "gce_nomad_clients" { default = "3" }
 
 //
-// Amazon Specific
+// Nomad Specific
 //
-variable "consul_bootstrap_expect" { default = "3" }
-variable "nomad_bootstrap_expect"  { default = "3" }
-variable "nomad_client_nodes"      { default = "3" }
-variable "nomad_region"            { default = "global" }
+variable "nomad_region" { default = "global" }
 
 # wait for vpn connectivity for 5 minutes
 variable "vpn_wait_timeout"        { default = "300" }

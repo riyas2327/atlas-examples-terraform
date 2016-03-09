@@ -1,5 +1,5 @@
 job "cache" {
-  datacenters = ["us-east-1","us-central1"]
+  datacenters = ["us-east-1", "us-central1"]
   type        = "service"
   priority    = 50
 
@@ -13,13 +13,14 @@ job "cache" {
     max_parallel = 1
   }
 
-  group "cache" {
+  group "redis" {
     count = 1
 
     restart {
+      mode     = "fail"
+      attempts = 3
       interval = "5m"
-      attempts = 10
-      delay    = "25s"
+      delay    = "2s"
     }
 
     task "redis" {
@@ -34,9 +35,30 @@ job "cache" {
         }
       }
 
+      resources {
+        cpu    = 20 # Mhz
+        memory = 15 # MB
+        disk   = 10 # MB
+
+        network {
+          port "db" {
+            static = 6379
+          }
+        }
+      }
+
+      logs {
+        max_files     = 1
+        max_file_size = 5
+      }
+
+      env {
+        NODE_CLASS = "${node.class}"
+      }
+
       service {
         name = "redis"
-        tags = ["global"]
+        tags = ["global", "${JOB}", "${TASKGROUP}"]
         port = "db"
 
         check {
@@ -44,19 +66,6 @@ job "cache" {
           type     = "tcp"
           interval = "10s"
           timeout  = "2s"
-        }
-      }
-
-      resources {
-        cpu    = 500 # Mhz
-        memory = 256 # MB
-
-        network {
-          mbits = 10
-
-          port "db" {
-            static = 6379
-          }
         }
       }
     }

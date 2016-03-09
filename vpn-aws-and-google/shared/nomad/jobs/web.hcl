@@ -1,11 +1,11 @@
 job "web" {
-  datacenters = ["us-east-1"]
+  datacenters = ["us-east-1", "us-central1"]
   type        = "service"
   priority    = 50
 
   constraint {
-    attribute = "$attr.kernel.name"
-    value     = "linux"
+    attribute = "${node.datacenter}"
+    value     = "us-east-1"
   }
 
   update {
@@ -17,9 +17,10 @@ job "web" {
     count = 1
 
     restart {
+      mode     = "fail"
+      attempts = 3
       interval = "5m"
-      attempts = 10
-      delay    = "25s"
+      delay    = "2s"
     }
 
     task "nginx" {
@@ -30,9 +31,32 @@ job "web" {
         network_mode = "host"
       }
 
+      resources {
+        cpu    = 20 # Mhz
+        memory = 15 # MB
+        disk   = 10 # MB
+
+        network {
+          port "http" {
+            static = 80
+          }
+        }
+      }
+
+      logs {
+        max_files     = 1
+        max_file_size = 5
+      }
+
+      env {
+        NODEJS_ADDR = "redis"
+        NODEJS_TYPE = "query"
+        NODE_CLASS  = "${node.class}"
+      }
+
       service {
         name = "nginx"
-        tags = ["global"]
+        tags = ["global", "${JOB}", "${TASKGROUP}"]
         port = "http"
 
         check {
@@ -42,20 +66,6 @@ job "web" {
           timeout  = "2s"
         }
       }
-
-      resources {
-        cpu = 500 # Mhz
-        memory = 256 # MB
-
-        network {
-          mbits = 10
-
-          # Request for a static port
-          port "http" {
-            static = 80
-          }
-        }
-      }
     }
   }
 
@@ -63,9 +73,10 @@ job "web" {
     count = 3
 
     restart {
+      mode     = "fail"
+      attempts = 3
       interval = "5m"
-      attempts = 10
-      delay    = "25s"
+      delay    = "2s"
     }
 
     task "nodejs" {
@@ -76,9 +87,31 @@ job "web" {
         network_mode = "host"
       }
 
+      resources {
+        cpu    = 20 # Mhz
+        memory = 15 # MB
+        disk   = 10 # MB
+
+        network {
+          port "http" {
+          }
+        }
+      }
+
+      logs {
+        max_files     = 1
+        max_file_size = 5
+      }
+
+      env {
+        REDIS_ADDR = "redis.query.consul"
+        REDIS_PORT = "6379"
+        NODE_CLASS = "${node.class}"
+      }
+
       service {
         name = "nodejs"
-        tags = ["global"]
+        tags = ["global", "${JOB}", "${TASKGROUP}"]
         port = "http"
 
         check {
@@ -95,18 +128,6 @@ job "web" {
           path     = "/"
           interval = "10s"
           timeout  = "1s"
-        }
-      }
-
-      resources {
-        cpu    = 500 # Mhz
-        memory = 256 # MB
-
-        network {
-          mbits = 10
-
-          port "http" {
-          }
         }
       }
     }

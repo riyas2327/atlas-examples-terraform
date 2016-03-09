@@ -6,7 +6,7 @@ resource "template_file" "consul_update_gce" {
     atlas_token             = "${var.atlas_token}"
     atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
-    consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
+    consul_bootstrap_expect = "${var.gce_servers}"
     instance_address_url    = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
   }
 
@@ -24,7 +24,7 @@ connectivity before joining across the wan.
 */
 
 resource "google_compute_instance" "server" {
-  count        = 3
+  count        = "${var.gce_servers}"
   name         = "${var.atlas_environment}-nomad-server-${count.index + 1}"
   machine_type = "${var.gce_instance_type}"
   zone         = "${var.gce_region}-a"
@@ -109,7 +109,7 @@ addresses {
 
 server {
   enabled          = true
-  bootstrap_expect = ${var.nomad_bootstrap_expect}
+  bootstrap_expect = ${var.gce_servers}
 }
 EOF
 CMD
@@ -144,7 +144,7 @@ CMD
 }
 
 resource "null_resource" "gce_server_join" {
-  count = 3
+  count = "${var.gce_servers}"
 
   depends_on = [
     "google_compute_instance.server",
@@ -165,7 +165,7 @@ resource "null_resource" "gce_server_join" {
 }
 
 resource "null_resource" "gce_wan_join" {
-  count = 3
+  count = "${var.gce_servers}"
 
   depends_on = [
     "google_compute_vpn_tunnel.tunnel1",
@@ -199,7 +199,7 @@ resource "null_resource" "gce_wan_join" {
 }
 
 resource "google_compute_instance" "nomad_client" {
-  count        = "${var.nomad_client_nodes}"
+  count        = "${var.gce_nomad_clients}"
   name         = "${var.atlas_environment}-nomad-client-${count.index+1}"
   machine_type = "${var.gce_instance_type}"
   zone         = "${var.gce_region}-a"
@@ -282,7 +282,7 @@ atlas {
 client {
   enabled    = true
   node_id    = "gce-nomad-client-${count.index + 1}"
-  node_class = "gce"
+  node_class = "class_${(count.index % var.gce_nomad_clients) + 1}"
   servers    = [
     ${join(",\n    ", formatlist("\"%s:4647\"", google_compute_instance.server.*.network_interface.0.address))}
   ]
