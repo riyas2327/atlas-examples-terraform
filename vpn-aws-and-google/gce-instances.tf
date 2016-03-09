@@ -260,7 +260,7 @@ consul {
 client {
   enabled = true
   servers = [
-    ${join("\n    ", formatlist("%s:4647", google_compute_instance.server.*.network_interface.0.address))}
+    ${join("\n    ", formatlist("%s:4647,", google_compute_instance.server.*.network_interface.0.address))}
   ]
 }
 

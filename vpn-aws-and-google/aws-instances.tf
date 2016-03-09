@@ -215,7 +215,7 @@ consul {
 client {
   enabled = true
   servers = [
-    ${join("\n    ", formatlist("%s:4647", aws_instance.server.*.private_ip))}
+    ${join("\n    ", formatlist("%s:4647,", aws_instance.server.*.private_ip))}
   ]
 }
 
