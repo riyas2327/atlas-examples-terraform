@@ -22,5 +22,3 @@ sudo mv $FILE_TMP $FILE_FINAL
 sudo service consul start || sudo service consul restart
 
 echo "Consul environment updated."
-
-exit 0

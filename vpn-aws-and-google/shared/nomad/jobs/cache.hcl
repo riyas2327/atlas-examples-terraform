@@ -41,6 +41,8 @@ job "cache" {
         disk   = 10 # MB
 
         network {
+          mbits = 1
+
           port "db" {
             static = 6379
           }

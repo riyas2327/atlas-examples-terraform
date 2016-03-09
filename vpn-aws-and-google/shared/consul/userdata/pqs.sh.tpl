@@ -123,5 +123,3 @@ logger "$(
 sudo service consul start || sudo service consul restart
 
 logger "Done"
-
-exit 0

@@ -37,6 +37,8 @@ job "web" {
         disk   = 10 # MB
 
         network {
+          mbits = 1
+
           port "http" {
             static = 80
           }
@@ -93,6 +95,8 @@ job "web" {
         disk   = 10 # MB
 
         network {
+          mbits = 1
+
           port "http" {
           }
         }
