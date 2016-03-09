@@ -234,7 +234,7 @@ atlas {
 client {
   enabled    = true
   node_id    = "aws-nomad-client-${count.index + 1}"
-  node_class = "class_${(count.index % ${var.aws_nomad_clients}) + 1}"
+  node_class = "class_${(count.index % var.aws_nomad_clients) + 1}"
   servers    = [
     ${join(",\n    ", formatlist("\"%s:4647\"", aws_instance.server.*.private_ip))}
   ]

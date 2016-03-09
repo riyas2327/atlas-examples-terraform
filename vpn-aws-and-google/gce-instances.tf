@@ -282,7 +282,7 @@ atlas {
 client {
   enabled    = true
   node_id    = "gce-nomad-client-${count.index + 1}"
-  node_class = "class_${(count.index % ${var.gce_nomad_clients}) + 1}"
+  node_class = "class_${(count.index % var.gce_nomad_clients) + 1}"
   servers    = [
     ${join(",\n    ", formatlist("\"%s:4647\"", google_compute_instance.server.*.network_interface.0.address))}
   ]
