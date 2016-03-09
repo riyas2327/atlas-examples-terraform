@@ -8,7 +8,7 @@ sudo apt-get -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -y curl unzip
+sudo apt-get -y install curl unzip
 
 # install nomad
 echo "Fetching nomad..."
@@ -21,10 +21,10 @@ unzip nomad.zip
 rm nomad.zip
 sudo chmod +x nomad
 sudo mv nomad /usr/bin/nomad
-sudo mkdir -pm 0600 /etc/nomad.d
+sudo mkdir -pm 0755 /etc/nomad.d
 
 # setup nomad directories
-sudo mkdir -pm 0600 /opt/nomad
+sudo mkdir -pm 0755 /opt/nomad
 sudo mkdir -p /opt/nomad/data
 sudo mkdir -p /opt/nomad/jobs
 

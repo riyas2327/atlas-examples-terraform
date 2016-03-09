@@ -7,7 +7,6 @@ resource "template_file" "consul_update_gce" {
     atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
     consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
-    instance_id_url         = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/hostname"
     instance_address_url    = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
   }
 
@@ -72,33 +71,46 @@ resource "google_compute_instance" "server" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update_gce.rendered}"]
+    inline = [
+      "${template_file.consul_update_gce.rendered}",
+      "${template_file.pqs_gce.rendered}",
+    ]
   }
 
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
-region = "${var.nomad_region}"
-datacenter = "${var.gce_region}"
+data_dir     = "/opt/nomad/data"
+enable_debug = true
+bind_addr    = "0.0.0.0"
+region       = "${var.nomad_region}"
+datacenter   = "${var.gce_region}"
+node_id      = "gce-server-${count.index + 1}"
+log_level    = "DEBUG"
+
+advertise {
+  http = "${self.network_interface.0.address}:4646"
+  rpc  = "${self.network_interface.0.address}:4647"
+  serf = "${self.network_interface.0.address}:4648"
+}
+
+consul {
+}
 
 atlas {
   infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token = "${var.atlas_token}"
-}
-
-server {
-  enabled = true
-  bootstrap_expect = ${var.nomad_bootstrap_expect}
+  token          = "${var.atlas_token}"
 }
 
 addresses {
-  http = "127.0.0.1"
-  rpc = "${self.network_interface.0.address}"
+  rpc  = "${self.network_interface.0.address}"
   serf = "${self.network_interface.0.address}"
 }
 
+server {
+  enabled          = true
+  bootstrap_expect = ${var.nomad_bootstrap_expect}
+}
 EOF
 CMD
   }
@@ -181,17 +193,16 @@ resource "null_resource" "gce_wan_join" {
     inline = [
       # Proceed with join if connectivity test passed
       "echo -n 'Joining Nomad (WAN)... ' && nomad server-join ${join(" ", aws_instance.server.*.private_ip)}",
-      "echo -n 'Joining Consul (WAN)... ' && consul join ${join(" ", aws_instance.server.*.private_ip)}",
+      "echo -n 'Joining Consul (WAN)... ' && consul join -wan ${join(" ", aws_instance.server.*.private_ip)}",
     ]
   }
 }
 
 resource "google_compute_instance" "nomad_client" {
+  count        = "${var.nomad_client_nodes}"
   name         = "${var.atlas_environment}-nomad-client-${count.index+1}"
   machine_type = "${var.gce_instance_type}"
   zone         = "${var.gce_region}-a"
-
-  count = "${var.nomad_client_nodes}"
 
   disk {
     image = "${var.gce_source_image}"
@@ -238,32 +249,53 @@ resource "google_compute_instance" "nomad_client" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update_gce.rendered}"]
+    inline = [
+      "${template_file.consul_update_gce.rendered}",
+    ]
   }
 
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
-region = "${var.nomad_region}"
-datacenter = "${var.gce_region}"
+data_dir     = "/opt/nomad/data"
+enable_debug = true
+bind_addr    = "0.0.0.0"
+region       = "${var.nomad_region}"
+datacenter   = "${var.gce_region}"
+node_id      = "gce-nomad-client-${count.index + 1}"
+log_level    = "DEBUG"
 
-atlas {
-  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token = "${var.atlas_token}"
+advertise {
+  http = "${self.network_interface.0.address}:4646"
+  rpc  = "${self.network_interface.0.address}:4647"
+  serf = "${self.network_interface.0.address}:4648"
 }
 
 consul {
 }
 
-client {
-  enabled = true
-  servers = [
-    ${join("\n    ", formatlist("%s:4647", google_compute_instance.server.*.network_interface.0.address))}
-  ]
+atlas {
+  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
+  token          = "${var.atlas_token}"
 }
 
+client {
+  enabled    = true
+  node_id    = "gce-nomad-client-${count.index + 1}"
+  node_class = "gce"
+  servers    = [
+    ${join(",\n    ", formatlist("\"%s:4647\"", google_compute_instance.server.*.network_interface.0.address))}
+  ]
+
+  options {
+    "docker.cleanup.image"   = "0"
+    "driver.raw_exec.enable" = "1"
+  }
+
+  meta {
+    region = "${var.gce_region}"
+  }
+}
 EOF
 CMD
   }
