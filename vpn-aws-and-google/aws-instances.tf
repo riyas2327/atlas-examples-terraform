@@ -74,7 +74,7 @@ cat > /tmp/nomad.hcl <<EOF
 data_dir     = "/opt/nomad/data"
 enable_debug = true
 bind_addr    = "0.0.0.0"
-region       = "${var.nomad_region}"
+region       = "${var.aws_region}"
 datacenter   = "${var.aws_region}"
 node_id      = "aws-server-${count.index + 1}"
 log_level    = "DEBUG"
@@ -111,22 +111,10 @@ CMD
     destination = "/tmp/nomad.conf"
   }
 
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/cache.hcl"
-    destination = "/tmp/cache.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/web.hcl"
-    destination = "/tmp/web.hcl"
-  }
-
   provisioner "remote-exec" {
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
       "sudo service nomad start || sudo service nomad restart",
       "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
       "sudo service dnsmasq restart",
@@ -212,7 +200,7 @@ cat > /tmp/nomad.hcl <<EOF
 data_dir     = "/opt/nomad/data"
 enable_debug = true
 bind_addr    = "0.0.0.0"
-region       = "${var.nomad_region}"
+region       = "${var.aws_region}"
 datacenter   = "${var.aws_region}"
 node_id      = "aws-nomad-client-${count.index + 1}"
 log_level    = "DEBUG"
