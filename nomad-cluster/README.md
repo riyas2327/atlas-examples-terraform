@@ -1,9 +1,13 @@
 # nomad-cluster
 
-A Terraform project for deploying a Nomad cluster to Amazon Web Services.
+A set of example Terraform projects deploying a Nomad cluster to Amazon Web
+Services and Google Compute Engine.
 
 > :warning: This project is for prototyping and does not contain
 best practices for operating Nomad in production.
+
+> :information_source: All commands shown below should be run from the
+`nomad-cluster` directory.
 
 #### Atlas Configuration
 
