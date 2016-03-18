@@ -1,12 +1,7 @@
-job "cache" {
-  datacenters = ["us-east-1", "us-central1"]
+job "cache-aws" {
+  datacenters = ["eu-central-1"]
   type        = "service"
   priority    = 50
-
-  constraint {
-    attribute = "${node.datacenter}"
-    value     = "us-east-1"
-  }
 
   update {
     stagger      = "10s"
@@ -36,8 +31,8 @@ job "cache" {
       }
 
       resources {
-        cpu    = 20 # Mhz
-        memory = 15 # MB
+        cpu    = 200 # Mhz
+        memory = 200 # MB
         disk   = 10 # MB
 
         network {
@@ -54,14 +49,10 @@ job "cache" {
         max_file_size = 5
       }
 
-      env {
-        NODE_CLASS = "${node.class}"
-      }
-
       service {
         name = "redis"
-        tags = ["global", "${JOB}", "${TASKGROUP}"]
         port = "db"
+        tags = ["global"]
 
         check {
           name     = "redis alive"
