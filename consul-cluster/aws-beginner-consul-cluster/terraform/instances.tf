@@ -1,5 +1,5 @@
 resource "template_file" "consul_update" {
-  template = "${module.shared.path}/consul/userdata/consul_update.sh.tpl"
+  template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
     region                  = "${var.region}"
@@ -26,9 +26,9 @@ resource "aws_instance" "consul_client" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-    agent    = "false"
+    user        = "ubuntu"
+    private_key = "${var.key_data_private}"
+    agent       = "false"
   }
 
   provisioner "file" {
@@ -71,9 +71,9 @@ resource "aws_instance" "consul_0" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-    agent    = "false"
+    user        = "ubuntu"
+    private_key = "${var.key_data_private}"
+    agent       = "false"
   }
 
   provisioner "file" {
@@ -113,9 +113,9 @@ resource "aws_instance" "consul_1" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-    agent    = "false"
+    user        = "ubuntu"
+    private_key = "${var.key_data_private}"
+    agent       = "false"
   }
 
   provisioner "file" {
@@ -155,9 +155,9 @@ resource "aws_instance" "consul_2" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-    agent    = "false"
+    user        = "ubuntu"
+    private_key = "${var.key_data_private}"
+    agent       = "false"
   }
 
   provisioner "file" {

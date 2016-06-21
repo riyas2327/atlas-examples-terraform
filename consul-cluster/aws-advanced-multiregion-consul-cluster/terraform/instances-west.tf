@@ -1,5 +1,5 @@
 resource "template_file" "west_consul_update" {
-  filename = "${module.shared.path}/consul/userdata/consul_update_multiregion.sh.tpl"
+  template = "${file("${module.shared.path}/consul/userdata/consul_update_multiregion.sh.tpl")}"
 
   vars {
     region                  = "${var.region_west}"

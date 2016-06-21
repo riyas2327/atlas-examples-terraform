@@ -4,6 +4,7 @@ KEY_PATH="shared/ssh_keys"
 KEY_NAME=$1
 EXISTING_KEY=$2
 
+TFVARS_PATH=terraform.tfvars
 PRIVATE_KEY_PATH="$KEY_PATH/$KEY_NAME.pem"
 PUBLIC_KEY_PATH="$KEY_PATH/$KEY_NAME.pub"
 
@@ -14,6 +15,11 @@ fi
 
 if [ -z "$1" ]; then
   echo "A key name must be passed as the first argument."
+  exit 1
+fi
+
+if [ -f "${TFVARS_PATH}" ]; then
+  echo "File [${TFVARS_PATH}] already exists. Please remove it first to prevent overwriting."
   exit 1
 fi
 
@@ -37,7 +43,25 @@ else
     fi
 fi
 
+KEY_DATA_PRIVATE="$(cat $PRIVATE_KEY_PATH)"
+KEY_DATA_PUBLIC="$(cat $PUBLIC_KEY_PATH)"
+
+cat <<EOF1 >> ${TFVARS_PATH}
+key_data_private = <<KEYPRIVATE
+${KEY_DATA_PRIVATE}
+KEYPRIVATE
+EOF1
+
+echo "" >> ${TFVARS_PATH}
+
+cat <<EOF2 >> ${TFVARS_PATH}
+key_data_public = <<KEYPUBLIC
+${KEY_DATA_PUBLIC}
+KEYPUBLIC
+EOF2
+
 echo ""
-echo "Public key: $PUBLIC_KEY_PATH"
+echo "Public key:  $PUBLIC_KEY_PATH"
 echo "Private key: $PRIVATE_KEY_PATH"
+echo "Vars File:   $TFVARS_PATH"
 echo ""
