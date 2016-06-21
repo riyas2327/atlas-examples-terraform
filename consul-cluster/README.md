@@ -7,7 +7,7 @@ A set of example projects of varying complexity for deploying a Consul cluster w
 To deploy each of the examples in this project, you will need an SSH key and
 a set of environment variables.
 
-### Environment Variables 
+### Environment Variables
 
 Set the following environment variables in your local shell:
 ```
@@ -33,18 +33,20 @@ to be able to create and then provision your Consul cluster.
 
 To create a new key, run the command below where the first argument is your
 key name. This will generate a new private key and public key in the
-`shared/ssh_keys` directory.
+`shared/ssh_keys` directory and set variables in `terraform.tfvars`.
 
 ```
 $ bash shared/ssh_keys/generate_key_pair.sh atlas-example
 No key pair exists and no private key arg was passed, generating new keys.
 Generating RSA private key, 1024 bit long modulus
-................++++++
-..........++++++
+.++++++
+..................................++++++
 e is 65537 (0x10001)
 
-Public key: shared/ssh_keys/atlas-example.pub
+Public key:  shared/ssh_keys/atlas-example.pub
 Private key: shared/ssh_keys/atlas-example.pem
+Vars File:   terraform.tfvars
+
 $
 ```
 
@@ -60,24 +62,16 @@ directory.
 $ bash shared/ssh_keys/generate_key_pair.sh atlas-example ~/.ssh/atlas-examples
 Using private key [/Users/clstokes/.ssh/atlas-examples] for key pair.
 
-Public key: shared/ssh_keys/atlas-example.pub
+Public key:  shared/ssh_keys/atlas-example.pub
 Private key: shared/ssh_keys/atlas-example.pem
+Vars File:   terraform.tfvars
+
 $
 ```
 
-## aws-intermediate-consul-cluster
+## aws-beginner-consul-cluster
 
 Run the commands below from the `consul-cluster` directory.
-
-#### Packer
-
-```
-packer push shared/packer/consul_client.json
-```
-
-```
-packer push shared/packer/consul_server.json
-```
 
 #### Terraform
 
@@ -90,23 +84,42 @@ terraform remote config -backend="Atlas" -backend-config="name=$ATLAS_USERNAME/c
 ##### Get Terraform Modules
 
 ```
-terraform get -update aws-intermediate-consul-cluster/terraform/
+terraform get -update aws-beginner-consul-cluster/terraform/
 ```
 
 ##### Push To Atlas
 
+In your environment in Atlas, click **Variables**, and add `TF_ATLAS_DIR`
+set to the path of the configuration that you want to deploy, i.e.
+`aws-beginner-consul-cluster/terraform`.
+
 ```
-terraform push -vcs=false -name="$ATLAS_USERNAME/consul-cluster" aws-intermediate-consul-cluster/terraform/
+terraform push -vcs=false -name="$ATLAS_USERNAME/consul-cluster"
 ```
 
 ##### Apply with Terraform Locally
 
 ```
-terraform apply aws-intermediate-consul-cluster/terraform/
+terraform apply aws-beginner-consul-cluster/terraform/
 ```
 
 ##### Destroy with Terraform Locally
 
 ```
-terraform destroy aws-intermediate-consul-cluster/terraform/
+terraform destroy aws-beginner-consul-cluster/terraform/
+```
+
+#### Packer
+
+If deploying any of the examples other than `aws-beginner-consul-cluster`, you
+will need to build AMIs using Packer first. To push the Packer templates to
+Atlas, run the commands below and configure Atlas using your AWS access
+credentials.
+
+```
+packer push shared/packer/consul_client.json
+```
+
+```
+packer push shared/packer/consul_server.json
 ```

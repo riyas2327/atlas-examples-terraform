@@ -1,5 +1,5 @@
 resource "aws_key_pair" "west_main" {
   provider   = "aws.west"
   key_name   = "${var.key_name}"
-  public_key = "${file(module.shared.public_key_path)}"
+  public_key = "${var.key_data_public}"
 }
