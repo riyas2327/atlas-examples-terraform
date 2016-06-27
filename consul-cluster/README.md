@@ -89,13 +89,14 @@ terraform get -update aws-beginner-consul-cluster/terraform/
 
 ##### Push To Atlas
 
-In your environment in Atlas, click **Variables**, and add `TF_ATLAS_DIR`
-set to the path of the configuration that you want to deploy, i.e.
-`aws-beginner-consul-cluster/terraform`.
-
 ```
 terraform push -vcs=false -name="$ATLAS_USERNAME/consul-cluster"
 ```
+
+After `terraform push`, click **Variables** in your Atlas environment, 
+add the _AWS_ variables set in the section above, and add `TF_ATLAS_DIR`
+set to the path of the configuration that you want to deploy, i.e.
+`aws-beginner-consul-cluster/terraform`.
 
 ##### Apply with Terraform Locally
 
