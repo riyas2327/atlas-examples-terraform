@@ -1,9 +1,4 @@
 {
-  "node_name": "{{ instance_id }}",
-  "service": {
-    "name": "consul"
-  },
-
   "atlas_join": true,
   "atlas_infrastructure": "{{ atlas_username }}/{{ atlas_environment }}",
   "atlas_token": "{{ atlas_token }}",

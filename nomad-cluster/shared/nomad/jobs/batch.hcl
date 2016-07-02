@@ -1,10 +1,13 @@
 job "batch" {
+  #region = "eu-central-1"
+  #datacenters = ["eu-central-1"]
+
   datacenters = ["us-east-1"]
 
   type = "batch"
 
   constraint {
-    attribute = "$attr.kernel.name"
+    attribute = "${attr.kernel.name}"
     value = "linux"
   }
 
@@ -14,7 +17,14 @@ job "batch" {
   }
 
   group "batch" {
-    count = 50
+    count = 10
+
+    restart {
+      interval = "5m"
+      attempts = 10
+      delay    = "25s"
+      mode     = "delay"
+    }
 
     task "uptime" {
       driver = "exec"

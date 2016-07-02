@@ -50,7 +50,7 @@ provider "google" {
 }
 
 module "shared" {
-  source = "./shared"
+  source = "../../shared"
 
   key_name = "${var.atlas_environment}"
 }

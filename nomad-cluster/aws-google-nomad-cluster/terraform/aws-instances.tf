@@ -76,7 +76,6 @@ enable_debug = true
 bind_addr    = "0.0.0.0"
 region       = "${var.aws_region}"
 datacenter   = "${var.aws_region}"
-node_id      = "aws-server-${count.index + 1}"
 log_level    = "DEBUG"
 
 advertise {
@@ -86,6 +85,8 @@ advertise {
 }
 
 consul {
+  server_auto_join =  true
+  client_auto_join =  true
 }
 
 atlas {
@@ -94,7 +95,7 @@ atlas {
 }
 
 addresses {
-  rpc = "${self.private_ip}"
+  rpc  = "${self.private_ip}"
   serf = "${self.private_ip}"
 }
 
@@ -121,7 +122,7 @@ CMD
     ]
   }
 }
-
+/*
 resource "null_resource" "aws_server_join" {
   count = "${var.aws_servers}"
 
@@ -142,7 +143,7 @@ resource "null_resource" "aws_server_join" {
     ]
   }
 }
-
+*/
 //
 // Nomad & Consul Clients
 //
@@ -202,7 +203,6 @@ enable_debug = true
 bind_addr    = "0.0.0.0"
 region       = "${var.aws_region}"
 datacenter   = "${var.aws_region}"
-node_id      = "aws-nomad-client-${count.index + 1}"
 log_level    = "DEBUG"
 
 advertise {
@@ -212,6 +212,8 @@ advertise {
 }
 
 consul {
+  server_auto_join =  true
+  client_auto_join =  true
 }
 
 atlas {
@@ -221,11 +223,7 @@ atlas {
 
 client {
   enabled    = true
-  node_id    = "aws-nomad-client-${count.index + 1}"
   node_class = "class_${(count.index % var.aws_nomad_clients) + 1}"
-  servers    = [
-    ${join(",\n    ", formatlist("\"%s:4647\"", aws_instance.server.*.private_ip))}
-  ]
 
   options {
     "docker.cleanup.image"   = "0"
@@ -247,7 +245,7 @@ CMD
 
   provisioner "remote-exec" {
     inline = [
-      "consul join ${join(" ", aws_instance.server.*.private_ip)}",
+#      "consul join ${join(" ", aws_instance.server.*.private_ip)}",
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
       "sudo service nomad start || sudo service nomad restart",
