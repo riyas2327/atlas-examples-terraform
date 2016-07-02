@@ -85,7 +85,6 @@ enable_debug = true
 bind_addr    = "0.0.0.0"
 region       = "${var.gce_region}"
 datacenter   = "${var.gce_region}"
-node_id      = "gce-server-${count.index + 1}"
 log_level    = "DEBUG"
 
 advertise {
@@ -95,6 +94,8 @@ advertise {
 }
 
 consul {
+  server_auto_join =  true
+  client_auto_join =  true
 }
 
 atlas {
@@ -130,7 +131,7 @@ CMD
     ]
   }
 }
-
+/*
 resource "null_resource" "gce_server_join" {
   count = "${var.gce_servers}"
 
@@ -151,7 +152,7 @@ resource "null_resource" "gce_server_join" {
     ]
   }
 }
-
+*/
 resource "null_resource" "gce_wan_join" {
   count = "${var.gce_servers}"
 
@@ -160,7 +161,7 @@ resource "null_resource" "gce_wan_join" {
     "google_compute_vpn_tunnel.tunnel2",
     "google_compute_instance.server",
     "aws_instance.server",
-    "null_resource.gce_server_join",
+#    "null_resource.gce_server_join",
   ]
 
   connection {
@@ -250,7 +251,6 @@ enable_debug = true
 bind_addr    = "0.0.0.0"
 region       = "${var.gce_region}"
 datacenter   = "${var.gce_region}"
-node_id      = "gce-nomad-client-${count.index + 1}"
 log_level    = "DEBUG"
 
 advertise {
@@ -260,6 +260,8 @@ advertise {
 }
 
 consul {
+  server_auto_join =  true
+  client_auto_join =  true
 }
 
 atlas {
@@ -269,11 +271,7 @@ atlas {
 
 client {
   enabled    = true
-  node_id    = "gce-nomad-client-${count.index + 1}"
   node_class = "class_${(count.index % var.gce_nomad_clients) + 1}"
-  servers    = [
-    ${join(",\n    ", formatlist("\"%s:4647\"", google_compute_instance.server.*.network_interface.0.address))}
-  ]
 
   options {
     "docker.cleanup.image"   = "0"
@@ -295,7 +293,7 @@ CMD
 
   provisioner "remote-exec" {
     inline = [
-      "consul join ${join(" ", google_compute_instance.server.*.network_interface.0.address)}",
+#      "consul join ${join(" ", google_compute_instance.server.*.network_interface.0.address)}",
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
       "sudo service nomad start || sudo service nomad restart",

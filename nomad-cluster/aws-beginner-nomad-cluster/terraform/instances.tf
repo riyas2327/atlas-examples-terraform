@@ -7,6 +7,7 @@ resource "template_file" "consul_update" {
     atlas_username          = "${var.atlas_username}"
     atlas_environment       = "${var.atlas_environment}"
     consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
+    instance_address_url    = "http://169.254.169.254/2014-02-25/meta-data/local-ipv4"
   }
 }
 

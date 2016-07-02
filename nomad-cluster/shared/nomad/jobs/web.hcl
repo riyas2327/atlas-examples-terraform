@@ -1,8 +1,7 @@
 job "web" {
-  # Run the job in the global region, which is the default.
-  # region = "global"
-
-  # Specify the datacenters within the region this job can run in.
+  # Specify the region and datacenters this job can run in.
+  #region = "eu-central-1"
+  #datacenters = ["eu-central-1"]
   datacenters = ["us-east-1"]
 
   # Service type jobs optimize for long-lived services. This is
@@ -16,7 +15,7 @@ job "web" {
   # Restrict our job to only linux. We can specify multiple
   # constraints as needed.
   constraint {
-    attribute = "$attr.kernel.name"
+    attribute = "${attr.kernel.name}"
     value     = "linux"
   }
 
@@ -45,6 +44,7 @@ job "web" {
       interval = "5m"
       attempts = 10
       delay    = "25s"
+      mode     = "delay"
     }
 
     # Define a nginx task to run
@@ -106,6 +106,7 @@ job "web" {
       interval = "5m"
       attempts = 10
       delay    = "25s"
+      mode     = "delay"
     }
 
     # Define a nodejs task to run
@@ -137,7 +138,7 @@ job "web" {
           protocol = "http"
           path     = "/"
           interval = "10s"
-          timeout  = "1s"
+          timeout  = "2s"
         }
       }
 
