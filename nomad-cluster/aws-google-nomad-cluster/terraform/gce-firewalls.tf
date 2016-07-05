@@ -30,6 +30,6 @@ resource "google_compute_firewall" "internal_access" {
 
   source_ranges = [
     "${var.aws_vpc_cidr}",
-    "${var.gce_vpc_cidr}"
+    "${var.gce_vpc_cidr}",
   ]
 }

@@ -23,7 +23,7 @@ resource "aws_instance" "nomad_server_1" {
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
-    "${aws_security_group.nomad.id}"
+    "${aws_security_group.nomad.id}",
   ]
 
   tags {
@@ -31,7 +31,7 @@ resource "aws_instance" "nomad_server_1" {
   }
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -128,7 +128,7 @@ resource "aws_instance" "nomad_server_2" {
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
-    "${aws_security_group.nomad.id}"
+    "${aws_security_group.nomad.id}",
   ]
 
   tags {
@@ -136,7 +136,7 @@ resource "aws_instance" "nomad_server_2" {
   }
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -237,7 +237,7 @@ resource "aws_instance" "nomad_server_3" {
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
-    "${aws_security_group.nomad.id}"
+    "${aws_security_group.nomad.id}",
   ]
 
   tags {
@@ -245,7 +245,7 @@ resource "aws_instance" "nomad_server_3" {
   }
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -300,7 +300,7 @@ CMD
   }
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -354,7 +354,7 @@ resource "aws_instance" "nomad_client" {
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
-    "${aws_security_group.nomad.id}"
+    "${aws_security_group.nomad.id}",
   ]
 
   tags {
@@ -364,7 +364,7 @@ resource "aws_instance" "nomad_client" {
   count = "${var.nomad_client_nodes}"
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 

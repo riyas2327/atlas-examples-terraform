@@ -49,7 +49,7 @@ resource "aws_security_group_rule" "internal_access_ping" {
   protocol          = "icmp"
   from_port         = -1
   to_port           = -1
-  cidr_blocks       = ["${var.aws_vpc_cidr}","${var.gce_vpc_cidr}"]
+  cidr_blocks       = ["${var.aws_vpc_cidr}", "${var.gce_vpc_cidr}"]
 }
 
 resource "aws_security_group_rule" "internal_access_tcp" {
@@ -58,7 +58,7 @@ resource "aws_security_group_rule" "internal_access_tcp" {
   protocol          = "tcp"
   from_port         = 0
   to_port           = 65535
-  cidr_blocks       = ["${var.aws_vpc_cidr}","${var.gce_vpc_cidr}"]
+  cidr_blocks       = ["${var.aws_vpc_cidr}", "${var.gce_vpc_cidr}"]
 }
 
 resource "aws_security_group_rule" "internal_access_udp" {
@@ -67,5 +67,5 @@ resource "aws_security_group_rule" "internal_access_udp" {
   protocol          = "udp"
   from_port         = 0
   to_port           = 65535
-  cidr_blocks       = ["${var.aws_vpc_cidr}","${var.gce_vpc_cidr}"]
+  cidr_blocks       = ["${var.aws_vpc_cidr}", "${var.gce_vpc_cidr}"]
 }

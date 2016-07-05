@@ -38,7 +38,7 @@ resource "aws_instance" "server" {
   }
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -122,28 +122,7 @@ CMD
     ]
   }
 }
-/*
-resource "null_resource" "aws_server_join" {
-  count = "${var.aws_servers}"
 
-  depends_on = [
-    "aws_instance.server",
-  ]
-
-  connection {
-    host = "${element(aws_instance.server.*.public_ip, count.index)}"
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo -n 'Joining Nomad... ' && nomad server-join ${join(" ", aws_instance.server.*.private_ip)}",
-      "echo -n 'Joining Consul... ' && consul join ${join(" ", aws_instance.server.*.private_ip)}",
-    ]
-  }
-}
-*/
 //
 // Nomad & Consul Clients
 //
@@ -165,7 +144,7 @@ resource "aws_instance" "nomad_client" {
   }
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -223,7 +202,6 @@ atlas {
 
 client {
   enabled    = true
-  node_class = "class_${(count.index % var.aws_nomad_clients) + 1}"
 
   options {
     "docker.cleanup.image"   = "0"
@@ -245,7 +223,6 @@ CMD
 
   provisioner "remote-exec" {
     inline = [
-#      "consul join ${join(" ", aws_instance.server.*.private_ip)}",
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
       "sudo service nomad start || sudo service nomad restart",

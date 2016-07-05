@@ -36,8 +36,7 @@ resource "google_compute_instance" "server" {
   network_interface {
     network = "${google_compute_network.main.name}"
 
-    access_config {
-    }
+    access_config {}
   }
 
   metadata {
@@ -131,61 +130,6 @@ CMD
     ]
   }
 }
-/*
-resource "null_resource" "gce_server_join" {
-  count = "${var.gce_servers}"
-
-  depends_on = [
-    "google_compute_instance.server",
-  ]
-
-  connection {
-    host = "${element(google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo -n 'Joining Nomad... ' && nomad server-join ${join(" ", google_compute_instance.server.*.network_interface.0.address)}",
-      "echo -n 'Joining Consul... ' && consul join ${join(" ", google_compute_instance.server.*.network_interface.0.address)}",
-    ]
-  }
-}
-*/
-resource "null_resource" "gce_wan_join" {
-  count = "${var.gce_servers}"
-
-  depends_on = [
-    "google_compute_vpn_tunnel.tunnel1",
-    "google_compute_vpn_tunnel.tunnel2",
-    "google_compute_instance.server",
-    "aws_instance.server",
-#    "null_resource.gce_server_join",
-  ]
-
-  connection {
-    host = "${element(google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
-  }
-
-  # This provisioner must be separate from the join commands below
-  provisioner "remote-exec" {
-    inline = [
-      # Test WAN connectivity over VPN - bash is needed so the for loop short circuits correctly
-      "bash -c 'for i in {1..${var.vpn_wait_timeout}}; do ping -q -c1 -W1 ${aws_instance.server.0.private_ip} 1>/dev/null && break; done;'",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      # Proceed with join if connectivity test passed
-      "echo -n 'Joining Nomad (WAN)... ' && nomad server-join ${join(" ", aws_instance.server.*.private_ip)}",
-      "echo -n 'Joining Consul (WAN)... ' && consul join -wan ${join(" ", aws_instance.server.*.private_ip)}",
-    ]
-  }
-}
 
 resource "google_compute_instance" "nomad_client" {
   count        = "${var.gce_nomad_clients}"
@@ -200,8 +144,7 @@ resource "google_compute_instance" "nomad_client" {
   network_interface {
     network = "${google_compute_network.main.name}"
 
-    access_config {
-    }
+    access_config {}
   }
 
   metadata {
@@ -209,11 +152,11 @@ resource "google_compute_instance" "nomad_client" {
   }
 
   tags = [
-    "nomad-client-${count.index + 1}"
+    "nomad-client-${count.index + 1}",
   ]
 
   connection {
-    user        = "ubuntu"
+    user     = "ubuntu"
     key_file = "${module.shared.private_key_path}"
   }
 
@@ -271,7 +214,6 @@ atlas {
 
 client {
   enabled    = true
-  node_class = "class_${(count.index % var.gce_nomad_clients) + 1}"
 
   options {
     "docker.cleanup.image"   = "0"
@@ -293,10 +235,40 @@ CMD
 
   provisioner "remote-exec" {
     inline = [
-#      "consul join ${join(" ", google_compute_instance.server.*.network_interface.0.address)}",
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
       "sudo service nomad start || sudo service nomad restart",
+    ]
+  }
+}
+
+resource "null_resource" "gce_wan_join" {
+  count = "${var.gce_servers}"
+
+  depends_on = [
+    "google_compute_vpn_tunnel.tunnel1",
+    "google_compute_vpn_tunnel.tunnel2",
+    "google_compute_instance.server",
+    "aws_instance.server",
+  ]
+
+  connection {
+    host     = "${element(google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
+    user     = "ubuntu"
+    key_file = "${module.shared.private_key_path}"
+  }
+
+  # This provisioner must be separate from the join commands below
+  provisioner "remote-exec" {
+    inline = [
+      "bash -c 'for i in {1..${var.vpn_wait_timeout}}; do ping -q -c1 -W1 ${aws_instance.server.0.private_ip} 1>/dev/null && break; done;'",
+    ]
+  }
+
+  # Test WAN connectivity over VPN - bash is needed so the for loop short circuits correctly
+  provisioner "remote-exec" {
+    inline = [
+      "echo -n 'Joining Nomad (WAN)... ' && nomad server-join ${join(" ", aws_instance.server.*.private_ip)}",
     ]
   }
 }

@@ -11,25 +11,52 @@ module "shared" {
   key_name = "${var.atlas_environment}"
 }
 
-
 //
 // Variables
 //
-variable "atlas_token"       {}
-variable "atlas_username"    {}
-variable "atlas_environment" { default = "nomad-cluster" }
+variable "atlas_token" {}
 
-variable "region"        { default = "us-east-1" }
-variable "source_ami"    { default = "ami-9a562df2" }
-variable "key_name"      { default = "atlas-example" }
-variable "instance_type" { default = "t2.small" }
+variable "atlas_username" {}
 
-variable "vpc_cidr"  { default = "172.31.0.0/16" }
-variable "vpc_cidrs" { default = "172.31.0.0/20,172.31.16.0/20,172.31.32.0/20" }
+variable "atlas_environment" {
+  default = "nomad-cluster"
+}
 
-variable "consul_bootstrap_expect" { default = "3" }
-variable "nomad_bootstrap_expect"  { default = "3" }
-variable "nomad_client_nodes"      { default = "3" }
+variable "region" {
+  default = "us-east-1"
+}
+
+variable "source_ami" {
+  default = "ami-9a562df2"
+}
+
+variable "key_name" {
+  default = "atlas-example"
+}
+
+variable "instance_type" {
+  default = "t2.small"
+}
+
+variable "vpc_cidr" {
+  default = "172.31.0.0/16"
+}
+
+variable "vpc_cidrs" {
+  default = "172.31.0.0/20,172.31.16.0/20,172.31.32.0/20"
+}
+
+variable "consul_bootstrap_expect" {
+  default = "3"
+}
+
+variable "nomad_bootstrap_expect" {
+  default = "3"
+}
+
+variable "nomad_client_nodes" {
+  default = "3"
+}
 
 //
 // Outputs
