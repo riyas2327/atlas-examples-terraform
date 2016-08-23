@@ -1,4 +1,4 @@
-resource "template_file" "consul_update_gce" {
+data "template_file" "consul_update_gce" {
   template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
@@ -13,7 +13,7 @@ resource "template_file" "consul_update_gce" {
   depends_on = ["google_compute_vpn_gateway.vpn"] // give the VPN some time to connect
 }
 
-resource "template_file" "pqs_gce" {
+data "template_file" "pqs_gce" {
   template = "${file("${module.shared.path}/consul/userdata/pqs.sh.tpl")}"
 }
 
@@ -71,8 +71,8 @@ resource "google_compute_instance" "server" {
 
   provisioner "remote-exec" {
     inline = [
-      "${template_file.consul_update_gce.rendered}",
-      "${template_file.pqs_gce.rendered}",
+      "${data.template_file.consul_update_gce.rendered}",
+      "${data.template_file.pqs_gce.rendered}",
     ]
   }
 
@@ -182,7 +182,7 @@ resource "google_compute_instance" "nomad_client" {
 
   provisioner "remote-exec" {
     inline = [
-      "${template_file.consul_update_gce.rendered}",
+      "${data.template_file.consul_update_gce.rendered}",
     ]
   }
 
