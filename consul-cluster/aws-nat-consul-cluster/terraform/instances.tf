@@ -13,7 +13,7 @@ data "template_file" "consul_update" {
 //
 // Consul Client
 //
-resource "atlas_artifact" "consul_client" {
+data "atlas_artifact" "consul_client" {
   name = "${var.atlas_username}/consul_client"
   type = "amazon.image"
 }
@@ -37,7 +37,7 @@ resource "aws_instance" "consul_client" {
 //
 // Consul Servers
 //
-resource "atlas_artifact" "consul" {
+data "atlas_artifact" "consul" {
   name = "${var.atlas_username}/consul"
   type = "amazon.image"
 }

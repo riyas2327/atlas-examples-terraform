@@ -25,7 +25,7 @@ variable "key_data_public"  {}
 variable "key_data_private" {}
 
 variable "vpc_cidr"  { default = "172.31.0.0/16" }
-variable "vpc_cidrs" { default = "172.31.0.0/20,172.31.16.0/20,172.31.32.0/20,172.31.48.0/20" }
+variable "vpc_cidrs" { default = ["172.31.0.0/20","172.31.16.0/20","172.31.32.0/20","172.31.48.0/20"] }
 
 variable "consul_bootstrap_expect" { default = "3" }
 

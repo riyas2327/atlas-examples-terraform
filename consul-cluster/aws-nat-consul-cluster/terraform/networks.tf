@@ -45,7 +45,7 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_subnet" "subnet_a" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "${element(split(",",var.vpc_cidrs),0)}"
+  cidr_block              = "${element(var.vpc_cidrs,0)}"
   map_public_ip_on_launch = false
 
   tags {
@@ -55,7 +55,7 @@ resource "aws_subnet" "subnet_a" {
 
 resource "aws_subnet" "subnet_b" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "${element(split(",",var.vpc_cidrs),1)}"
+  cidr_block              = "${element(var.vpc_cidrs,1)}"
   map_public_ip_on_launch = false
 
   tags {
@@ -65,7 +65,7 @@ resource "aws_subnet" "subnet_b" {
 
 resource "aws_subnet" "subnet_c" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "${element(split(",",var.vpc_cidrs),2)}"
+  cidr_block              = "${element(var.vpc_cidrs,2)}"
   map_public_ip_on_launch = false
 
   tags {
@@ -75,7 +75,7 @@ resource "aws_subnet" "subnet_c" {
 
 resource "aws_subnet" "public" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "${element(split(",",var.vpc_cidrs),3)}"
+  cidr_block              = "${element(var.vpc_cidrs,3)}"
   map_public_ip_on_launch = true
 
   tags {

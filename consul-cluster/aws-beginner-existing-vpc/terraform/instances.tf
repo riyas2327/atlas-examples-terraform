@@ -19,7 +19,7 @@ resource "aws_instance" "consul_client" {
   key_name               = "${aws_key_pair.main.key_name}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul_client.id}"]
-  subnet_id              = "${element(split(",",var.subnet_ids),count.index)}"
+  subnet_id              = "${element(var.subnet_ids,count.index)}"
 
   tags {
     Name = "consul_client"
@@ -64,7 +64,7 @@ resource "aws_instance" "consul_0" {
   key_name               = "${aws_key_pair.main.key_name}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
-  subnet_id              = "${element(split(",",var.subnet_ids),0)}"
+  subnet_id              = "${element(var.subnet_ids,0)}"
 
   tags {
     Name = "consul_0"
@@ -106,7 +106,7 @@ resource "aws_instance" "consul_1" {
   key_name               = "${aws_key_pair.main.key_name}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
-  subnet_id              = "${element(split(",",var.subnet_ids),1)}"
+  subnet_id              = "${element(var.subnet_ids,1)}"
 
   tags {
     Name = "consul_1"
@@ -148,7 +148,7 @@ resource "aws_instance" "consul_2" {
   key_name               = "${aws_key_pair.main.key_name}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
-  subnet_id              = "${element(split(",",var.subnet_ids),2)}"
+  subnet_id              = "${element(var.subnet_ids,2)}"
 
   tags {
     Name = "consul_2"
