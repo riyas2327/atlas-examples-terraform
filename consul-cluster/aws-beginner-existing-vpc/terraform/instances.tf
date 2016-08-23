@@ -1,4 +1,4 @@
-resource "template_file" "consul_update" {
+data "template_file" "consul_update" {
   template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
@@ -50,7 +50,7 @@ resource "aws_instance" "consul_client" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update.rendered}"]
+    inline = ["${data.template_file.consul_update.rendered}"]
   }
 
 }
@@ -95,7 +95,7 @@ resource "aws_instance" "consul_0" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update.rendered}"]
+    inline = ["${data.template_file.consul_update.rendered}"]
   }
 
 }
@@ -137,7 +137,7 @@ resource "aws_instance" "consul_1" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update.rendered}"]
+    inline = ["${data.template_file.consul_update.rendered}"]
   }
 
 }
@@ -179,7 +179,7 @@ resource "aws_instance" "consul_2" {
   }
 
   provisioner "remote-exec" {
-    inline = ["${template_file.consul_update.rendered}"]
+    inline = ["${data.template_file.consul_update.rendered}"]
   }
 
 }
