@@ -1,5 +1,5 @@
-resource "template_file" "consul_update_aws" {
-  template = "${module.shared.path}/consul/userdata/consul_update.sh.tpl"
+data "template_file" "consul_update_aws" {
+  template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
     region                  = "${var.aws_region}"
@@ -13,8 +13,8 @@ resource "template_file" "consul_update_aws" {
   depends_on = ["aws_vpn_gateway.vpn"] // give the VPN some time to connect
 }
 
-resource "template_file" "pqs_aws" {
-  template = "${module.shared.path}/consul/userdata/pqs.sh.tpl"
+data "template_file" "pqs_aws" {
+  template = "${file("${module.shared.path}/consul/userdata/pqs.sh.tpl")}"
 }
 
 //
@@ -63,8 +63,8 @@ resource "aws_instance" "server" {
 
   provisioner "remote-exec" {
     inline = [
-      "${template_file.consul_update_aws.rendered}",
-      "${template_file.pqs_aws.rendered}",
+      "${data.template_file.consul_update_aws.rendered}",
+      "${data.template_file.pqs_aws.rendered}",
     ]
   }
 
@@ -170,7 +170,7 @@ resource "aws_instance" "nomad_client" {
 
   provisioner "remote-exec" {
     inline = [
-      "${template_file.consul_update_aws.rendered}",
+      "${data.template_file.consul_update_aws.rendered}",
     ]
   }
 
