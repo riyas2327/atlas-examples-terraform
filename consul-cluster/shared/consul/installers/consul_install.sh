@@ -27,11 +27,5 @@ sudo mkdir -pm 0600 /etc/consul.d
 # setup consul directories
 sudo mkdir -pm 0600 /opt/consul
 sudo mkdir -p /opt/consul/data
-sudo mkdir -p /opt/consul/web
-
-# install consul-web
-echo "Fetching consul-web..."
-wget -q https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_web_ui.zip -O consul-web.zip
-sudo unzip consul-web.zip -d /opt/consul/web
 
 echo "Consul installation complete."

@@ -1,4 +1,4 @@
-resource "template_file" "consul_update" {
+data "template_file" "consul_update" {
   template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
@@ -20,10 +20,10 @@ resource "atlas_artifact" "consul_client" {
 
 resource "aws_instance" "consul_client" {
   instance_type          = "${var.instance_type}"
-  ami                    = "${atlas_artifact.consul_client.metadata_full.region-us-east-1}"
+  ami                    = "${data.atlas_artifact.consul_client.metadata_full.region-us-east-1}"
   key_name               = "${aws_key_pair.main.key_name}"
 
-  user_data              = "${template_file.consul_update.rendered}"
+  user_data              = "${data.template_file.consul_update.rendered}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul_client.id}"]
   subnet_id              = "${aws_subnet.subnet_a.id}"
@@ -44,10 +44,10 @@ resource "atlas_artifact" "consul" {
 
 resource "aws_instance" "consul_0" {
   instance_type          = "${var.instance_type}"
-  ami                    = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
+  ami                    = "${data.atlas_artifact.consul.metadata_full.region-us-east-1}"
   key_name               = "${aws_key_pair.main.key_name}"
 
-  user_data              = "${template_file.consul_update.rendered}"
+  user_data              = "${data.template_file.consul_update.rendered}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
   subnet_id              = "${aws_subnet.subnet_a.id}"
@@ -60,10 +60,10 @@ resource "aws_instance" "consul_0" {
 
 resource "aws_instance" "consul_1" {
   instance_type          = "${var.instance_type}"
-  ami                    = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
+  ami                    = "${data.atlas_artifact.consul.metadata_full.region-us-east-1}"
   key_name               = "${aws_key_pair.main.key_name}"
 
-  user_data              = "${template_file.consul_update.rendered}"
+  user_data              = "${data.template_file.consul_update.rendered}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
   subnet_id              = "${aws_subnet.subnet_b.id}"
@@ -76,10 +76,10 @@ resource "aws_instance" "consul_1" {
 
 resource "aws_instance" "consul_2" {
   instance_type          = "${var.instance_type}"
-  ami                    = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
+  ami                    = "${data.atlas_artifact.consul.metadata_full.region-us-east-1}"
   key_name               = "${aws_key_pair.main.key_name}"
 
-  user_data              = "${template_file.consul_update.rendered}"
+  user_data              = "${data.template_file.consul_update.rendered}"
 
   vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
   subnet_id              = "${aws_subnet.subnet_c.id}"
