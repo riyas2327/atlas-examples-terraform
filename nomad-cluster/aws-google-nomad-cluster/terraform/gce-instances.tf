@@ -1,5 +1,5 @@
 resource "template_file" "consul_update_gce" {
-  template = "${module.shared.path}/consul/userdata/consul_update.sh.tpl"
+  template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
     region                  = "${var.gce_region}"
@@ -14,7 +14,7 @@ resource "template_file" "consul_update_gce" {
 }
 
 resource "template_file" "pqs_gce" {
-  template = "${module.shared.path}/consul/userdata/pqs.sh.tpl"
+  template = "${file("${module.shared.path}/consul/userdata/pqs.sh.tpl")}"
 }
 
 /*
