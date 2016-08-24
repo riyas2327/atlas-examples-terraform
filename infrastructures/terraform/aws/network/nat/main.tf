@@ -32,8 +32,8 @@ resource "aws_security_group" "nat" {
   }
 }
 
-resource "template_file" "nat" {
-  filename = "${path.module}/nat.conf.tpl"
+data "template_file" "nat" {
+  template = "${file("${path.module}/nat.conf.tpl")}"
 
   vars {
     vpc_cidr = "${var.vpc_cidr}"
@@ -54,7 +54,7 @@ resource "aws_instance" "nat" {
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
   subnet_id     = "${element(split(",", var.subnet_ids), count.index)}"
-  user_data     = "${template_file.nat.rendered}"
+  user_data     = "${data.template_file.nat.rendered}"
 
   source_dest_check      = false
   vpc_security_group_ids = ["${aws_security_group.nat.id}"]

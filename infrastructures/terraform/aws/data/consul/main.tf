@@ -38,9 +38,10 @@ resource "aws_security_group" "consul" {
   }
 }
 
+// template_file left as resource until https://github.com/hashicorp/terraform/issues/7919
 resource "template_file" "user_data" {
-  filename = "${var.user_data}"
-  count    = "${length(split(",", var.static_ips))}"
+  template = "${file(var.user_data)}"
+  count     = "${length(split(",", var.static_ips))}"
 
   vars {
     atlas_username      = "${var.atlas_username}"
@@ -105,7 +106,8 @@ done
 
 echo "Consul is ready!"
 
-COMMANDS ]
+COMMANDS
+]
   }
 }
 
