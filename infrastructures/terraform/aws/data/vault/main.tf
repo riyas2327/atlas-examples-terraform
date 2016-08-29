@@ -44,8 +44,9 @@ resource "aws_security_group" "vault" {
   }
 }
 
+// template_file left as resource until https://github.com/hashicorp/terraform/issues/7919
 resource "template_file" "user_data" {
-  filename = "${var.user_data}"
+  template = "${file(var.user_data)}"
   count    = "${var.count}"
 
   vars {
@@ -125,7 +126,8 @@ if [ ! $(cget root-token) ]; then
 else
   echo "Vault has already been initialized, skipping"
 fi
-COMMANDS ]
+COMMANDS
+]
   }
 }
 
@@ -171,7 +173,8 @@ echo "Unsealing Vault"
 vault unseal $(cget unseal-key-1)
 vault unseal $(cget unseal-key-2)
 vault unseal $(cget unseal-key-3)
-COMMANDS ]
+COMMANDS
+]
   }
 }
 
@@ -206,7 +209,8 @@ shred -u -z ~/.vault-token
 # Report that vault is ready to use. This is used over in app setup to
 # wait for vault to be ready before inserting the vault policy.
 curl -XPUT http://127.0.0.1:8500/v1/kv/service/vault/ready -d true
-COMMANDS ]
+COMMANDS
+]
   }
 }
 
@@ -306,4 +310,5 @@ The unseal keys and root token have been temporarily stored in Consul K/V.
   /service/vault/unseal-key-{1..5}
 
 Please securely distribute and record these secrets and remove them from Consul.
-EOF }
+EOF
+}

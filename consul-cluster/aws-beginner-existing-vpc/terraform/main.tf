@@ -24,7 +24,10 @@ variable "key_data_public"  {}
 variable "key_data_private" {}
 
 variable "vpc_id"     { description = "The ID of the VPC to deploy into - used for creating security groups."}
-variable "subnet_ids" { description = "Comma-delimited list of subnet IDs to deploy instances into."}
+variable "subnet_ids" {
+  description = "List of subnet IDs in the form [\"subnet-abc123\",\"subnet-def456\"]."
+  type = "list"
+}
 
 variable "consul_bootstrap_expect" { default = "3" }
 

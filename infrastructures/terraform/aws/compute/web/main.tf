@@ -139,8 +139,8 @@ resource "aws_security_group" "web" {
   }
 }
 
-resource "template_file" "user_data_blue" {
-  filename = "${var.user_data}"
+data "template_file" "user_data_blue" {
+  template = "${file(var.user_data)}"
 
   vars {
     atlas_username    = "${var.atlas_username}"
@@ -156,7 +156,7 @@ resource "aws_launch_configuration" "blue" {
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.web.id}"]
-  user_data       = "${template_file.user_data_blue.rendered}"
+  user_data       = "${data.template_file.user_data_blue.rendered}"
 
   # lifecycle { create_before_destroy = true }
 }
@@ -181,8 +181,8 @@ resource "aws_autoscaling_group" "blue" {
   }
 }
 
-resource "template_file" "user_data_green" {
-  filename = "${var.user_data}"
+data "template_file" "user_data_green" {
+  template = "${file(var.user_data)}"
 
   vars {
     atlas_username    = "${var.atlas_username}"
@@ -198,7 +198,7 @@ resource "aws_launch_configuration" "green" {
   instance_type   = "${var.instance_type}"
   key_name        = "${var.key_name}"
   security_groups = ["${aws_security_group.web.id}"]
-  user_data       = "${template_file.user_data_green.rendered}"
+  user_data       = "${data.template_file.user_data_green.rendered}"
 
   # lifecycle { create_before_destroy = true }
 }

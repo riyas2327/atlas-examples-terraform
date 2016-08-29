@@ -54,8 +54,9 @@ resource "aws_security_group" "haproxy" {
   }
 }
 
+// template_file left as resource until https://github.com/hashicorp/terraform/issues/7919
 resource "template_file" "user_data" {
-  filename = "${var.user_data}"
+  filename = "${file(var.user_data)}"
 
   vars {
     atlas_username    = "${var.atlas_username}"

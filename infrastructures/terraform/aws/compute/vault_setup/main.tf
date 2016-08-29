@@ -75,6 +75,7 @@ if [ -e ~/.vault-token ]; then
   echo "Shredding vault-token"
   shred -u -z ~/.vault-token
 fi
-COMMANDS ]
+COMMANDS
+]
   }
 }

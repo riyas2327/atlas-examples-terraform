@@ -13,12 +13,12 @@ provider "google" {
 //
 // ARTIFACTS
 //
-resource "atlas_artifact" "hyperspace-be" {
+data "atlas_artifact" "hyperspace-be" {
   name = "${var.ATLAS_USERNAME}/hyperspace-be"
   type = "google.image"
 }
 
-resource "atlas_artifact" "hyperspace-fe" {
+data "atlas_artifact" "hyperspace-fe" {
   name = "${var.ATLAS_USERNAME}/hyperspace-fe"
   type = "google.image"
 }
@@ -32,7 +32,7 @@ resource "google_compute_instance" "hyperspace-be" {
   zone         = "us-central1-f"
 
   disk {
-      image = "${atlas_artifact.hyperspace-be.id}"
+      image = "$(data.atlas_artifact.hyperspace-be.id}"
   }
 
   network_interface {
@@ -54,7 +54,7 @@ resource "google_compute_instance" "hyperspace-fe" {
   tags         = ["hyperspace"]
 
   disk {
-      image = "${atlas_artifact.hyperspace-fe.id}"
+      image = "$(data.atlas_artifact.hyperspace-fe.id}"
   }
 
   network_interface {
@@ -98,4 +98,3 @@ resource "google_compute_target_pool" "tpool" {
 output "lb_ip" {
   value = "${google_compute_forwarding_rule.fwd_rule.ip_address}"
 }
-

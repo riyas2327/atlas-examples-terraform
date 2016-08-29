@@ -1,5 +1,5 @@
-resource "template_file" "consul-update" {
-    filename = "${path.module}/userdata/consul-update.sh.tpl"
+data "template_file" "consul-update" {
+    template = "${file("${path.module}/userdata/consul-update.sh.tpl")}"
 
     vars {
         region                  = "${var.region}"
@@ -10,8 +10,8 @@ resource "template_file" "consul-update" {
     }
 }
 
-resource "template_file" "spark-master-start" {
-    filename = "${path.module}/userdata/spark-master-start.sh.tpl"
+data "template_file" "spark-master-start" {
+    template = "${file("${path.module}/userdata/spark-master-start.sh.tpl")}"
 
     vars {
       region                  = "${var.region}"
@@ -22,8 +22,8 @@ resource "template_file" "spark-master-start" {
     }
 }
 
-resource "template_file" "spark-slave-start" {
-    filename = "${path.module}/userdata/spark-slave-start.sh.tpl"
+data "template_file" "spark-slave-start" {
+    template = "${file("${path.module}/userdata/spark-slave-start.sh.tpl")}"
 
     vars {
       region                  = "${var.region}"
@@ -34,28 +34,28 @@ resource "template_file" "spark-slave-start" {
     }
 }
 
-resource "atlas_artifact" "spark-consul" {
+data "atlas_artifact" "spark-consul" {
     name = "${var.atlas_username}/spark-consul"
     type = "amazon.image"
 }
 
-resource "atlas_artifact" "spark-master" {
+data "atlas_artifact" "spark-master" {
     name = "${var.atlas_username}/spark-master"
     type = "amazon.image"
 }
 
-resource "atlas_artifact" "spark-slave" {
+data "atlas_artifact" "spark-slave" {
     name = "${var.atlas_username}/spark-slave"
     type = "amazon.image"
 }
 
 resource "aws_instance" "consul" {
     instance_type = "${var.instance_type}"
-    ami = "${atlas_artifact.spark-consul.metadata_full.region-us-east-1}"
+    ami = "${data.atlas_artifact.spark-consul.metadata_full.region-us-east-1}"
     key_name = "${aws_key_pair.main.key_name}"
     count = "3"
 
-    user_data = "${template_file.consul-update.rendered}"
+    user_data = "${data.template_file.consul-update.rendered}"
 
     vpc_security_group_ids = ["${aws_security_group.admin-access.id}","${aws_security_group.spark-master.id}"]
     subnet_id = "${module.vpc.subnet_id}"
@@ -68,10 +68,10 @@ resource "aws_instance" "consul" {
 
 resource "aws_instance" "spark-master" {
     instance_type = "${var.instance_type}"
-    ami = "${atlas_artifact.spark-master.metadata_full.region-us-east-1}"
+    ami = "${data.atlas_artifact.spark-master.metadata_full.region-us-east-1}"
     key_name = "${aws_key_pair.main.key_name}"
 
-    user_data = "${template_file.spark-master-start.rendered}"
+    user_data = "${data.template_file.spark-master-start.rendered}"
 
     vpc_security_group_ids = ["${aws_security_group.admin-access.id}","${aws_security_group.spark-master.id}"]
     subnet_id = "${module.vpc.subnet_id}"
@@ -83,11 +83,11 @@ resource "aws_instance" "spark-master" {
 
 resource "aws_instance" "spark-slave" {
     instance_type = "${var.instance_type}"
-    ami = "${atlas_artifact.spark-slave.metadata_full.region-us-east-1}"
+    ami = "${data.atlas_artifact.spark-slave.metadata_full.region-us-east-1}"
     key_name = "${aws_key_pair.main.key_name}"
     count = "${var.spark_slave_count}"
 
-    user_data = "${template_file.spark-slave-start.rendered}"
+    user_data = "${data.template_file.spark-slave-start.rendered}"
 
     vpc_security_group_ids = ["${aws_security_group.admin-access.id}","${aws_security_group.spark-slave.id}"]
     subnet_id = "${module.vpc.subnet_id}"

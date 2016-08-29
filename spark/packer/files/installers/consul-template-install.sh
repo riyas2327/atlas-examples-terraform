@@ -6,11 +6,11 @@ CT_VERSION=0.11.0
 
 # install consul
 echo "Installing dependencies..."
-sudo apt-get install -y unzip
+sudo apt-get install -qq -y unzip
 
 echo "Fetching consul-template..."
 cd /tmp/
-wget -q https://github.com/hashicorp/consul-template/releases/download/v${CT_VERSION}/consul_template_${CT_VERSION}_linux_amd64.zip  -O consul-template.zip
+wget -q https://releases.hashicorp.com/consul-template/${CT_VERSION}/consul-template_${CT_VERSION}_linux_amd64.zip -O consul-template.zip
 
 echo "Installing consul-template..."
 unzip consul-template.zip

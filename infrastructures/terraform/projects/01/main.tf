@@ -348,7 +348,8 @@ while ! cget | grep "true"; do
   fi
 done
 
-COMMANDS ]
+COMMANDS
+]
   }
 }
 
@@ -410,5 +411,6 @@ Administer RabbitMQ here:
   http://${module.aws_data.rabbitmq_host}:15672
   Username: ${var.rabbitmq_username}
   Password: ${var.rabbitmq_password}
+
 CONFIGURATION
 }

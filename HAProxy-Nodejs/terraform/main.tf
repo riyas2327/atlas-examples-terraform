@@ -1,23 +1,21 @@
 provider "aws" {
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
   region = "us-east-1"
 }
 
 //
 // ARTIFACTS
 //
-resource "atlas_artifact" "nodejs" {
+data "atlas_artifact" "nodejs" {
   name = "${var.atlas_username}/nodejs"
   type = "amazon.ami"
 }
 
-resource "atlas_artifact" "haproxy" {
+data "atlas_artifact" "haproxy" {
   name = "${var.atlas_username}/haproxy"
   type = "amazon.ami"
 }
 
-resource "atlas_artifact" "consul" {
+data "atlas_artifact" "consul" {
   name = "${var.atlas_username}/consul"
   type = "amazon.ami"
 }
@@ -25,8 +23,8 @@ resource "atlas_artifact" "consul" {
 //
 // TEMPLATES
 //
-resource "template_file" "consul_upstart" {
-  filename = "files/consul.sh"
+data "template_file" "consul_upstart" {
+  template = "${file("files/consul.sh")}"
 
   vars {
     atlas_user_token = "${var.atlas_user_token}"
@@ -76,8 +74,8 @@ resource "aws_security_group" "haproxy" {
 //
 resource "aws_instance" "consul" {
   instance_type = "t2.micro"
-  ami = "${atlas_artifact.consul.metadata_full.region-us-east-1}"
-  user_data = "${template_file.consul_upstart.rendered}"
+  ami = "${data.atlas_artifact.consul.metadata_full.region-us-east-1}"
+  user_data = "${data.template_file.consul_upstart.rendered}"
   key_name = "${var.key_name}"
   count = "${var.consul_server_count}"
 
@@ -91,8 +89,8 @@ resource "aws_instance" "consul" {
 
 resource "aws_instance" "nodejs" {
   instance_type = "t2.micro"
-  ami = "${atlas_artifact.nodejs.metadata_full.region-us-east-1}"
-  user_data = "${template_file.consul_upstart.rendered}"
+  ami = "${data.atlas_artifact.nodejs.metadata_full.region-us-east-1}"
+  user_data = "${data.template_file.consul_upstart.rendered}"
   key_name = "${var.key_name}"
   count = 2
 
@@ -106,8 +104,8 @@ resource "aws_instance" "nodejs" {
 
 resource "aws_instance" "haproxy" {
   instance_type = "t2.micro"
-  ami = "${atlas_artifact.haproxy.metadata_full.region-us-east-1}"
-  user_data = "${template_file.consul_upstart.rendered}"
+  ami = "${data.atlas_artifact.haproxy.metadata_full.region-us-east-1}"
+  user_data = "${data.template_file.consul_upstart.rendered}"
   key_name = "${var.key_name}"
   count = 1
 
