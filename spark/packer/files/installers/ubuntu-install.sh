@@ -3,7 +3,7 @@
 set -e
 
 echo "Updating package info..."
-sudo apt-get update -y
+sudo apt-get update -y -qq
 
 echo "Upgrading packages..."
-sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y -qq
