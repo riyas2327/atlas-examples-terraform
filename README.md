@@ -11,7 +11,6 @@ for [Atlas](https://atlas.hashicorp.com/) by HashiCorp.
 | [consul-cluster](consul-cluster) | Deploy and bootstrap a consul-cluster in various configurations. | Atlas, Consul, Packer, and Terraform |
 | [google-hyperspace](google-hyperspace) | Deploy a real-time multiplayer space shooter game to Google Compute Engine. | Atlas, Packer, and Terraform |
 | [infrastructures](infrastructures) | Deploy full application architectures including database, cache, and messaging servers. | Atlas, Consul, Packer, Terraform, and Vault |
-| [metamon](metamon) | Deploy a python web app to AWS using Ansible for configuration. | Atlas, Packer, and Terraform |
 | [nomad-cluster](nomad-cluster) | Deploy and bootstrap a Nomad cluster on AWS. | Atlas, Nomad, and Terraform |
 | [spark](spark) | Deploy a Spark cluster to AWS. | Atlas, Consul, consul-template, and Terraform |
 
