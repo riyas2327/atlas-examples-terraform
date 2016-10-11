@@ -39,7 +39,7 @@ resource "aws_instance" "server" {
 
   connection {
     user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -145,7 +145,7 @@ resource "aws_instance" "nomad_client" {
 
   connection {
     user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {

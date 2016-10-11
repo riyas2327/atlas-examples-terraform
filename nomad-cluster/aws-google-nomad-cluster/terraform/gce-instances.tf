@@ -47,7 +47,7 @@ resource "google_compute_instance" "server" {
 
   connection {
     user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -157,7 +157,7 @@ resource "google_compute_instance" "nomad_client" {
 
   connection {
     user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -255,7 +255,7 @@ resource "null_resource" "gce_wan_join" {
   connection {
     host     = "${element(google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
     user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   # This provisioner must be separate from the join commands below
