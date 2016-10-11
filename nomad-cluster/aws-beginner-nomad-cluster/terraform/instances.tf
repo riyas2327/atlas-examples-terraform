@@ -31,8 +31,8 @@ resource "aws_instance" "nomad_server_1" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    user        = "ubuntu"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -136,8 +136,8 @@ resource "aws_instance" "nomad_server_2" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    user        = "ubuntu"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -245,8 +245,8 @@ resource "aws_instance" "nomad_server_3" {
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    user        = "ubuntu"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -300,8 +300,8 @@ CMD
   }
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    user        = "ubuntu"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
@@ -364,8 +364,8 @@ resource "aws_instance" "nomad_client" {
   count = "${var.nomad_client_nodes}"
 
   connection {
-    user     = "ubuntu"
-    key_file = "${module.shared.private_key_path}"
+    user        = "ubuntu"
+    private_key = "${file(module.shared.private_key_path)}"
   }
 
   provisioner "file" {
