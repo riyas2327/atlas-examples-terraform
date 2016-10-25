@@ -2,13 +2,13 @@
 
 set -ex
 
-CONSUL_VERSION=0.6.4
+CONSUL_VERSION=0.7.0
 
-sudo apt-get -y update
+sudo apt-get -qq -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -y unzip curl
+sudo apt-get install -qq -y unzip wget
 
 # install consul
 echo "Fetching consul..."
