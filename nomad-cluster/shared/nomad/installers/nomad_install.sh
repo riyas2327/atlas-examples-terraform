@@ -4,11 +4,11 @@ set -ex
 
 NOMAD_VERSION=0.4.1
 
-sudo apt-get -y update
+sudo apt-get -qq -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -y curl unzip
+sudo apt-get install -qq -y wget unzip
 
 # install nomad
 echo "Fetching nomad..."
