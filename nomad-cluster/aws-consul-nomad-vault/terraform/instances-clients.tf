@@ -1,8 +1,8 @@
 resource "aws_instance" "client" {
+  ami           = "${data.aws_ami.ubuntu_trusty.id}"
   instance_type = "${var.instance_type}"
-  ami           = "${var.source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
-  subnet_id     = "${element(list(aws_subnet.subnet_0.id,aws_subnet.subnet_1.id,aws_subnet.subnet_2.id),count.index)}"
+  subnet_id     = "${element(aws_subnet.main.*.id,count.index)}"
 
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
@@ -14,7 +14,7 @@ resource "aws_instance" "client" {
     Name = "client_${count.index}"
   }
 
-  count = "${var.nomad_client_nodes}"
+  count = "${var.client_nodes}"
 
   connection {
     user        = "ubuntu"
@@ -59,8 +59,9 @@ resource "aws_instance" "client" {
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir = "/opt/nomad/data"
-log_level = "DEBUG"
+name       = "${self.id}"
+data_dir   = "/opt/nomad/data"
+log_level  = "DEBUG"
 datacenter = "${var.region}"
 
 consul {
@@ -68,6 +69,10 @@ consul {
 
 client {
   enabled = true
+}
+
+advertise {
+  http = "${self.private_ip}:4646"
 }
 
 EOF

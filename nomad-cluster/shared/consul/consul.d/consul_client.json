@@ -3,6 +3,8 @@
   "atlas_infrastructure": "{{ atlas_username }}/{{ atlas_environment }}",
   "atlas_token": "{{ atlas_token }}",
 
+  "node_name": "{{ node_name }}",
+
   "data_dir": "/opt/consul/data",
   "ui": true,
 
