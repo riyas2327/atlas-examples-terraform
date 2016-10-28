@@ -59,20 +59,17 @@ variable "nomad_client_nodes" {
 }
 
 //
+// Data Sources
+//
+data "aws_availability_zones" "main" {}
+
+//
 // Outputs
 //
-output "nomad_server_0" {
-  value = "${aws_instance.nomad_server_0.private_ip} - ${aws_instance.nomad_server_0.public_ip}"
+output "servers" {
+  value = ["${list(aws_instance.server_0.public_ip,aws_instance.server_1.public_ip,aws_instance.server_2.public_ip)}"]
 }
 
-output "nomad_server_1" {
-  value = "${aws_instance.nomad_server_1.private_ip} - ${aws_instance.nomad_server_1.public_ip}"
-}
-
-output "nomad_server_2" {
-  value = "${aws_instance.nomad_server_2.private_ip} - ${aws_instance.nomad_server_2.public_ip}"
-}
-
-output "nomad clients" {
-  value = "${join(", ", aws_instance.nomad_client.*.public_ip)}"
+output "clients" {
+  value = ["${aws_instance.client.*.public_ip}"]
 }
