@@ -16,6 +16,6 @@ data "template_file" "vault_update" {
   template = "${file("${module.shared.path}/vault/userdata/vault_update.sh.tpl")}"
 
   vars {
-    region = "${var.region}"
+    atlas_environment       = "${var.atlas_environment}"
   }
 }
