@@ -65,9 +65,6 @@ datacenter = "${var.region}"
 
 bind_addr = "0.0.0.0"
 
-consul {
-}
-
 client {
   enabled = true
 }
@@ -79,6 +76,9 @@ addresses {
 
 advertise {
   http = "${self.private_ip}:4646"
+}
+
+consul {
 }
 
 EOF
