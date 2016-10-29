@@ -2,12 +2,13 @@ data "template_file" "consul_update_gce" {
   template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
-    region                  = "${var.gce_region}"
-    atlas_token             = "${var.atlas_token}"
-    atlas_username          = "${var.atlas_username}"
-    atlas_environment       = "${var.atlas_environment}"
-    consul_bootstrap_expect = "${var.gce_servers}"
-    instance_address_url    = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
+    region               = "${var.gce_region}"
+    atlas_token          = "${var.atlas_token}"
+    atlas_username       = "${var.atlas_username}"
+    atlas_environment    = "${var.atlas_environment}"
+    server_nodes         = "${var.server_nodes}"
+    instance_id_url      = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/hostname | cut -d'.' -f1"
+    instance_address_url = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
   }
 
   depends_on = ["google_compute_vpn_gateway.vpn"] // give the VPN some time to connect
@@ -24,8 +25,8 @@ connectivity before joining across the wan.
 */
 
 resource "google_compute_instance" "server" {
-  count        = "${var.gce_servers}"
-  name         = "${var.atlas_environment}-nomad-server-${count.index + 1}"
+  count        = "${var.server_nodes}"
+  name         = "${var.atlas_environment}-server-${count.index}"
   machine_type = "${var.gce_instance_type}"
   zone         = "${var.gce_region}-b"
 
@@ -43,7 +44,9 @@ resource "google_compute_instance" "server" {
     sshKeys = "ubuntu:${file(module.shared.public_key_path)}"
   }
 
-  tags = ["nomad-server-${count.index + 1}"]
+  tags = [
+    "server-${count.index}",
+  ]
 
   connection {
     user     = "ubuntu"
@@ -79,27 +82,16 @@ resource "google_compute_instance" "server" {
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir     = "/opt/nomad/data"
-enable_debug = true
-bind_addr    = "0.0.0.0"
-region       = "${var.gce_region}"
-datacenter   = "${var.gce_region}"
-log_level    = "DEBUG"
+name       = "${self.id}"
+data_dir   = "/opt/nomad/data"
+region     = "${var.gce_region}"
+datacenter = "${var.gce_region}"
 
-advertise {
-  http = "${self.network_interface.0.address}:4646"
-  rpc  = "${self.network_interface.0.address}:4647"
-  serf = "${self.network_interface.0.address}:4648"
-}
+bind_addr = "0.0.0.0"
 
-consul {
-  server_auto_join =  true
-  client_auto_join =  true
-}
-
-atlas {
-  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token          = "${var.atlas_token}"
+server {
+  enabled          = true
+  bootstrap_expect = ${var.server_nodes}
 }
 
 addresses {
@@ -107,10 +99,10 @@ addresses {
   serf = "${self.network_interface.0.address}"
 }
 
-server {
-  enabled          = true
-  bootstrap_expect = ${var.gce_servers}
+advertise {
+  http = "${self.network_interface.0.address}:4646"
 }
+
 EOF
 CMD
   }
@@ -125,15 +117,13 @@ CMD
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
       "sudo service nomad start || sudo service nomad restart",
-      "sudo sed -i -- 's/listen-address=127.0.0.1/listen-address=0.0.0.0/g' /etc/dnsmasq.d/consul",
-      "sudo service dnsmasq restart",
     ]
   }
 }
 
-resource "google_compute_instance" "nomad_client" {
-  count        = "${var.gce_nomad_clients}"
-  name         = "${var.atlas_environment}-nomad-client-${count.index+1}"
+resource "google_compute_instance" "client" {
+  count        = "${var.client_nodes}"
+  name         = "${var.atlas_environment}-client-${count.index}"
   machine_type = "${var.gce_instance_type}"
   zone         = "${var.gce_region}-b"
 
@@ -152,7 +142,7 @@ resource "google_compute_instance" "nomad_client" {
   }
 
   tags = [
-    "nomad-client-${count.index + 1}",
+    "client-${count.index}",
   ]
 
   connection {
@@ -189,41 +179,29 @@ resource "google_compute_instance" "nomad_client" {
   provisioner "remote-exec" {
     inline = <<CMD
 cat > /tmp/nomad.hcl <<EOF
-data_dir     = "/opt/nomad/data"
-enable_debug = true
-bind_addr    = "0.0.0.0"
-region       = "${var.gce_region}"
-datacenter   = "${var.gce_region}"
-log_level    = "DEBUG"
+name       = "${self.id}"
+data_dir   = "/opt/nomad/data"
+region     = "${var.gce_region}"
+datacenter = "${var.gce_region}"
+
+bind_addr = "0.0.0.0"
+
+client {
+  enabled = true
+}
+
+addresses {
+  rpc  = "${self.network_interface.0.address}"
+  serf = "${self.network_interface.0.address}"
+}
 
 advertise {
   http = "${self.network_interface.0.address}:4646"
-  rpc  = "${self.network_interface.0.address}:4647"
-  serf = "${self.network_interface.0.address}:4648"
 }
 
 consul {
-  server_auto_join =  true
-  client_auto_join =  true
 }
 
-atlas {
-  infrastructure = "${var.atlas_username}/${var.atlas_environment}"
-  token          = "${var.atlas_token}"
-}
-
-client {
-  enabled    = true
-
-  options {
-    "docker.cleanup.image"   = "0"
-    "driver.raw_exec.enable" = "1"
-  }
-
-  meta {
-    region = "${var.gce_region}"
-  }
-}
 EOF
 CMD
   }
@@ -243,7 +221,7 @@ CMD
 }
 
 resource "null_resource" "gce_wan_join" {
-  count = "${var.gce_servers}"
+  count = "${var.server_nodes}"
 
   depends_on = [
     "google_compute_vpn_tunnel.tunnel1",
