@@ -17,7 +17,7 @@ variable "atlas_token" {}
 variable "atlas_username" {}
 
 variable "atlas_environment" {
-  default = "nomad-consul-vault-cluster"
+  default = "consul-nomad"
 }
 
 variable "region" {
