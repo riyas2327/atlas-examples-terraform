@@ -43,36 +43,50 @@ variable "vpc_cidr" {
 }
 
 variable "vpc_cidrs" {
-  default = "172.31.0.0/20,172.31.16.0/20,172.31.32.0/20"
+  default = ["172.31.0.0/20","172.31.16.0/20","172.31.32.0/20"]
 }
 
-variable "consul_bootstrap_expect" {
+variable "server_nodes" {
   default = "3"
 }
 
-variable "nomad_bootstrap_expect" {
+variable "client_nodes" {
   default = "3"
 }
 
-variable "nomad_client_nodes" {
-  default = "3"
+//
+// Data Sources
+//
+data "aws_availability_zones" "main" {}
+
+data "aws_ami" "ubuntu_trusty" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
 }
 
 //
 // Outputs
 //
-output "nomad_server_0" {
-  value = "${aws_instance.nomad_server_0.private_ip} - ${aws_instance.nomad_server_0.public_ip}"
+output "servers" {
+  value = ["${aws_instance.server.*.public_ip}"]
 }
 
-output "nomad_server_1" {
-  value = "${aws_instance.nomad_server_1.private_ip} - ${aws_instance.nomad_server_1.public_ip}"
-}
-
-output "nomad_server_2" {
-  value = "${aws_instance.nomad_server_2.private_ip} - ${aws_instance.nomad_server_2.public_ip}"
-}
-
-output "nomad clients" {
-  value = "${join(", ", aws_instance.nomad_client.*.public_ip)}"
+output "clients" {
+  value = ["${aws_instance.client.*.public_ip}"]
 }
