@@ -1,4 +1,4 @@
-resource "aws_instance" "client" {
+resource "aws_instance" "server_nomad" {
   ami           = "${data.aws_ami.ubuntu_trusty.id}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -11,15 +11,14 @@ resource "aws_instance" "client" {
   ]
 
   tags {
-    Name = "client-${count.index}"
+    Name = "server-nomad-${count.index}"
   }
 
-  count = "${var.client_nodes}"
+  count = "${var.server_nodes}"
 
   depends_on = [
     "aws_instance.server_consul",
     "aws_instance.server_vault",
-    "aws_instance.server_nomad",
   ]
 
   connection {
@@ -57,7 +56,6 @@ resource "aws_instance" "client" {
   #
   provisioner "remote-exec" {
     scripts = [
-      "${module.shared.path}/nomad/installers/docker_install.sh",
       "${module.shared.path}/nomad/installers/nomad_install.sh",
     ]
   }
@@ -67,24 +65,18 @@ resource "aws_instance" "client" {
 cat > /tmp/nomad.hcl <<EOF
 name       = "${self.id}"
 data_dir   = "/opt/nomad/data"
+log_level  = "DEBUG"
 datacenter = "${data.aws_region.main.name}"
 
-bind_addr = "0.0.0.0"
-
-consul {
-}
-
-client {
-  enabled = true
+server {
+  enabled          = true
+  bootstrap_expect = ${var.server_nodes}
 }
 
 addresses {
+  http = "127.0.0.1"
   rpc  = "${self.private_ip}"
   serf = "${self.private_ip}"
-}
-
-advertise {
-  http = "${self.private_ip}:4646"
 }
 
 EOF
@@ -96,6 +88,11 @@ CMD
     destination = "/tmp/nomad.conf"
   }
 
+  provisioner "file" {
+    source      = "${module.shared.path}/nomad/jobs"
+    destination = "./"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
@@ -103,4 +100,5 @@ CMD
       "sudo service nomad start || sudo service nomad restart",
     ]
   }
+
 }

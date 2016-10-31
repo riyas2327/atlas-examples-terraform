@@ -17,15 +17,11 @@ variable "atlas_token" {}
 variable "atlas_username" {}
 
 variable "atlas_environment" {
-  default = "nomad-consul-vault-cluster"
+  default = "nomad-consul-vault"
 }
 
 variable "region" {
-  default = "us-east-1"
-}
-
-variable "source_ami" {
-  default = "ami-9a562df2"
+  default = "us-west-2"
 }
 
 variable "key_name" {
@@ -41,7 +37,11 @@ variable "vpc_cidr" {
 }
 
 variable "vpc_cidrs" {
-  default = ["172.31.0.0/20","172.31.16.0/20","172.31.32.0/20"]
+  default = [
+    "172.31.0.0/20",
+    "172.31.16.0/20",
+    "172.31.32.0/20",
+  ]
 }
 
 variable "server_nodes" {
@@ -55,6 +55,10 @@ variable "client_nodes" {
 //
 // Data Sources
 //
+data "aws_region" "main" {
+  current = true
+}
+
 data "aws_availability_zones" "main" {}
 
 data "aws_ami" "ubuntu_trusty" {
@@ -81,8 +85,16 @@ data "aws_ami" "ubuntu_trusty" {
 //
 // Outputs
 //
-output "servers" {
-  value = ["${aws_instance.server.*.public_ip}"]
+output "servers_consul" {
+  value = ["${aws_instance.server_consul.*.public_ip}"]
+}
+
+output "servers_nomad" {
+  value = ["${aws_instance.server_nomad.*.public_ip}"]
+}
+
+output "servers_vault" {
+  value = ["${aws_instance.server_vault.*.public_ip}"]
 }
 
 output "clients" {
