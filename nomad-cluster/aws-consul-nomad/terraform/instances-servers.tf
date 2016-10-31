@@ -35,4 +35,9 @@ resource "aws_instance" "server" {
     inline = ["${module.shared.install_nomad_server}"]
   }
 
+  provisioner "file" {
+    source      = "${module.shared.path}/nomad/jobs"
+    destination = "./"
+  }
+
 }
