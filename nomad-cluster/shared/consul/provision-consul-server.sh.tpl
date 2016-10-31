@@ -69,7 +69,7 @@ EOF
 sudo tee /etc/init/consul.conf > /dev/null <<EOF
 description "Consul"
 
-start on vagrant-ready or runlevel [2345]
+start on runlevel [2345]
 stop on runlevel [!2345]
 
 respawn
