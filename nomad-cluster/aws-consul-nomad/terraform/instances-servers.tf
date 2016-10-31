@@ -24,80 +24,15 @@ resource "aws_instance" "server" {
   #
   # Consul
   #
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
-    destination = "/tmp/consul.json.tmp"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/tmp/consul.conf"
-  }
-
   provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["${data.template_file.consul_update.rendered}"]
+    inline = ["${module.shared.install_consul_server}"]
   }
 
   #
   # Nomad
   #
   provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = <<CMD
-cat > /tmp/nomad.hcl <<EOF
-name       = "${self.id}"
-data_dir   = "/opt/nomad/data"
-datacenter = "${data.aws_region.main.name}"
-
-bind_addr = "0.0.0.0"
-
-server {
-  enabled          = true
-  bootstrap_expect = ${var.server_nodes}
-}
-
-addresses {
-  rpc  = "${self.private_ip}"
-  serf = "${self.private_ip}"
-}
-
-advertise {
-  http = "${self.private_ip}:4646"
-}
-
-EOF
-CMD
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/tmp/nomad.conf"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs"
-    destination = "./"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
-      "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo service nomad start || sudo service nomad restart",
-    ]
+    inline = ["${module.shared.install_nomad_server}"]
   }
 
 }
