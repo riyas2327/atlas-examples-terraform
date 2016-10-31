@@ -16,10 +16,6 @@ resource "aws_instance" "server_vault" {
 
   count = "${var.server_nodes}"
 
-  depends_on = [
-    "aws_instance.server_consul",
-  ]
-
   connection {
     user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"

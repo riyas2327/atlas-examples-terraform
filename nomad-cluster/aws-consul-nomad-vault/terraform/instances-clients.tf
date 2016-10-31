@@ -16,12 +16,6 @@ resource "aws_instance" "client" {
 
   count = "${var.client_nodes}"
 
-  depends_on = [
-    "aws_instance.server_consul",
-    "aws_instance.server_vault",
-    "aws_instance.server_nomad",
-  ]
-
   connection {
     user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"
