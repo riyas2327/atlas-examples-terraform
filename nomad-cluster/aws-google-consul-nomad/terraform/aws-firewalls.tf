@@ -5,6 +5,10 @@ resource "aws_security_group" "default_egress" {
   name        = "default_egress"
   description = "Default Egress"
   vpc_id      = "${aws_vpc.main.id}"
+
+  // Ensure the route table association happens before
+  // SGs are created and therefore before instances.
+  depends_on  = ["aws_route_table_association.main"]
 }
 
 resource "aws_security_group_rule" "default_egress" {
