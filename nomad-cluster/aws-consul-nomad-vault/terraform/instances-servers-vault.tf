@@ -14,7 +14,7 @@ resource "aws_instance" "server_vault" {
     Name = "server-vault-${count.index}"
   }
 
-  count = "${var.server_nodes}"
+  count = "${var.vault_server_nodes}"
 
   connection {
     user        = "ubuntu"

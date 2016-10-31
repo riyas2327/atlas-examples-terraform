@@ -14,7 +14,7 @@ resource "aws_instance" "server_consul" {
     Name = "server-consul-${count.index}"
   }
 
-  count = "${var.server_nodes}"
+  count = "${var.consul_server_nodes}"
 
   connection {
     user        = "ubuntu"

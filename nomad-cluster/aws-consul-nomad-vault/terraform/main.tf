@@ -39,8 +39,12 @@ variable "vpc_cidrs" {
   ]
 }
 
-variable "server_nodes" {
+variable "vault_server_nodes" {
   default = "3"
+}
+
+variable "consul_server_nodes" {
+  default = "5"
 }
 
 variable "client_nodes" {
@@ -82,10 +86,6 @@ data "aws_ami" "ubuntu_trusty" {
 //
 output "servers_consul" {
   value = ["${aws_instance.server_consul.*.public_ip}"]
-}
-
-output "servers_nomad" {
-  value = ["${aws_instance.server_nomad.*.public_ip}"]
 }
 
 output "servers_vault" {
