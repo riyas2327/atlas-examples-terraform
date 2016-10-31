@@ -75,14 +75,14 @@ output "install_nomad_client" {
   value = "${data.template_file.install_nomad_client.rendered}"
 }
 
-data "template_file" "vault_update" {
-  template = "${file("${path.module}/vault/userdata/vault_update.sh.tpl")}"
+data "template_file" "install_vault_server" {
+  template = "${file("${path.module}/vault/provision-vault-server.sh.tpl")}"
 
   vars {
-    atlas_environment       = "${var.atlas_environment}"
+    atlas_environment    = "${var.atlas_environment}"
   }
 }
 
-output "vault_update" {
-  value = "${data.template_file.vault_update.rendered}"
+output "install_vault_server" {
+  value = "${data.template_file.install_vault_server.rendered}"
 }

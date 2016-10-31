@@ -24,50 +24,15 @@ resource "aws_instance" "server_vault" {
   #
   # Consul
   #
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_client.json"
-    destination = "/tmp/consul.json.tmp"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/consul/init/consul.conf"
-    destination = "/tmp/consul.conf"
-  }
-
   provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["${data.template_file.consul_update.rendered}"]
+    inline = ["${module.shared.install_consul_client}"]
   }
 
   #
   # Vault
   #
-  provisioner "file" {
-    source      = "${module.shared.path}/vault/vault.d/vault.hcl.tpl"
-    destination = "/tmp/vault.hcl.tmp"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/vault/init/vault.conf"
-    destination = "/tmp/vault.conf"
-  }
-
   provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/vault/installers/vault_install.sh",
-      "${module.shared.path}/vault/installers/vault_conf_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = ["${data.template_file.vault_update.rendered}"]
+    inline = ["${module.shared.install_vault_server}"]
   }
 
 }
