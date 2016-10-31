@@ -2,7 +2,6 @@
 // Providers & Modules
 //
 provider "aws" {
-  region = "${var.region}"
 }
 
 module "shared" {
@@ -18,10 +17,6 @@ variable "atlas_username" {}
 
 variable "atlas_environment" {
   default = "nomad-consul-vault"
-}
-
-variable "region" {
-  default = "us-west-2"
 }
 
 variable "key_name" {
