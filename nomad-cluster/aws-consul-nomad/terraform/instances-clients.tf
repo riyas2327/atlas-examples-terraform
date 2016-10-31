@@ -11,7 +11,7 @@ resource "aws_instance" "client" {
   ]
 
   tags {
-    Name = "client_${count.index}"
+    Name = "client-${count.index}"
   }
 
   count = "${var.client_nodes}"
@@ -61,7 +61,7 @@ resource "aws_instance" "client" {
 cat > /tmp/nomad.hcl <<EOF
 name       = "${self.id}"
 data_dir   = "/opt/nomad/data"
-datacenter = "${var.region}"
+datacenter = "${data.aws_region.main.name}"
 
 bind_addr = "0.0.0.0"
 

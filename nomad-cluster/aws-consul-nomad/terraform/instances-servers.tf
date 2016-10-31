@@ -11,7 +11,7 @@ resource "aws_instance" "server" {
   ]
 
   tags {
-    Name = "server_${count.index}"
+    Name = "server-${count.index}"
   }
 
   count = "${var.server_nodes}"
@@ -60,7 +60,7 @@ resource "aws_instance" "server" {
 cat > /tmp/nomad.hcl <<EOF
 name       = "${self.id}"
 data_dir   = "/opt/nomad/data"
-datacenter = "${var.region}"
+datacenter = "${data.aws_region.main.name}"
 
 bind_addr = "0.0.0.0"
 
@@ -88,27 +88,14 @@ CMD
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/batch.hcl"
-    destination = "/tmp/batch.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/cache.hcl"
-    destination = "/tmp/cache.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/web.hcl"
-    destination = "/tmp/web.hcl"
+    source      = "${module.shared.path}/nomad/jobs"
+    destination = "./"
   }
 
   provisioner "remote-exec" {
     inline = [
       "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
       "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo mv /tmp/batch.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
       "sudo service nomad start || sudo service nomad restart",
     ]
   }

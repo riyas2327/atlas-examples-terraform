@@ -2,7 +2,7 @@ data "template_file" "consul_update" {
   template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
 
   vars {
-    region               = "${var.region}"
+    region               = "${data.aws_region.main.name}"
     atlas_token          = "${var.atlas_token}"
     atlas_username       = "${var.atlas_username}"
     atlas_environment    = "${var.atlas_environment}"

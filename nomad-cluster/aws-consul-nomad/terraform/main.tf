@@ -2,7 +2,6 @@
 // Providers & Modules
 //
 provider "aws" {
-  region = "${var.region}"
 }
 
 module "shared" {
@@ -18,10 +17,6 @@ variable "atlas_username" {}
 
 variable "atlas_environment" {
   default = "consul-nomad"
-}
-
-variable "region" {
-  default = "us-east-1"
 }
 
 variable "source_ami" {
@@ -55,6 +50,10 @@ variable "client_nodes" {
 //
 // Data Sources
 //
+data "aws_region" "main" {
+  current = true
+}
+
 data "aws_availability_zones" "main" {}
 
 data "aws_ami" "ubuntu_trusty" {
