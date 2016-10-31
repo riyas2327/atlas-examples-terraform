@@ -1,4 +1,4 @@
-resource "aws_instance" "server" {
+resource "aws_instance" "server_vault" {
   ami           = "${data.aws_ami.ubuntu_trusty.id}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -11,10 +11,14 @@ resource "aws_instance" "server" {
   ]
 
   tags {
-    Name = "server_${count.index}"
+    Name = "server-vault-${count.index}"
   }
 
   count = "${var.server_nodes}"
+
+  depends_on = [
+    "aws_instance.server_consul",
+  ]
 
   connection {
     user        = "ubuntu"
@@ -25,7 +29,7 @@ resource "aws_instance" "server" {
   # Consul
   #
   provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
+    source      = "${module.shared.path}/consul/consul.d/consul_client.json"
     destination = "/tmp/consul.json.tmp"
   }
 
@@ -44,69 +48,6 @@ resource "aws_instance" "server" {
 
   provisioner "remote-exec" {
     inline = ["${data.template_file.consul_update.rendered}"]
-  }
-
-  #
-  # Nomad
-  #
-  provisioner "remote-exec" {
-    scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = <<CMD
-cat > /tmp/nomad.hcl <<EOF
-name       = "${self.id}"
-data_dir   = "/opt/nomad/data"
-log_level  = "DEBUG"
-datacenter = "${var.region}"
-
-server {
-  enabled          = true
-  bootstrap_expect = ${var.server_nodes}
-}
-
-addresses {
-  http = "127.0.0.1"
-  rpc  = "${self.private_ip}"
-  serf = "${self.private_ip}"
-}
-
-EOF
-CMD
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/init/nomad.conf"
-    destination = "/tmp/nomad.conf"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/batch.hcl"
-    destination = "/tmp/batch.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/cache.hcl"
-    destination = "/tmp/cache.hcl"
-  }
-
-  provisioner "file" {
-    source      = "${module.shared.path}/nomad/jobs/web.hcl"
-    destination = "/tmp/web.hcl"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo mv /tmp/nomad.hcl  /etc/nomad.d/",
-      "sudo mv /tmp/nomad.conf /etc/init/",
-      "sudo mv /tmp/batch.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/cache.hcl /opt/nomad/jobs/",
-      "sudo mv /tmp/web.hcl /opt/nomad/jobs/",
-      "sudo service nomad start || sudo service nomad restart",
-    ]
   }
 
   #
