@@ -9,6 +9,24 @@ best practices for operating Nomad in production.
 > :information_source: All commands shown below should be run from the
 `nomad-cluster` directory.
 
+## Requirements
+
+The following environment variables are required:
+
+```
+# For Atlas
+TF_VAR_atlas_token
+TF_VAR_atlas_username
+
+# For AWS
+AWS_ACCESS_KEY_ID
+AWS_ACCESS_SECRET_KEY
+
+# For Google
+GOOGLE_CREDENTIALS
+GOOGLE_PROJECT
+```
+
 #### Atlas Configuration
 
 To configure the project for [Atlas](https://atlas.hashicorp.com/), run:
