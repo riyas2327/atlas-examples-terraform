@@ -1,5 +1,5 @@
 data "template_file" "consul_update_gce" {
-  template = "${file("${module.shared.path}/consul/userdata/consul_update.sh.tpl")}"
+  template = "${file("${module.shared.path}/consul/deprecated/userdata/consul_update.sh.tpl")}"
 
   vars {
     region               = "${var.gce_region}"
@@ -15,7 +15,7 @@ data "template_file" "consul_update_gce" {
 }
 
 data "template_file" "pqs_gce" {
-  template = "${file("${module.shared.path}/consul/userdata/pqs.sh.tpl")}"
+  template = "${file("${module.shared.path}/consul/deprecated/userdata/pqs.sh.tpl")}"
 }
 
 /*
@@ -54,21 +54,21 @@ resource "google_compute_instance" "server" {
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_server.json"
+    source      = "${module.shared.path}/consul/deprecated/consul.d/consul_server.json"
     destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/consul/init/consul.conf"
+    source      = "${module.shared.path}/consul/deprecated/init/consul.conf"
     destination = "/tmp/consul.conf"
   }
 
   provisioner "remote-exec" {
     scripts = [
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
+      "${module.shared.path}/nomad/deprecated/installers/nomad_install.sh",
+      "${module.shared.path}/consul/deprecated/installers/consul_install.sh",
+      "${module.shared.path}/consul/deprecated/installers/consul_conf_install.sh",
+      "${module.shared.path}/consul/deprecated/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -108,7 +108,7 @@ CMD
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/nomad/init/nomad.conf"
+    source      = "${module.shared.path}/nomad/deprecated/init/nomad.conf"
     destination = "/tmp/nomad.conf"
   }
 
@@ -151,22 +151,22 @@ resource "google_compute_instance" "client" {
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/consul/consul.d/consul_client.json"
+    source      = "${module.shared.path}/consul/deprecated/consul.d/consul_client.json"
     destination = "/tmp/consul.json.tmp"
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/consul/init/consul.conf"
+    source      = "${module.shared.path}/consul/deprecated/init/consul.conf"
     destination = "/tmp/consul.conf"
   }
 
   provisioner "remote-exec" {
     scripts = [
-      "${module.shared.path}/nomad/installers/docker_install.sh",
-      "${module.shared.path}/nomad/installers/nomad_install.sh",
-      "${module.shared.path}/consul/installers/consul_install.sh",
-      "${module.shared.path}/consul/installers/consul_conf_install.sh",
-      "${module.shared.path}/consul/installers/dnsmasq_install.sh",
+      "${module.shared.path}/nomad/deprecated/installers/docker_install.sh",
+      "${module.shared.path}/nomad/deprecated/installers/nomad_install.sh",
+      "${module.shared.path}/consul/deprecated/installers/consul_install.sh",
+      "${module.shared.path}/consul/deprecated/installers/consul_conf_install.sh",
+      "${module.shared.path}/consul/deprecated/installers/dnsmasq_install.sh",
     ]
   }
 
@@ -207,7 +207,7 @@ CMD
   }
 
   provisioner "file" {
-    source      = "${module.shared.path}/nomad/init/nomad.conf"
+    source      = "${module.shared.path}/nomad/deprecated/init/nomad.conf"
     destination = "/tmp/nomad.conf"
   }
 

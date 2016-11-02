@@ -89,26 +89,31 @@ provider "google" {
 
 module "shared" {
   source = "../../shared"
+
+  // these are not used as long as the deprecated scripts are still in use
+  region               = "not_used"
+  atlas_token          = "not_used"
+  atlas_username       = "not_used"
+  atlas_environment    = "not_used"
 }
 
 //
 // Outputs
 //
-output "info" {
-  value = <<EOF
+output "aws_servers" {
+  value = ["${aws_instance.server.*.public_ip}"]
+}
 
-AWS servers:
-    ${join("\n    ", formatlist("%s/%s - ssh -i shared/ssh_keys/atlas-examples.pem ubuntu@%s", aws_instance.server.*.private_ip, aws_instance.server.*.public_ip, aws_instance.server.*.public_ip))}
+output "aws_clients" {
+  value = ["${aws_instance.client.*.public_ip}"]
+}
 
-AWS clients:
-    ${join("\n    ", formatlist("%s/%s - ssh -i shared/ssh_keys/atlas-examples.pem ubuntu@%s", aws_instance.client.*.private_ip, aws_instance.client.*.public_ip, aws_instance.client.*.public_ip))}
+output "gce_servers" {
+  value = ["${google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip}"]
+}
 
-GCE servers:
-    ${join("\n    ", formatlist("%s/%s - ssh -i shared/ssh_keys/atlas-examples.pem ubuntu@%s", google_compute_instance.server.*.network_interface.0.address, google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip))}
-
-GCE clients:
-    ${join("\n    ", formatlist("%s/%s - ssh -i shared/ssh_keys/atlas-examples.pem ubuntu@%s", google_compute_instance.client.*.network_interface.0.address, google_compute_instance.client.*.network_interface.0.access_config.0.assigned_nat_ip, google_compute_instance.client.*.network_interface.0.access_config.0.assigned_nat_ip))}
-EOF
+output "gce_clients" {
+  value = ["${google_compute_instance.client.*.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
 
 output "ping_aws_to_google" {
