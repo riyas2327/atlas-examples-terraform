@@ -34,5 +34,4 @@ resource "aws_instance" "client" {
   provisioner "remote-exec" {
     inline = ["${module.shared.install_nomad_client}"]
   }
-
 }

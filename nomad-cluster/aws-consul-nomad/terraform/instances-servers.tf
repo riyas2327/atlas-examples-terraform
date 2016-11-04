@@ -39,5 +39,4 @@ resource "aws_instance" "server" {
     source      = "${module.shared.path}/nomad/jobs"
     destination = "./"
   }
-
 }
