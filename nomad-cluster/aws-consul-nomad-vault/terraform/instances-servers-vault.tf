@@ -32,6 +32,9 @@ resource "aws_instance" "server_vault" {
   # Vault
   #
   provisioner "remote-exec" {
-    inline = ["${module.shared.install_vault_server}"]
+    inline = [
+      "${module.shared.install_vault_server}",
+      "echo 'export VAULT_ADDR=http://localhost:8200' >> /home/ubuntu/.bashrc",
+    ]
   }
 }
