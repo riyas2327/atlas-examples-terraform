@@ -44,6 +44,13 @@ variable "vpc_cidrs" {
   ]
 }
 
+variable "vpc_cidrs_rds" {
+  default = [
+    "172.31.48.0/20",
+    "172.31.64.0/20",
+  ]
+}
+
 variable "server_nodes" {
   default = "3"
 }
