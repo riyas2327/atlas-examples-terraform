@@ -2,6 +2,11 @@
 
 set -ex
 
+# Wait for cloud-init to finish.
+echo "Waiting 180 seconds for cloud-init to complete."
+timeout 180 /bin/bash -c \
+  'until stat /var/lib/cloud/instance/boot-finished 2>/dev/null; do echo "Waiting ..."; sleep 2; done'
+
 VAULT_VERSION=0.6.2
 
 INSTANCE_PRIVATE_IP=$(ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }')
