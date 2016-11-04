@@ -34,5 +34,4 @@ resource "aws_instance" "server_vault" {
   provisioner "remote-exec" {
     inline = ["${module.shared.install_vault_server}"]
   }
-
 }
