@@ -29,10 +29,10 @@ resource "aws_route_table" "main" {
 }
 
 resource "aws_route_table_association" "main" {
-    subnet_id      = "${element(aws_subnet.main.*.id,count.index)}"
-    route_table_id = "${aws_route_table.main.id}"
+  subnet_id      = "${element(aws_subnet.main.*.id,count.index)}"
+  route_table_id = "${aws_route_table.main.id}"
 
-    count          = "${length(var.vpc_cidrs)}"
+  count = "${length(var.vpc_cidrs)}"
 }
 
 resource "aws_subnet" "main" {
@@ -41,7 +41,7 @@ resource "aws_subnet" "main" {
   cidr_block              = "${element(var.vpc_cidrs,count.index)}"
   map_public_ip_on_launch = true
 
-  count                   = "${length(var.vpc_cidrs)}"
+  count = "${length(var.vpc_cidrs)}"
 
   tags {
     Name = "${var.atlas_environment}"

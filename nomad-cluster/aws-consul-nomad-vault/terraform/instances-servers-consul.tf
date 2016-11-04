@@ -27,5 +27,4 @@ resource "aws_instance" "server_consul" {
   provisioner "remote-exec" {
     inline = ["${module.shared.install_consul_server}"]
   }
-
 }

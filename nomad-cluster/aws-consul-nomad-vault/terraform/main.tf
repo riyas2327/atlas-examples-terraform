@@ -1,17 +1,16 @@
 //
 // Providers & Modules
 //
-provider "aws" {
-}
+provider "aws" {}
 
 module "shared" {
   source = "../../shared"
 
-  region               = "${data.aws_region.main.name}"
-  atlas_token          = "${var.atlas_token}"
-  atlas_username       = "${var.atlas_username}"
-  atlas_environment    = "${var.atlas_environment}"
-  server_nodes         = "${var.server_nodes}"
+  region            = "${data.aws_region.main.name}"
+  atlas_token       = "${var.atlas_token}"
+  atlas_username    = "${var.atlas_username}"
+  atlas_environment = "${var.atlas_environment}"
+  server_nodes      = "${var.server_nodes}"
 }
 
 //

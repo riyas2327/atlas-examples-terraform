@@ -49,7 +49,7 @@ resource "google_compute_instance" "server" {
   ]
 
   connection {
-    user     = "ubuntu"
+    user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"
   }
 
@@ -146,7 +146,7 @@ resource "google_compute_instance" "client" {
   ]
 
   connection {
-    user     = "ubuntu"
+    user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"
   }
 
@@ -231,8 +231,8 @@ resource "null_resource" "gce_wan_join" {
   ]
 
   connection {
-    host     = "${element(google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
-    user     = "ubuntu"
+    host        = "${element(google_compute_instance.server.*.network_interface.0.access_config.0.assigned_nat_ip, count.index)}"
+    user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"
   }
 

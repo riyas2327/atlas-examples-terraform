@@ -91,10 +91,10 @@ module "shared" {
   source = "../../shared"
 
   // these are not used as long as the deprecated scripts are still in use
-  region               = "not_used"
-  atlas_token          = "not_used"
-  atlas_username       = "not_used"
-  atlas_environment    = "not_used"
+  region            = "not_used"
+  atlas_token       = "not_used"
+  atlas_username    = "not_used"
+  atlas_environment = "not_used"
 }
 
 //

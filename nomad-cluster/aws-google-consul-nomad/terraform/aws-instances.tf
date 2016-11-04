@@ -39,7 +39,7 @@ resource "aws_instance" "server" {
   }
 
   connection {
-    user     = "ubuntu"
+    user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"
   }
 
@@ -132,7 +132,7 @@ resource "aws_instance" "client" {
   }
 
   connection {
-    user     = "ubuntu"
+    user        = "ubuntu"
     private_key = "${file(module.shared.private_key_path)}"
   }
 
