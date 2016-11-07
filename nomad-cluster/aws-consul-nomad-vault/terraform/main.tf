@@ -22,7 +22,7 @@ variable "atlas_token" {}
 variable "atlas_username" {}
 
 variable "atlas_environment" {
-  default = "nomad-consul-vault"
+  default = "consul-nomad-vault"
 }
 
 variable "key_name" {
