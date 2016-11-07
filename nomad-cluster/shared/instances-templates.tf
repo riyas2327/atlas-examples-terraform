@@ -1,21 +1,5 @@
-variable "region" {}
-
-variable "atlas_token" {}
-
-variable "atlas_username" {}
-
-variable "atlas_environment" {}
-
-variable "consul_server_nodes" {
-  default = "3"
-}
-
-variable "nomad_server_nodes" {
-  default = "3"
-}
-
 data "template_file" "install_consul_client" {
-  template = "${file("${path.module}/consul/provision-consul-client.sh.tpl")}"
+  template = "${file("${path.module}/consul/${var.os}/provision-consul-client.sh.tpl")}"
 
   vars {
     region            = "${var.region}"
@@ -31,7 +15,7 @@ output "install_consul_client" {
 }
 
 data "template_file" "install_consul_server" {
-  template = "${file("${path.module}/consul/provision-consul-server.sh.tpl")}"
+  template = "${file("${path.module}/consul/${var.os}/provision-consul-server.sh.tpl")}"
 
   vars {
     region              = "${var.region}"
@@ -48,7 +32,7 @@ output "install_consul_server" {
 }
 
 data "template_file" "install_nomad_server" {
-  template = "${file("${path.module}/nomad/provision-nomad-server.sh.tpl")}"
+  template = "${file("${path.module}/nomad/${var.os}/provision-nomad-server.sh.tpl")}"
 
   vars {
     region             = "${var.region}"
@@ -65,7 +49,7 @@ output "install_nomad_server" {
 }
 
 data "template_file" "install_nomad_client" {
-  template = "${file("${path.module}/nomad/provision-nomad-client.sh.tpl")}"
+  template = "${file("${path.module}/nomad/${var.os}/provision-nomad-client.sh.tpl")}"
 
   vars {
     region            = "${var.region}"
@@ -81,7 +65,7 @@ output "install_nomad_client" {
 }
 
 data "template_file" "install_vault_server" {
-  template = "${file("${path.module}/vault/provision-vault-server.sh.tpl")}"
+  template = "${file("${path.module}/vault/${var.os}/provision-vault-server.sh.tpl")}"
 
   vars {
     atlas_environment = "${var.atlas_environment}"

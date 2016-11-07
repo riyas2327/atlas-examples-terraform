@@ -70,27 +70,6 @@ data "aws_region" "main" {
 
 data "aws_availability_zones" "main" {}
 
-data "aws_ami" "ubuntu_trusty" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
 //
 // Outputs
 //

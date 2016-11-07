@@ -1,5 +1,5 @@
 resource "aws_instance" "client" {
-  ami           = "${data.aws_ami.ubuntu_trusty.id}"
+  ami           = "${module.shared.ami}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
   subnet_id     = "${element(aws_subnet.main.*.id,count.index)}"
