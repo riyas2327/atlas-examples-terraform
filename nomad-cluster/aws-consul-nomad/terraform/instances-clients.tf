@@ -11,7 +11,7 @@ resource "aws_instance" "client" {
   ]
 
   tags {
-    Name = "client-${count.index}"
+    Name = "${var.atlas_environment}-client-${count.index}"
   }
 
   count = "${var.client_nodes}"

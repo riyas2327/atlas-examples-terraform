@@ -6,7 +6,11 @@ variable "atlas_username" {}
 
 variable "atlas_environment" {}
 
-variable "server_nodes" {
+variable "consul_server_nodes" {
+  default = "3"
+}
+
+variable "nomad_server_nodes" {
   default = "3"
 }
 
@@ -18,7 +22,6 @@ data "template_file" "install_consul_client" {
     atlas_token       = "${var.atlas_token}"
     atlas_username    = "${var.atlas_username}"
     atlas_environment = "${var.atlas_environment}"
-    server_nodes      = "${var.server_nodes}"
     instance_id_url   = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
 }
@@ -31,12 +34,12 @@ data "template_file" "install_consul_server" {
   template = "${file("${path.module}/consul/provision-consul-server.sh.tpl")}"
 
   vars {
-    region            = "${var.region}"
-    atlas_token       = "${var.atlas_token}"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    server_nodes      = "${var.server_nodes}"
-    instance_id_url   = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
+    region              = "${var.region}"
+    atlas_token         = "${var.atlas_token}"
+    atlas_username      = "${var.atlas_username}"
+    atlas_environment   = "${var.atlas_environment}"
+    consul_server_nodes = "${var.consul_server_nodes}"
+    instance_id_url     = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
 }
 
@@ -48,12 +51,12 @@ data "template_file" "install_nomad_server" {
   template = "${file("${path.module}/nomad/provision-nomad-server.sh.tpl")}"
 
   vars {
-    region            = "${var.region}"
-    atlas_token       = "${var.atlas_token}"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
-    server_nodes      = "${var.server_nodes}"
-    instance_id_url   = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
+    region             = "${var.region}"
+    atlas_token        = "${var.atlas_token}"
+    atlas_username     = "${var.atlas_username}"
+    atlas_environment  = "${var.atlas_environment}"
+    nomad_server_nodes = "${var.nomad_server_nodes}"
+    instance_id_url    = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
 }
 
@@ -69,7 +72,6 @@ data "template_file" "install_nomad_client" {
     atlas_token       = "${var.atlas_token}"
     atlas_username    = "${var.atlas_username}"
     atlas_environment = "${var.atlas_environment}"
-    server_nodes      = "${var.server_nodes}"
     instance_id_url   = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
 }

@@ -6,7 +6,7 @@ data "template_file" "consul_update_gce" {
     atlas_token          = "${var.atlas_token}"
     atlas_username       = "${var.atlas_username}"
     atlas_environment    = "${var.atlas_environment}"
-    server_nodes         = "${var.server_nodes}"
+    server_nodes         = "${var.nomad_server_nodes}"
     instance_id_url      = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/hostname | cut -d'.' -f1"
     instance_address_url = "-H \"Metadata-Flavor: Google\" http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip"
   }
@@ -25,7 +25,7 @@ connectivity before joining across the wan.
 */
 
 resource "google_compute_instance" "server" {
-  count        = "${var.server_nodes}"
+  count        = "${var.nomad_server_nodes}"
   name         = "${var.atlas_environment}-server-${count.index}"
   machine_type = "${var.gce_instance_type}"
   zone         = "${var.gce_region}-b"
@@ -91,7 +91,7 @@ bind_addr = "0.0.0.0"
 
 server {
   enabled          = true
-  bootstrap_expect = ${var.server_nodes}
+  bootstrap_expect = ${var.nomad_server_nodes}
 }
 
 addresses {
@@ -221,7 +221,7 @@ CMD
 }
 
 resource "null_resource" "gce_wan_join" {
-  count = "${var.server_nodes}"
+  count = "${var.nomad_server_nodes}"
 
   depends_on = [
     "google_compute_vpn_tunnel.tunnel1",

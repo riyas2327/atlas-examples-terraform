@@ -11,10 +11,10 @@ resource "aws_instance" "server_vault" {
   ]
 
   tags {
-    Name = "server-vault-${count.index}"
+    Name = "${var.atlas_environment}-server-vault-${count.index}"
   }
 
-  count = "${var.server_nodes}"
+  count = "${var.vault_server_nodes}"
 
   connection {
     user        = "ubuntu"
