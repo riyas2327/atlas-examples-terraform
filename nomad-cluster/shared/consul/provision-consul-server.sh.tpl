@@ -67,7 +67,7 @@ sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 
   "datacenter": "${region}",
   "server": true,
-  "bootstrap_expect": ${server_nodes}
+  "bootstrap_expect": ${consul_server_nodes}
 }
 EOF
 

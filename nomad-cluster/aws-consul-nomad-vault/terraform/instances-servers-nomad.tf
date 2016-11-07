@@ -11,10 +11,10 @@ resource "aws_instance" "server_nomad" {
   ]
 
   tags {
-    Name = "server-nomad-${count.index}"
+    Name = "${var.atlas_environment}-server-nomad-${count.index}"
   }
 
-  count = "${var.server_nodes}"
+  count = "${var.nomad_server_nodes}"
 
   connection {
     user        = "ubuntu"
