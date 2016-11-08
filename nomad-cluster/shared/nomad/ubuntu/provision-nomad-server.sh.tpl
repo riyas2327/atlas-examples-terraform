@@ -7,7 +7,7 @@ echo "Waiting 180 seconds for cloud-init to complete."
 timeout 180 /bin/bash -c \
   'until stat /var/lib/cloud/instance/boot-finished 2>/dev/null; do echo "Waiting ..."; sleep 2; done'
 
-NOMAD_VERSION=0.4.1
+NOMAD_VERSION=0.5.0-rc1
 
 INSTANCE_ID=`curl ${instance_id_url}`
 INSTANCE_PRIVATE_IP=$(ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }')
@@ -52,8 +52,9 @@ datacenter = "${region}"
 
 bind_addr = "0.0.0.0"
 
-client {
-  enabled = true
+server {
+  enabled          = true
+  bootstrap_expect = ${nomad_server_nodes}
 }
 
 addresses {
