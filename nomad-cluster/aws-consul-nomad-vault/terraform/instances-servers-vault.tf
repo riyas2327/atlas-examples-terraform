@@ -1,5 +1,5 @@
 resource "aws_instance" "server_vault" {
-  ami           = "${module.shared.ami}"
+  ami           = "${module.shared.base_ami}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
   subnet_id     = "${element(aws_subnet.main.*.id,count.index)}"
@@ -17,7 +17,7 @@ resource "aws_instance" "server_vault" {
   count = "${var.vault_server_nodes}"
 
   connection {
-    user        = "ubuntu"
+    user        = "${module.shared.base_user}"
     private_key = "${file(module.shared.private_key_path)}"
   }
 
@@ -34,7 +34,7 @@ resource "aws_instance" "server_vault" {
   provisioner "remote-exec" {
     inline = [
       "${module.shared.install_vault_server}",
-      "echo 'export VAULT_ADDR=http://localhost:8200' >> /home/ubuntu/.bashrc",
+      "echo 'export VAULT_ADDR=http://localhost:8200' >> /home/${module.shared.base_user}/.bashrc",
     ]
   }
 }

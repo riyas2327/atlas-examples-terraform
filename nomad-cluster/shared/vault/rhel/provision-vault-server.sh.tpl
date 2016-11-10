@@ -9,9 +9,7 @@ timeout 180 /bin/bash -c \
 
 VAULT_VERSION=0.6.2
 
-INSTANCE_PRIVATE_IP=$(ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }')
-
-sudo apt-get -qq -y update
+INSTANCE_PRIVATE_IP=$(/usr/sbin/ifconfig eth0 | grep "inet " | awk '{ print $2 }')
 
 #######################################
 # VAULT INSTALL
@@ -19,7 +17,7 @@ sudo apt-get -qq -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -y unzip wget
+sudo yum install -q -y unzip wget
 
 # install vault
 echo "Downloading Vault..."
@@ -31,14 +29,14 @@ echo "Installing Vault..."
 unzip vault.zip
 rm vault.zip
 sudo chmod +x vault
-sudo mv vault /usr/bin/vault
-sudo mkdir -pm 0600 /etc/vault.d
+sudo mv vault /usr/local/bin/vault
+sudo mkdir -pm 0600 /etc/systemd/system/vault.d
 
 #######################################
 # VAULT CONFIGURATION
 #######################################
 
-sudo tee /etc/vault.d/vault.hcl > /dev/null <<EOF
+sudo tee /etc/systemd/system/vault.d/vault.hcl > /dev/null <<EOF
 cluster_name = "${atlas_environment}"
 
 listener "tcp" {
@@ -53,29 +51,21 @@ backend "consul" {
 
 EOF
 
-sudo tee /etc/init/vault.conf > /dev/null <<EOF
-description "Vault"
+sudo tee /etc/systemd/system/vault.service > /dev/null <<EOF
+[Unit]
+Description=vault agent
+Requires=network-online.target
+After=network-online.target
 
-start on runlevel [2345]
-stop on runlevel [!2345]
+[Service]
+EnvironmentFile=-/etc/sysconfig/vault
+Restart=on-failure
+ExecStart=/usr/local/bin/vault server $$VAULT_FLAGS -config=/etc/systemd/system/vault.d
+ExecReload=/bin/kill -HUP $$MAINPID
+KillSignal=SIGINT
 
-respawn
-
-console log
-
-script
-  if [ -f "/etc/service/vault" ]; then
-    . /etc/service/vault
-  fi
-
-  # Make sure to use all our CPUs, because Vault can block a scheduler thread
-  export GOMAXPROCS=`nproc`
-
-  exec /usr/bin/vault server \
-    -config="/etc/vault.d/vault.hcl" \
-    \$${VAULT_FLAGS} \
-    >>/var/log/vault.log 2>&1
-end script
+[Install]
+WantedBy=multi-user.target
 
 EOF
 
@@ -83,4 +73,5 @@ EOF
 # START SERVICES
 #######################################
 
-sudo service vault start
+sudo systemctl enable vault.service
+sudo systemctl start vault
