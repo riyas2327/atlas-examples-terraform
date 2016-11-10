@@ -6,6 +6,7 @@ provider "aws" {}
 module "shared" {
   source = "../../shared"
 
+  os = "${var.os}"
   region              = "${data.aws_region.main.name}"
   atlas_token         = "${var.atlas_token}"
   atlas_username      = "${var.atlas_username}"
@@ -23,6 +24,10 @@ variable "atlas_username" {}
 
 variable "atlas_environment" {
   default = "consul-nomad-vault"
+}
+
+variable "os" {
+  default = "ubuntu"
 }
 
 variable "key_name" {
@@ -87,4 +92,12 @@ output "servers_nomad" {
 
 output "servers_vault" {
   value = ["${aws_instance.server_vault.*.public_ip}"]
+}
+
+output "base_user" {
+  value = ["${module.shared.base_user}"]
+}
+
+output "base_image_name" {
+  value = ["${module.shared.base_image_name}"]
 }
