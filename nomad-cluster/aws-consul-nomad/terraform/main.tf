@@ -6,6 +6,7 @@ provider "aws" {}
 module "shared" {
   source = "../../shared"
 
+  os = "${var.os}"
   region              = "${data.aws_region.main.name}"
   atlas_token         = "${var.atlas_token}"
   atlas_username      = "${var.atlas_username}"
@@ -25,8 +26,8 @@ variable "atlas_environment" {
   default = "consul-nomad"
 }
 
-variable "source_ami" {
-  default = "ami-9a562df2"
+variable "os" {
+  default = "rhel"
 }
 
 variable "key_name" {
@@ -46,15 +47,15 @@ variable "vpc_cidrs" {
 }
 
 variable "client_nodes" {
-  default = "3"
+  default = "0"
 }
 
 variable "consul_server_nodes" {
-  default = "3"
+  default = "1"
 }
 
 variable "nomad_server_nodes" {
-  default = "3"
+  default = "0"
 }
 
 //
