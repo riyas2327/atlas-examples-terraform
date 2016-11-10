@@ -90,4 +90,5 @@ EOF
 # START SERVICES
 #######################################
 
-sudo service nomad start
+sudo systemctl enable nomad.service
+sudo systemctl start nomad
