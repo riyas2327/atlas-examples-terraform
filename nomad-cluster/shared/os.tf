@@ -40,8 +40,12 @@ data "aws_ami" "main" {
   owners = ["${lookup(var.os_owner_filter,var.os)}"]
 }
 
-output "base_ami" {
+output "base_image" {
   value = "${data.aws_ami.main.id}"
+}
+
+output "base_image_name" {
+  value = "${data.aws_ami.main.name}"
 }
 
 output "base_user" {

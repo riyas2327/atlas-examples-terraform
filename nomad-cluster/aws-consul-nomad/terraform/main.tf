@@ -81,3 +81,11 @@ output "servers_consul" {
 output "servers_nomad" {
   value = ["${aws_instance.server_nomad.*.public_ip}"]
 }
+
+output "base_user" {
+  value = ["${module.shared.base_user}"]
+}
+
+output "base_image_name" {
+  value = ["${module.shared.base_image_name}"]
+}

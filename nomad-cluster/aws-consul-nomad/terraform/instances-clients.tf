@@ -1,5 +1,5 @@
 resource "aws_instance" "client" {
-  ami           = "${module.shared.base_ami}"
+  ami           = "${module.shared.base_image}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
   subnet_id     = "${element(aws_subnet.main.*.id,count.index)}"
