@@ -27,7 +27,7 @@ variable "atlas_environment" {
 }
 
 variable "os" {
-  default = "rhel"
+  default = "ubuntu"
 }
 
 variable "key_name" {
