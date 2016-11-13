@@ -3,9 +3,6 @@ data "template_file" "consul_update" {
 
   vars {
     region                  = "${var.region}"
-    atlas_token             = "${var.atlas_token}"
-    atlas_username          = "${var.atlas_username}"
-    atlas_environment       = "${var.atlas_environment}"
     consul_bootstrap_expect = "${var.consul_bootstrap_expect}"
   }
 }
@@ -14,11 +11,13 @@ data "template_file" "consul_update" {
 // Consul Client
 //
 resource "aws_instance" "consul_client" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul_client.id}"]
+  iam_instance_profile = "${aws_iam_instance_profile.describe_instances.name}"
+
+  vpc_security_group_ids = ["${aws_security_group.default_egress.id}", "${aws_security_group.admin_access.id}", "${aws_security_group.consul_client.id}"]
   subnet_id              = "${aws_subnet.subnet_a.id}"
 
   tags {
@@ -52,22 +51,24 @@ resource "aws_instance" "consul_client" {
   provisioner "remote-exec" {
     inline = ["${data.template_file.consul_update.rendered}"]
   }
-
 }
 
 //
 // Consul Servers
 //
 resource "aws_instance" "consul_0" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
+  iam_instance_profile = "${aws_iam_instance_profile.describe_instances.name}"
+
+  vpc_security_group_ids = ["${aws_security_group.default_egress.id}", "${aws_security_group.admin_access.id}", "${aws_security_group.consul.id}"]
   subnet_id              = "${aws_subnet.subnet_a.id}"
 
   tags {
-    Name = "consul_0"
+    Name              = "consul_0"
+    consul_server_datacenter = "${var.region}"
   }
 
   connection {
@@ -97,19 +98,19 @@ resource "aws_instance" "consul_0" {
   provisioner "remote-exec" {
     inline = ["${data.template_file.consul_update.rendered}"]
   }
-
 }
 
 resource "aws_instance" "consul_1" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
+  vpc_security_group_ids = ["${aws_security_group.default_egress.id}", "${aws_security_group.admin_access.id}", "${aws_security_group.consul.id}"]
   subnet_id              = "${aws_subnet.subnet_b.id}"
 
   tags {
-    Name = "consul_1"
+    Name              = "consul_1"
+    consul_server_datacenter = "${var.region}"
   }
 
   connection {
@@ -139,19 +140,19 @@ resource "aws_instance" "consul_1" {
   provisioner "remote-exec" {
     inline = ["${data.template_file.consul_update.rendered}"]
   }
-
 }
 
 resource "aws_instance" "consul_2" {
-  instance_type          = "${var.instance_type}"
-  ami                    = "${var.source_ami}"
-  key_name               = "${aws_key_pair.main.key_name}"
+  instance_type = "${var.instance_type}"
+  ami           = "${var.source_ami}"
+  key_name      = "${aws_key_pair.main.key_name}"
 
-  vpc_security_group_ids = ["${aws_security_group.default_egress.id}","${aws_security_group.admin_access.id}","${aws_security_group.consul.id}"]
+  vpc_security_group_ids = ["${aws_security_group.default_egress.id}", "${aws_security_group.admin_access.id}", "${aws_security_group.consul.id}"]
   subnet_id              = "${aws_subnet.subnet_c.id}"
 
   tags {
-    Name = "consul_2"
+    Name              = "consul_2"
+    consul_server_datacenter = "${var.region}"
   }
 
   connection {
@@ -181,5 +182,4 @@ resource "aws_instance" "consul_2" {
   provisioner "remote-exec" {
     inline = ["${data.template_file.consul_update.rendered}"]
   }
-
 }

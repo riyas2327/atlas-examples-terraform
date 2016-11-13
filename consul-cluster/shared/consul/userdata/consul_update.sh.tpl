@@ -6,9 +6,6 @@ FILE_FINAL=/etc/consul.d/consul.json
 FILE_TMP=$FILE_FINAL.tmp
 
 sudo sed -i -- "s/{{ region }}/${region}/g" $FILE_TMP
-sudo sed -i -- "s/{{ atlas_token }}/${atlas_token}/g" $FILE_TMP
-sudo sed -i -- "s/{{ atlas_username }}/${atlas_username}/g" $FILE_TMP
-sudo sed -i -- "s/{{ atlas_environment }}/${atlas_environment}/g" $FILE_TMP
 # Note: consul_bootstrap_expect isn't required for consul clients, only servers.
 sudo sed -i -- "s/{{ consul_bootstrap_expect }}/${consul_bootstrap_expect}/g" $FILE_TMP
 
