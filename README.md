@@ -3,8 +3,6 @@
 This repository contains application and infrastructure examples
 for [Atlas](https://atlas.hashicorp.com/) by HashiCorp.
 
-
-
 ## Examples
 
 | Example | Description | Tools Used |
