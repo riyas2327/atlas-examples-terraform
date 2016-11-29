@@ -1,4 +1,4 @@
-resource "aws_instance" "server_vault" {
+resource "aws_instance" "server_consul" {
   ami           = "${module.shared.base_image}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -11,10 +11,10 @@ resource "aws_instance" "server_vault" {
   ]
 
   tags {
-    Name = "${var.atlas_environment}-server-vault-${count.index}"
+    Name = "${var.atlas_environment}-server-consul-${count.index}"
   }
 
-  count = "${var.vault_server_nodes}"
+  count = "${var.consul_server_nodes}"
 
   connection {
     user        = "${module.shared.base_user}"
@@ -25,16 +25,7 @@ resource "aws_instance" "server_vault" {
   # Consul
   #
   provisioner "remote-exec" {
-    inline = ["${module.shared.install_consul_client}"]
+    inline = ["${module.shared.install_consul_server}"]
   }
 
-  #
-  # Vault
-  #
-  provisioner "remote-exec" {
-    inline = [
-      "${module.shared.install_vault_server}",
-      "echo 'export VAULT_ADDR=http://localhost:8200' >> /home/${module.shared.base_user}/.bashrc",
-    ]
-  }
 }

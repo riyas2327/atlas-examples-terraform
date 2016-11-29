@@ -1,5 +1,5 @@
-resource "aws_instance" "server" {
-  ami           = "${data.aws_ami.ubuntu_trusty.id}"
+resource "aws_instance" "server_nomad" {
+  ami           = "${module.shared.base_image}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
   subnet_id     = "${element(aws_subnet.main.*.id,count.index)}"
@@ -11,13 +11,13 @@ resource "aws_instance" "server" {
   ]
 
   tags {
-    Name = "server-${count.index}"
+    Name = "${var.atlas_environment}-server-nomad-${count.index}"
   }
 
-  count = "${var.server_nodes}"
+  count = "${var.nomad_server_nodes}"
 
   connection {
-    user        = "ubuntu"
+    user        = "${module.shared.base_user}"
     private_key = "${file(module.shared.private_key_path)}"
   }
 
@@ -25,7 +25,7 @@ resource "aws_instance" "server" {
   # Consul
   #
   provisioner "remote-exec" {
-    inline = ["${module.shared.install_consul_server}"]
+    inline = ["${module.shared.install_consul_client}"]
   }
 
   #

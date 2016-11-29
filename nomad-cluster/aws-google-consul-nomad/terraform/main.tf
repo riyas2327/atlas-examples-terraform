@@ -9,11 +9,11 @@ variable "atlas_environment" {
   default = "aws-google-consul-nomad"
 }
 
-variable "server_nodes" {
+variable "client_nodes" {
   default = "3"
 }
 
-variable "client_nodes" {
+variable "nomad_server_nodes" {
   default = "3"
 }
 

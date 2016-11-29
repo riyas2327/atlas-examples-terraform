@@ -9,10 +9,8 @@ timeout 180 /bin/bash -c \
 
 NOMAD_VERSION=0.4.1
 
-INSTANCE_ID=`curl ${instance_id_url}`
-INSTANCE_PRIVATE_IP=$(ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,6) }')
-
-sudo apt-get -qq -y update
+INSTANCE_ID=$(curl ${instance_id_url})
+INSTANCE_PRIVATE_IP=$(/usr/sbin/ifconfig eth0 | grep "inet " | awk '{ print $2 }')
 
 #######################################
 # NOMAD INSTALL
@@ -20,7 +18,7 @@ sudo apt-get -qq -y update
 
 # install dependencies
 echo "Installing dependencies..."
-sudo apt-get install -qq -y wget unzip
+sudo yum install -q -y unzip wget
 
 # install nomad
 echo "Fetching nomad..."
@@ -32,8 +30,8 @@ echo "Installing nomad..."
 unzip nomad.zip
 rm nomad.zip
 sudo chmod +x nomad
-sudo mv nomad /usr/bin/nomad
-sudo mkdir -pm 0600 /etc/nomad.d
+sudo mv nomad /usr/local/bin/nomad
+sudo mkdir -pm 0600 /etc/systemd/system/nomad.d
 
 # setup nomad directories
 sudo mkdir -pm 0600 /opt/nomad
@@ -45,7 +43,7 @@ echo "Nomad installation complete."
 # NOMAD CONFIGURATION
 #######################################
 
-sudo tee /etc/nomad.d/nomad.hcl > /dev/null <<EOF
+sudo tee /etc/systemd/system/nomad.d/nomad.hcl > /dev/null <<EOF
 name       = "$$INSTANCE_ID"
 data_dir   = "/opt/nomad/data"
 datacenter = "${region}"
@@ -54,7 +52,7 @@ bind_addr = "0.0.0.0"
 
 server {
   enabled          = true
-  bootstrap_expect = ${server_nodes}
+  bootstrap_expect = ${nomad_server_nodes}
 }
 
 addresses {
@@ -71,26 +69,21 @@ consul {
 
 EOF
 
-sudo tee /etc/init/nomad.conf > /dev/null <<EOF
-description "Nomad"
+sudo tee /etc/systemd/system/nomad.service > /dev/null <<EOF
+[Unit]
+Description=nomad agent
+Requires=network-online.target
+After=network-online.target
 
-start on runlevel [2345]
-stop on runlevel [!2345]
+[Service]
+EnvironmentFile=-/etc/sysconfig/nomad
+Restart=on-failure
+ExecStart=/usr/local/bin/nomad agent $$NOMAD_FLAGS -config=/etc/systemd/system/nomad.d
+ExecReload=/bin/kill -HUP $$MAINPID
+KillSignal=SIGINT
 
-respawn
-
-console log
-
-script
-  if [ -f "/etc/service/nomad" ]; then
-    . /etc/service/nomad
-  fi
-
-  exec /usr/bin/nomad agent \
-    -config="/etc/nomad.d" \
-    $${NOMAD_FLAGS} \
-    >>/var/log/nomad.log 2>&1
-end script
+[Install]
+WantedBy=multi-user.target
 
 EOF
 
@@ -98,4 +91,5 @@ EOF
 # START SERVICES
 #######################################
 
-sudo service nomad start
+sudo systemctl enable nomad.service
+sudo systemctl start nomad

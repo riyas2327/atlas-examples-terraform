@@ -7,8 +7,10 @@ resource "aws_instance" "server_vault" {
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
-    "${aws_security_group.nomad.id}",
+    "${aws_security_group.all.id}",
   ]
+
+  iam_instance_profile = "${aws_iam_instance_profile.describe_instances.name}"
 
   tags {
     Name = "${var.atlas_environment}-server-vault-${count.index}"

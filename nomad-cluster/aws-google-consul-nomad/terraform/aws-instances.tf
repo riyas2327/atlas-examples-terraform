@@ -6,7 +6,7 @@ data "template_file" "consul_update_aws" {
     atlas_token          = "${var.atlas_token}"
     atlas_username       = "${var.atlas_username}"
     atlas_environment    = "${var.atlas_environment}"
-    server_nodes         = "${var.server_nodes}"
+    server_nodes         = "${var.nomad_server_nodes}"
     instance_id_url      = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
     instance_address_url = "http://169.254.169.254/2014-02-25/meta-data/local-ipv4"
   }
@@ -22,7 +22,7 @@ data "template_file" "pqs_aws" {
 // Consul & Nomad Servers
 //
 resource "aws_instance" "server" {
-  count         = "${var.server_nodes}"
+  count         = "${var.nomad_server_nodes}"
   instance_type = "${var.aws_instance_type}"
   ami           = "${var.aws_source_ami}"
   key_name      = "${aws_key_pair.main.key_name}"
@@ -35,7 +35,7 @@ resource "aws_instance" "server" {
   ]
 
   tags {
-    Name = "server_${count.index}"
+    Name = "${var.atlas_environment}-server-${count.index}"
   }
 
   connection {
@@ -81,7 +81,7 @@ bind_addr = "0.0.0.0"
 
 server {
   enabled          = true
-  bootstrap_expect = ${var.server_nodes}
+  bootstrap_expect = ${var.nomad_server_nodes}
 }
 
 addresses {
@@ -128,7 +128,7 @@ resource "aws_instance" "client" {
   ]
 
   tags {
-    Name = "client_${count.index}"
+    Name = "${var.atlas_environment}-client-${count.index}"
   }
 
   connection {

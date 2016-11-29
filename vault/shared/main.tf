@@ -1,6 +1,9 @@
 variable "region" {}
+
 variable "atlas_token" {}
+
 variable "atlas_username" {}
+
 variable "atlas_environment" {}
 
 variable "os" {
@@ -8,10 +11,6 @@ variable "os" {
 }
 
 variable "consul_server_nodes" {
-  default = "3"
-}
-
-variable "nomad_server_nodes" {
   default = "3"
 }
 
