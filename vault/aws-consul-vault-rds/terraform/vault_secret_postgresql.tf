@@ -1,5 +1,5 @@
 resource "null_resource" "vault_postgres_consul_template_files" {
-  count = "${var.server_nodes}"
+  count = "${var.vault_server_nodes}"
 
   connection {
     user        = "ubuntu"
@@ -18,12 +18,18 @@ data "template_file" "vault_postgres_instructions" {
 
     # You must initialize and unseal each Vault server first!!!
 
-    vault mount postgresql
-    vault write postgresql/config/lease lease=5s lease_max=5s
-    vault write postgresql/config/connection \
-      connection_url="postgresql://${rds_username_password}:${rds_username_password}@${rds_address}:5432/${rds_db_name}"
+    vault audit-enable syslog
 
-    vault policy-write readonly ./policy.hcl
+    vault mount postgresql
+    vault write postgresql/config/lease lease=5s lease_max=30s
+    vault write postgresql/config/connection \
+      connection_url="postgresql://$${rds_username_password}:$${rds_username_password}@$${rds_address}:5432/$${rds_db_name}"
+
+    vault write postgresql/roles/readonly \
+      sql="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";"
+
+    cd consul-template-demo
+    vault policy-write readonly policy.hcl
     vault auth-enable userpass
     vault write auth/userpass/users/cameron \
       password=stokes \

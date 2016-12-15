@@ -21,7 +21,7 @@ resource "aws_db_subnet_group" "main" {
 
 resource "aws_db_instance" "main" {
   name                   = "${var.rds_db_name}"
-  vpc_security_group_ids = ["${aws_security_group.nomad.id}"]
+  vpc_security_group_ids = ["${aws_security_group.all.id}"]
 
   allocated_storage    = 10
   engine               = "postgres"

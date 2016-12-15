@@ -36,3 +36,11 @@ data "template_file" "install_vault_server" {
 output "install_vault_server" {
   value = "${data.template_file.install_vault_server.rendered}"
 }
+
+data "template_file" "install_vault_client" {
+  template = "${file("${path.module}/vault/${var.os}/provision-vault-client.sh.tpl")}"
+}
+
+output "install_vault_client" {
+  value = "${data.template_file.install_vault_client.rendered}"
+}
