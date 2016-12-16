@@ -7,7 +7,7 @@ echo "Waiting 180 seconds for cloud-init to complete."
 timeout 180 /bin/bash -c \
   'until stat /var/lib/cloud/instance/boot-finished 2>/dev/null; do echo "Waiting ..."; sleep 2; done'
 
-CONSUL_VERSION=0.7.0
+CONSUL_VERSION=0.7.1
 CONSUL_TEMPLATE_VERSION=0.16.0
 
 INSTANCE_ID=`curl ${instance_id_url}`
@@ -49,10 +49,6 @@ echo "Consul installation complete."
 
 sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 {
-  "atlas_join": true,
-  "atlas_infrastructure": "${atlas_username}/${atlas_environment}",
-  "atlas_token": "${atlas_token}",
-
   "node_name": "$$INSTANCE_ID",
 
   "data_dir": "/opt/consul/data",
@@ -64,6 +60,11 @@ sudo tee /etc/consul.d/config.json > /dev/null <<EOF
 
   "leave_on_terminate": false,
   "skip_leave_on_interrupt": true,
+
+  "retry_join_ec2": {
+    "tag_key": "consul_server_datacenter",
+    "tag_value": "${region}"
+  },
 
   "datacenter": "${region}",
   "server": true,

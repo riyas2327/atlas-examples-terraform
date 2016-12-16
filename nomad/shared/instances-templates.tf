@@ -3,9 +3,6 @@ data "template_file" "install_consul_client" {
 
   vars {
     region            = "${var.region}"
-    atlas_token       = "${var.atlas_token}"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
     instance_id_url   = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
 }
@@ -19,9 +16,6 @@ data "template_file" "install_consul_server" {
 
   vars {
     region              = "${var.region}"
-    atlas_token         = "${var.atlas_token}"
-    atlas_username      = "${var.atlas_username}"
-    atlas_environment   = "${var.atlas_environment}"
     consul_server_nodes = "${var.consul_server_nodes}"
     instance_id_url     = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
@@ -36,9 +30,6 @@ data "template_file" "install_nomad_server" {
 
   vars {
     region             = "${var.region}"
-    atlas_token        = "${var.atlas_token}"
-    atlas_username     = "${var.atlas_username}"
-    atlas_environment  = "${var.atlas_environment}"
     nomad_server_nodes = "${var.nomad_server_nodes}"
     instance_id_url    = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
@@ -53,9 +44,6 @@ data "template_file" "install_nomad_client" {
 
   vars {
     region            = "${var.region}"
-    atlas_token       = "${var.atlas_token}"
-    atlas_username    = "${var.atlas_username}"
-    atlas_environment = "${var.atlas_environment}"
     instance_id_url   = "http://169.254.169.254/2014-02-25/meta-data/instance-id"
   }
 }
