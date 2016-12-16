@@ -4,6 +4,8 @@ resource "aws_instance" "server_consul" {
   key_name      = "${aws_key_pair.main.key_name}"
   subnet_id     = "${element(aws_subnet.main.*.id,count.index)}"
 
+  iam_instance_profile = "${aws_iam_instance_profile.describe_instances.name}"
+
   vpc_security_group_ids = [
     "${aws_security_group.default_egress.id}",
     "${aws_security_group.admin_access.id}",
@@ -12,6 +14,7 @@ resource "aws_instance" "server_consul" {
 
   tags {
     Name = "${var.atlas_environment}-server-consul-${count.index}"
+    consul_server_datacenter = "${data.aws_region.main.name}"
   }
 
   count = "${var.consul_server_nodes}"

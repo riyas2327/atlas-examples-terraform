@@ -8,8 +8,8 @@ module "shared" {
 
   os = "${var.os}"
   region              = "${data.aws_region.main.name}"
-  atlas_token         = "${var.atlas_token}"
-  atlas_username      = "${var.atlas_username}"
+  atlas_token         = "NOT_USED"
+  atlas_username      = "NOT_USED"
   atlas_environment   = "${var.atlas_environment}"
   consul_server_nodes = "${var.consul_server_nodes}"
   nomad_server_nodes  = "${var.nomad_server_nodes}"
@@ -18,10 +18,6 @@ module "shared" {
 //
 // Variables
 //
-variable "atlas_token" {}
-
-variable "atlas_username" {}
-
 variable "atlas_environment" {
   default = "consul-nomad"
 }
@@ -47,15 +43,15 @@ variable "vpc_cidrs" {
 }
 
 variable "client_nodes" {
-  default = "0"
+  default = "3"
 }
 
 variable "consul_server_nodes" {
-  default = "1"
+  default = "3"
 }
 
 variable "nomad_server_nodes" {
-  default = "0"
+  default = "3"
 }
 
 //
