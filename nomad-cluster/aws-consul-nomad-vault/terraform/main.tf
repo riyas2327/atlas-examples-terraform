@@ -6,10 +6,10 @@ provider "aws" {}
 module "shared" {
   source = "../../shared"
 
-  os = "${var.os}"
+  os                  = "${var.os}"
   region              = "${data.aws_region.main.name}"
-  atlas_token         = "${var.atlas_token}"
-  atlas_username      = "${var.atlas_username}"
+  atlas_token         = "NOT_USED"
+  atlas_username      = "NOT_USED"
   atlas_environment   = "${var.atlas_environment}"
   consul_server_nodes = "${var.consul_server_nodes}"
   nomad_server_nodes  = "${var.nomad_server_nodes}"
@@ -18,10 +18,6 @@ module "shared" {
 //
 // Variables
 //
-variable "atlas_token" {}
-
-variable "atlas_username" {}
-
 variable "atlas_environment" {
   default = "consul-nomad-vault"
 }
@@ -63,7 +59,7 @@ variable "nomad_server_nodes" {
 }
 
 variable "vault_server_nodes" {
-  default = "3"
+  default = "2"
 }
 
 //

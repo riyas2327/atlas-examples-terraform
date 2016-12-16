@@ -46,10 +46,6 @@ echo "Consul installation complete."
 
 sudo tee /etc/systemd/system/consul.d/consul.json > /dev/null <<EOF
 {
-  "atlas_join": true,
-  "atlas_infrastructure": "${atlas_username}/${atlas_environment}",
-  "atlas_token": "${atlas_token}",
-
   "node_name": "$$INSTANCE_ID",
 
   "data_dir": "/opt/consul/data",
@@ -61,6 +57,11 @@ sudo tee /etc/systemd/system/consul.d/consul.json > /dev/null <<EOF
 
   "leave_on_terminate": false,
   "skip_leave_on_interrupt": true,
+
+  "retry_join_ec2": {
+    "tag_key": "consul_server_datacenter",
+    "tag_value": "${region}"
+  },
 
   "datacenter": "${region}"
 }
