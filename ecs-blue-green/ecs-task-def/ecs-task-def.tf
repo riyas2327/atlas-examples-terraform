@@ -23,6 +23,6 @@ resource "aws_ecs_task_definition" "def" {
   }
 }
 
-output "arn"      { value = "${aws_ecs_task_definition.def.arn}" }
-output "family"   { value = "${aws_ecs_task_definition.def.family}" }
-output "revision" { value = "${aws_ecs_task_definition.def.revision}" }
+output "arns"      { value = ["${aws_ecs_task_definition.def.*.arn}"] }
+output "families"  { value = ["${aws_ecs_task_definition.def.*.family}"] }
+output "revisions" { value = ["${aws_ecs_task_definition.def.*.revision}"] }

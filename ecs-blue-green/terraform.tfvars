@@ -1,9 +1,12 @@
 blue_version = "v1"
-blue_count   = "2"
+blue_count   = "5"
+# blue_pct     = "100"
 
 green_version = "v2"
 green_count   = "0"
+# green_pct     = "0"
 
+# final_count = "5"
 task_name   = "foo-name"
 task_image  = "foo-image"
 family      = "foo-family"
