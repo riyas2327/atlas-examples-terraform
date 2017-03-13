@@ -1,7 +1,7 @@
 resource "aws_instance" "bastion" {
   count = "${length(var.vpc_cidrs_public)}"
 
-  ami           = "${var.bastion_ami}"
+  ami           = "${data.aws_ami.main.image_id}"
   instance_type = "${var.bastion_instance_type}"
   key_name      = "${aws_key_pair.main.key_name}"
   subnet_id     = "${element(aws_subnet.public.*.id,count.index)}"

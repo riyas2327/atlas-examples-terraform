@@ -1,5 +1,12 @@
+//
+// Variables w/ Defaults
+//
 variable "environment_name" {
   default = "vpc-foundation"
+}
+
+variable "os" {
+  default = "rhel"
 }
 
 variable "vpc_cidr" {
@@ -26,8 +33,23 @@ variable "bastion_instance_type" {
   default = "t2.small"
 }
 
-variable "bastion_ami" {
-  default = "ami-41d48e24"
+//
+// Outputs
+//
+output "vpc_id" {
+  value = "${aws_vpc.main.id}"
+}
+
+output "subnet_public_ids" {
+  value = ["${aws_subnet.public.*.id}"]
+}
+
+output "subnet_private_ids" {
+  value = ["${aws_subnet.private.*.id}"]
+}
+
+output "bastion_username" {
+  value = "${lookup(var.os_user,var.os)}"
 }
 
 output "bastion_ips_public" {
