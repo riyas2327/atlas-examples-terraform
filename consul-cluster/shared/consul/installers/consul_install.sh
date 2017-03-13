@@ -2,7 +2,7 @@
 
 set -ex
 
-CONSUL_VERSION=0.7.1
+CONSUL_VERSION=0.7.5
 
 sudo apt-get -y update
 
