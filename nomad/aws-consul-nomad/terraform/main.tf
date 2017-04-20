@@ -6,7 +6,7 @@ provider "aws" {}
 module "shared" {
   source = "../../shared"
 
-  os = "${var.os}"
+  os                  = "${var.os}"
   region              = "${data.aws_region.main.name}"
   atlas_token         = "NOT_USED"
   atlas_username      = "NOT_USED"
@@ -31,7 +31,7 @@ variable "key_name" {
 }
 
 variable "instance_type" {
-  default = "t2.small"
+  default = "m4.large"
 }
 
 variable "vpc_cidr" {

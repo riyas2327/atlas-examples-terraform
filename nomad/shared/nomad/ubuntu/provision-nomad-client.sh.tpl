@@ -15,6 +15,16 @@ INSTANCE_PRIVATE_IP=$(ifconfig eth0 | grep "inet addr" | awk '{ print substr($2,
 sudo apt-get -qq -y update
 
 #######################################
+# DOCKER INSTALL
+#######################################
+
+sudo apt-get -y install apt-transport-https ca-certificates curl 
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get -y install docker-ce
+
+#######################################
 # NOMAD INSTALL
 #######################################
 
