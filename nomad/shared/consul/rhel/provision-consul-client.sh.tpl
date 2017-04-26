@@ -7,8 +7,8 @@ echo "Waiting 180 seconds for cloud-init to complete."
 timeout 180 /bin/bash -c \
   'until stat /var/lib/cloud/instance/boot-finished 2>/dev/null; do echo "Waiting ..."; sleep 2; done'
 
-CONSUL_VERSION=0.7.1
-CONSUL_TEMPLATE_VERSION=0.16.0
+CONSUL_VERSION=0.8.1
+CONSUL_TEMPLATE_VERSION=0.18.2
 
 INSTANCE_ID=$(curl ${instance_id_url})
 INSTANCE_PRIVATE_IP=$(/usr/sbin/ifconfig eth0 | grep "inet " | awk '{ print $2 }')
